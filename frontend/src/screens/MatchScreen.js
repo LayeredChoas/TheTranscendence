@@ -1,0 +1,201 @@
+import { Card, Input, InputLabel } from "@material-ui/core";
+import axios from "axios";
+import { useContext, useRef, useState } from "react";
+import { Col } from "react-bootstrap";
+import UserNotLogged from "../elements/UserNotLogged";
+import { userContext } from "../context/AuthProvider";
+// import "./../css_files/MatchScreen.css";
+import FactorScreen from "./FactorScreen";
+import getConfig from "next/config";
+import Router from "next/router";
+import LoadingMatch from "../elements/LoadingMatch";
+const { publicRuntimeConfig } = getConfig();
+import {socket} from "./../../pages/_app"
+
+export default function MatchScreen() {
+  const [title, setTitle] = useState(false);
+  const [rounds, setRounds] = useState(true);
+  const { user } = useContext(userContext);
+  const [msg, setMsg] = useState({
+    error: false,
+    message: "",
+  });
+  const [loadingmatch, setLoading] = useState({
+    id:false,
+    username:""
+  });
+
+  const username_var = useRef();
+  const arena_var = useRef();
+  const gametype_var = useRef();
+  const rounds_var = useRef();
+  const title_var = useRef();
+
+  function HandleChange(e) {
+    if (rounds_var.current) console.log(rounds_var.current.value);
+    if (e.target.value === "Title") {
+      setTitle(true);
+      setRounds(true);
+    } else if (e.target.value === "Rounds") {
+      setRounds(true);
+      setTitle(false);
+    } else if (e.target.value === "Shot") {
+      setTitle(false);
+      setRounds(false);
+    }
+  }
+
+  async function CreateMatch() {
+    setMsg({
+      error: false,
+      message: "",
+    });
+    let p1, p2;
+    p1 = user.user;
+    p2 = username_var.current.value;
+    if (
+      !username_var ||
+      !username_var.current.value ||
+      username_var.current.value.length < 5 ||
+      username_var.current.value === user.user
+    )
+      return setMsg({
+        error: true,
+        message: "Enter A Valid Player Username",
+      });
+    if (
+      !gametype_var ||
+      (gametype_var.current.value === "Title" &&
+        (!title_var.current.value || title_var.current.value.length < 5))
+    )
+      return setMsg({
+        error: true,
+        message:
+          "Enter A Valid Title, The Title Can't Be Less Than 5 Characters",
+      });
+    try {
+      let rw = 10;
+      let rd = 1;
+      let ti = "";
+      if (rounds_var.current) rd = rounds_var.current.value;
+      if (gametype_var.current.value === "Shot") rw = 20;
+      if (title_var.current) ti = title_var.current.value;
+      const val = await axios.post(
+        publicRuntimeConfig.BACKEND_URL + "/create_match",
+        {
+          data: {
+            player1: user.user,
+            player2: username_var.current.value,
+            type: gametype_var.current.value,
+            arena: arena_var.current.value,
+            reward: rw,
+            rounds: rd,
+            title: ti,
+          },
+        }
+      );
+      if (!val || val.data.id <= 0) {
+        if (val.data.message && val.data.message === "user")
+          return setMsg({
+            error: true,
+            message: "Enter A Valid Player Username",
+          });
+        return setMsg({
+          error: true,
+          message: "An Error Happen Try Again Later",
+        });
+      }
+      setLoading({
+        id:true,
+        username:username_var.current.value
+      })
+      socket.emit('challenge', {data:{
+        gameId:val.data.gameId,
+        player1:p1,
+        player2:p2
+      }})
+      socket.on('accept_game', (data)=>{Router.push(`/game/${data.data.gameId}`);})
+    } catch (error) {
+      console.log(error.message);
+      setMsg({
+        error: true,
+        message: "An Error Happen Try Again Later",
+      });
+    }
+  }
+
+  return !user.isLoading && user.isLoggedIn && user.auth ? (
+    loadingmatch.id ? (
+      <LoadingMatch user={loadingmatch.username}></LoadingMatch>
+    ) : (
+      <div className="text-black text-center MatchScreenitems">
+        <h3 className="py-5">Create A New Match</h3>
+        {msg.error ? (
+          <div class="alert alert-danger" role="alert">
+            {msg.message}
+          </div>
+        ) : null}
+        <Card className="text-black">
+          <div class="form-group MatchScreenelem">
+            <label className="form-label">Player Username</label>
+            <input ref={username_var} type="text" class="form-control" />
+          </div>
+
+          <div class="form-group MatchScreenelem">
+            <label className="form-label">Arena</label>
+            <select ref={arena_var} class="custom-select">
+              <option value="sb" selected>
+                Simple Black
+              </option>
+              <option value="sw">Simple White</option>
+              <option value="w">Wild</option>
+            </select>
+          </div>
+
+          <div class="form-group MatchScreenelem">
+            <label className="form-label">Game Type</label>
+            <select
+              ref={gametype_var}
+              class="custom-select"
+              onChange={HandleChange}
+            >
+              <option value="Rounds">Rounds (±10XP)</option>
+              <option value="Title">Title (±10XP)</option>
+              <option value="Shot">One Shot (±20XP)</option>
+            </select>
+          </div>
+
+          {rounds ? (
+            <div class="form-group MatchScreenelem">
+              <label className="form-label">Rounds</label>
+              <select ref={rounds_var} class="custom-select">
+                <option value="3" selected>
+                  3
+                </option>
+                <option value="5">5</option>
+                <option value="7">7</option>
+              </select>
+            </div>
+          ) : null}
+
+          {title ? (
+            <div>
+              <div class="form-group MatchScreenelem">
+                <label className="form-label">The Loser Title </label>
+                <input ref={title_var} type="text" class="form-control" />
+              </div>
+            </div>
+          ) : null}
+
+          <button onClick={CreateMatch} className="btn btn-primary my-2">
+            Challenge
+          </button>
+        </Card>
+      </div>
+    )
+  ) : !user.auth && !user.isLoading ? (
+    <FactorScreen></FactorScreen>
+  ) : !user.isLoading ? (
+    <UserNotLogged />
+  ) : null;
+}

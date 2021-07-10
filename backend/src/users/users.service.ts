@@ -1,0 +1,435 @@
+import { Injectable } from '@nestjs/common';
+import { PrismaClient } from '.prisma/client';
+import { randomInt } from 'crypto';
+
+const JWT = require('jsonwebtoken');
+const { user } = new PrismaClient();
+const bcrypt = require('bcryptjs');
+
+const titles = [
+  'I’m sick of following my dreams, man. I’m just going to ask where they’re going and hook up with ’em later.',
+  'A pessimist is a person who has had to listen to too many optimists.',
+  'Better to remain silent and be thought a fool than to speak out and remove all doubt.',
+  'If I were two-faced, would I be wearing this one?',
+  'The best thing about the future is that it comes one day at a time.',
+  'An alcoholic is someone you don’t like who drinks as much as you do.',
+  'Light travels faster than sound. This is why some people appear bright until you hear them speak.',
+  'The difference between stupidity and genius is that genius has its limits.',
+  'War is God’s way of teaching Americans geography.',
+  'A bank is a place that will lend you money if you can prove that you don’t need it.',
+  'My favorite machine at the gym is the vending machine.',
+  'I always arrive late at the office, but I make up for it by leaving early.',
+  'Don’t worry about the world coming to an end today. It is already tomorrow in Australia.',
+  'A day without laughter is a day wasted.',
+  'Remember, today is the tomorrow you worried about yesterday.',
+  'The surest sign that intelligent life exists elsewhere in the universe is that it has never tried to contact us.',
+  'Whoever said money can’t buy happiness didn’t know where to shop.',
+  'All men are equal before fish.',
+  'Life is hard. After all, it kills you.',
+  'Originality is the fine art of remembering what you hear but forgetting where you heard it.',
+  'Age is an issue of mind over matter. If you don’t mind, it doesn’t matter.',
+];
+
+@Injectable()
+export class UsersService {
+  async user_exist(username) {
+    try {
+      const val = await user.findUnique({
+        where: {
+          intra_username: username,
+        },
+      });
+      if (!val) return { id: -1, error: 'No User' };
+      return { id: val.id, username: username };
+    } catch (error) {
+      return { id: -1, error: error.message };
+    }
+  }
+  /* Create User */
+  async create_user(b) {
+    const val = await this.user_exist(b.login);
+    if (val.id === -1 && val.error === 'No User') {
+      try {
+        const username = b.login;
+        const password = await bcrypt.hash(username, 10);
+        const email = b.email;
+        let title = titles[randomInt(0, titles.length)];
+        const ret = await user.create({
+          data: {
+            username,
+            password,
+            email,
+            intra_username: username,
+            num_wins: 0,
+            num_loss: 0,
+            ladder_level: 0,
+            num_won_tournaments: 0,
+            avatar: b.image_url,
+            status: 'Online',
+            rating: 100,
+            title: title,
+            adamin_op: 0,
+            campus: b.campus[0].name,
+            country: b.campus[0].country,
+            time_zone: b.campus[0].time_zone,
+            last_name: b.last_name,
+            first_name: b.first_name,
+          },
+        });
+        if (!ret) {
+          return { id: -1, error: 'An Error Occcured Try Again Later' };
+        } else {
+          const token = await JWT.sign({ username }, process.env.JWT_SECRET, {
+            expiresIn: 30000,
+          });
+          return {
+            id: ret.id,
+            token,
+          };
+        }
+      } catch (error) {
+        // console.log(error);
+        return { id: -1, error: error.message };
+      }
+    } else {
+      const u = val.username;
+      const token = await JWT.sign({ username: u }, process.env.JWT_SECRET, {
+        expiresIn: 30000,
+      });
+      if (!token) {
+        return { id: -1 };
+      }
+      return { id: val.id, message: 'User Login', token };
+    }
+  }
+
+  /* Read User */
+  async user_login(b) {
+    const { username, password } = b;
+    if (!username || !password)
+      return {
+        id: -1,
+        error: 'Bad Info',
+        username: undefined,
+        token: undefined,
+      };
+    try {
+      const u = await user.findUnique({
+        where: {
+          username,
+        },
+      });
+      if (!u) return { id: -1, error: 'Bad Info' };
+      const validpass = await bcrypt.compare(password, u.password);
+      if (!validpass) return { id: -1, error: 'Bad Info' };
+      const token = await JWT.sign({ username }, process.env.JWT_SECRET);
+      let auth = false;
+      if (u.factory_auth) auth = true;
+      return {
+        id: u.id,
+        username: u.username,
+        error: undefined,
+        token: token,
+        avatar: u.avatar,
+        xp: u.rating,
+        auth,
+      };
+    } catch (error) {
+      return {
+        id: -1,
+        error: error.message,
+        username: undefined,
+        token: undefined,
+      };
+    }
+  }
+
+  /* Update User */
+  async change_password(b) {
+    const { username, password } = b;
+    try {
+      const n_pass = await bcrypt.hash(password, 10);
+      const val = await user.update({
+        where: {
+          username,
+        },
+        data: {
+          password: n_pass,
+        },
+      });
+      if (!val) return { id: -1, error: 'An Error Occured' };
+      return { id: val.id, user: val.username };
+    } catch (error) {
+      return {
+        id: -1,
+        error: error.message,
+      };
+    }
+  }
+
+  async change_photo(params) {
+    const { filename, username } = params;
+
+    try {
+      const val = await user.update({
+        where: {
+          username,
+        },
+        data: {
+          avatar: 'http://0.0.0.0:5000/uploads/' + filename,
+        },
+      });
+      if (!val)
+        return {
+          id: -1,
+          error: 'error',
+        };
+      return {
+        id: val.id,
+        user: val.username,
+        avatar: val.avatar,
+      };
+    } catch (error) {
+      return {
+        id: -1,
+        error: error.messgae,
+      };
+    }
+  }
+  async change_username(b) {
+    const { username, displayname } = b.data;
+    const u = await user.findUnique({
+      where: {
+        username: displayname,
+      },
+    });
+    if (u)
+      return {
+        id: -1,
+        error: 'User Exist',
+      };
+    try {
+      const res = await user.update({
+        where: {
+          username: username,
+        },
+        data: {
+          username: displayname,
+        },
+      });
+      if (!res)
+        return {
+          id: -1,
+          error: 'Update Fail',
+        };
+      else
+        return {
+          id: res.id,
+        };
+    } catch (error) {
+      return {
+        id: -1,
+        error: 'Crash',
+      };
+    }
+  }
+
+  /*  Delete User */
+  async delete_user(username, password) {
+    try {
+      const u = await user.findUnique({
+        where: {
+          username,
+        },
+      });
+      if (!u)
+        return {
+          id: -1,
+        };
+      const ret = await bcrypt.compare(password, u.password);
+      if (!ret)
+        return {
+          id: -1,
+        };
+      const val = await user.delete({
+        where: {
+          username,
+        },
+      });
+      if (!val)
+        return {
+          id: -1,
+          error: 'error user',
+        };
+      return {
+        id: val.id,
+        username: val.username,
+      };
+    } catch (error) {
+      return {
+        id: -1,
+        error: 'crash',
+      };
+    }
+  }
+
+  async block_user(b_user, username) {
+    let bl = false;
+    try {
+      const u = await user.findUnique({
+        where: {
+          username: b_user,
+        },
+      });
+      if (!u)
+        return {
+          id: -1,
+        };
+      const m = await user.findUnique({
+        where: {
+          username,
+        },
+      });
+      if (!m)
+        return {
+          id: -1,
+        };
+      let b_users = m.blocked;
+      if (b_users.indexOf(u.id) >= 0) b_users.splice(b_users.indexOf(u.id), 1);
+      else {
+        b_users.push(u.id);
+        bl = true;
+      }
+      console.log(b_users);
+      const ret = await user.update({
+        where: {
+          username,
+        },
+        data: {
+          blocked: b_users,
+        },
+      });
+      if (!ret)
+        return {
+          id: -1,
+        };
+      return {
+        id: m.id,
+        type: bl,
+      };
+    } catch (error) {
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  async get_user_id(name) {
+    try {
+      const u = await user.findUnique({
+        where: {
+          username: name,
+        },
+      });
+      if (!u) return -1;
+      return u.id;
+    } catch (error) {
+      console.log(error.message);
+      return -1;
+    }
+  }
+
+  async get_user_username(id) {
+    try {
+      const u = await user.findUnique({
+        where: {
+          id: id,
+        },
+      });
+      if (!id) return '';
+      return u.username;
+    } catch (error) {
+      console.log(error.message);
+      return '';
+    }
+  }
+
+  async change_title(username, title) {
+    console.log(username, title);
+    try {
+      const r = await user.findUnique({
+        where: {
+          username,
+        },
+        select: {
+          rating: true,
+        },
+      });
+      if (!r || r.rating - 50 < 0)
+        return {
+          id: -1,
+        };
+      let rat = r.rating - 50;
+      if (rat < 0)
+        return {
+          id: -1,
+        };
+      const u = await user.update({
+        where: {
+          username,
+        },
+        data: {
+          title: title,
+          rating: rat,
+        },
+      });
+      if (!u)
+        return {
+          id: -1,
+        };
+      return {
+        id: u.id,
+        xp: u.rating,
+      };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  remove_elem_array(array, value) {
+    for (let index = 0; index < array.length; index++) {
+      if (array[index] == value) {
+        array.splice(index, 1);
+        return array;
+      }
+    }
+  }
+
+  async change_status(status, username) {
+    try {
+      const u = await user.update({
+        where: {
+          username,
+        },
+        data: {
+          status,
+        },
+      });
+      if (!u)
+        return {
+          id: -1,
+        };
+      return {
+        id: u.id,
+      };
+    } catch (error) {
+      console.log(error.mesasge);
+      return {
+        id: -1,
+      };
+    }
+  }
+}

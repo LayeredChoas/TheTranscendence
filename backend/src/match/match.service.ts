@@ -1,0 +1,143 @@
+import { UsersService } from './../users/users.service';
+import { Injectable } from '@nestjs/common';
+import { PrismaClient } from '.prisma/client';
+import { v4 as uuidv4 } from 'uuid';
+const { user, match } = new PrismaClient();
+
+@Injectable()
+export default class MatchService {
+  constructor(private readonly userservice: UsersService) {}
+
+  async get_user_matches(username) {
+    try {
+      const u = await user.findUnique({
+        where: {
+          username,
+        },
+      });
+      if (!u)
+        return {
+          id: -1,
+        };
+      const m_tab = u.matches;
+      if (m_tab.length == 0)
+        return {
+          id: -1,
+        };
+      let all_m = [{}];
+      for (let index = 0; index < m_tab.length; index++) {
+        const ms = await match.findUnique({
+          where: {
+            id: m_tab[index],
+          },
+        });
+        if (ms && ms.winner != 0){
+          let u1 = await this.userservice.get_user_username(ms.player1);
+          let u2 = await this.userservice.get_user_username(ms.player2);
+          if (u1.length <= 0 || u2.length <= 0)
+            continue;
+          all_m.push({
+            ...ms,
+            player1:u1,
+            player2:u2,
+          })
+        }
+      }
+      return {
+        id: u.id,
+        data: all_m,
+      };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  async create_match(b) {
+    try {
+      console.log(b)
+      let p1 = await this.userservice.get_user_id(b.data.player1);
+      let p2 = await this.userservice.get_user_id(b.data.player2);
+      const gameId = uuidv4();
+      console.log(gameId)
+      console.log(p1, p2);
+      if (p1 < 0 || p2 < 0)
+        return {
+          id: -1,
+          message:"user"
+        };
+      const m = await match.create({
+        data: {
+          player1: p1,
+          player2: p2,
+          winner: 0,
+          type: b.data.type,
+          arena: b.data.arena,
+          reward: b.data.reward,
+          round: parseInt(b.data.rounds),
+          title: b.data.title,
+          gameId
+        },
+      });
+      if (!m)
+        return {
+          id: -1,
+        };
+      let res = await user.findUnique({
+        where: {
+          id: p1,
+        },
+        select: {
+          matches: true,
+        },
+      });
+      let u_u = await user.update({
+        where: {
+          id: p1,
+        },
+        data: {
+          matches: {
+            set: [...res.matches, m.id],
+          },
+        },
+      });
+      if (!res || !u_u)
+        return {
+          id: -1,
+        };
+      res = await user.findUnique({
+        where: {
+          id: p2,
+        },
+        select: {
+          matches: true,
+        },
+      });
+      u_u = await user.update({
+        where: {
+          id: p2,
+        },
+        data: {
+          matches: {
+            set: [...res.matches, m.id],
+          },
+        },
+      });
+      if (!res || !u_u)
+        return {
+          id: -1,
+        };
+      return {
+        id: m.id,
+        gameId:m.gameId
+      }
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+}
