@@ -205,8 +205,7 @@ export default function ChannelScreen(params) {
       setJoinroom(true);
     }
   }, [name]);
-  return !user.isLoading ? (
-    user.isLoggedIn ? (
+  return  (
       <div className="container text-black main-body">
         <h1>Channel Screen</h1>
         {banned_u ? (
@@ -320,10 +319,5 @@ export default function ChannelScreen(params) {
           </div>
         ) : null}
       </div>
-    ) : !user.isLoggedIn && user.auth ? (
-      <FactorScreen></FactorScreen>
-    ) : !user.isLoggedIn ? (
-      <UserNotLogged />
-    ) : null
-  ) : null;
+    )
 }

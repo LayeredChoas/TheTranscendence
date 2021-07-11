@@ -20,15 +20,13 @@ import { Button, Container, FormControl, PageItem, Row } from "react-bootstrap";
 import AddIcon from "@material-ui/icons/Add";
 import Switch from "@material-ui/core/Switch";
 import axios from "axios";
-import {userContext} from '../context/AuthProvider';
+import { userContext } from "../context/AuthProvider";
 import { useHistory } from "react-router";
 import UserNotLogged from "../elements/UserNotLogged";
 import FactorScreen from "./FactorScreen";
 import Router from "next/router";
 import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
-
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -96,15 +94,18 @@ export default function ChannelsScreen() {
         message: "Password didn't match or short (less than 5 characters).",
       });
     try {
-      const val = await axios.post(publicRuntimeConfig.BACKEND_URL + "/create_channel", {
-        data: {
-          username: user.user,
-          channelname: nm,
-          password: p,
-          passwordg: pg,
-          p_ex: prv,
-        },
-      });
+      const val = await axios.post(
+        publicRuntimeConfig.BACKEND_URL + "/create_channel",
+        {
+          data: {
+            username: user.user,
+            channelname: nm,
+            password: p,
+            passwordg: pg,
+            p_ex: prv,
+          },
+        }
+      );
       if (val.data.id <= 0) {
         setE_inside(true);
       } else {
@@ -124,7 +125,9 @@ export default function ChannelsScreen() {
     setgchannel(true);
     try {
       var o;
-      const val = await axios.get(publicRuntimeConfig.BACKEND_URL + "/channels");
+      const val = await axios.get(
+        publicRuntimeConfig.BACKEND_URL + "/channels"
+      );
       if (!val) return;
       o = val.data;
       var temparray, i, j;
@@ -171,7 +174,7 @@ export default function ChannelsScreen() {
     setNewChannel(true);
   }
   if (channels.length === 0 && !g_channel) get_channels();
-  return !user.isLoading && user.isLoggedIn && user.auth ? (
+  return (
     <Container>
       {s_inside ? (
         <Alert severity="success">Channel {nm} Created Successfully</Alert>
@@ -279,9 +282,5 @@ export default function ChannelsScreen() {
         </Fab>
       </div>
     </Container>
-  ) : !user.auth   && !user.isLoading ? (
-    <FactorScreen></FactorScreen>
-  ) : !user.isLoading ? (
-    <UserNotLogged />
-  ) : null;
+  );
 }

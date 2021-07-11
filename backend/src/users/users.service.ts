@@ -432,4 +432,71 @@ export class UsersService {
       };
     }
   }
+
+  async change_title_game(userId, title) {
+    try {
+      const u = await user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          title: title,
+        },
+      });
+      if (!u)
+        return {
+          id: -1,
+        };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  async change_xp(userId, xp) {
+    try {
+      let xp_val = 0;
+      let wins = 0;
+      let losses = 0;
+      let ladder_level = 0;
+      const u = await user.findUnique({
+        where: {
+          id: userId,
+        },
+      });
+      wins = u.num_wins;
+      losses = u.num_loss;
+      if (xp > 0) wins++;
+      else losses++;
+      xp_val = u.rating + xp;
+      if (xp_val < 0) xp_val = 0;
+      if (xp_val >= 200) ladder_level = 1;
+      if (xp_val >= 300) ladder_level = 2;
+      if (xp_val >= 500) ladder_level = 3;
+      if (xp_val >= 700) ladder_level = 4;
+      if (xp_val >= 1000) ladder_level = 5;
+      const u_u = await user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          rating: xp_val,
+          num_loss: losses,
+          num_wins: wins,
+          ladder_level,
+        },
+      });
+      if (!u_u)
+        return {
+          id: -1,
+        };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
 }

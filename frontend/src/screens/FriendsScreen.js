@@ -25,9 +25,7 @@ export default function FriendsScreen() {
   }
 
   if (!friends) GetFriends();
-  console.log(user);
-  return (!user.isLoading ? (
-    user.isLoggedIn ? (
+  return (
       <div className="container py-4">
         <div class="row my-2">
           {!friends
@@ -37,10 +35,5 @@ export default function FriendsScreen() {
               })}
         </div>
       </div>
-    ) : !user.isLoggedIn && user.auth ? (
-      <FactorScreen></FactorScreen>
-    ) : !user.isLoggedIn ? (
-      <UserNotLogged />
-    ) : null
-  ) : null);
+    )
 }

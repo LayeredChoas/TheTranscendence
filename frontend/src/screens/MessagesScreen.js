@@ -47,7 +47,7 @@ export default function MessagesScreen() {
   }
   if (!users.loaded && !user.isLoading) GetUsers();
 
-  return !user.isLoading && user.isLoggedIn && user.auth ? (
+  return (
     <div>
       <div class="container text-black pt-5">
         <div class="page-title">
@@ -97,9 +97,5 @@ export default function MessagesScreen() {
         </div>
       </div>
     </div>
-  ) : !user.auth  && !user.isLoading? (
-    <FactorScreen></FactorScreen>
-  ) : !user.isLoading ? (
-    <UserNotLogged />
-  ) : null;
+  )
 }

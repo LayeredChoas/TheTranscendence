@@ -1,5 +1,5 @@
 import { useContext, useRef, useState } from "react";
-import {userContext} from '../context/AuthProvider';
+import { userContext } from "../context/AuthProvider";
 // import "../css_files/NewUser.css";
 import axios from "axios";
 import LoginBar from "../elements/LoginBar";
@@ -9,7 +9,6 @@ import FactorScreen from "./FactorScreen";
 import Router from "next/router";
 import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
-
 
 export default function NewUserScreen() {
   const { user } = useContext(userContext);
@@ -26,10 +25,13 @@ export default function NewUserScreen() {
     if (passg.current.value.length < 5)
       return setError("Password Can't be Less Than 5 Characters");
     try {
-      const val = await axios.post(publicRuntimeConfig.BACKEND_URL + "/change_password", {
-        username: user.user,
-        password: pass.current.value,
-      });
+      const val = await axios.post(
+        publicRuntimeConfig.BACKEND_URL + "/change_password",
+        {
+          username: user.user,
+          password: pass.current.value,
+        }
+      );
       console.log(val);
       if (!val.data || val.data.id < 0)
         return setError("An Error Occured Try Again Later");
@@ -39,7 +41,7 @@ export default function NewUserScreen() {
       setError("An Error Occured Try Again Later");
     }
   }
-  return !user.isLoading && user.isLoggedIn && user.auth ? (
+  return (
     <main className="my-form UserForm">
       <div className="cotainer">
         <div className="row justify-content-center">
@@ -98,9 +100,5 @@ export default function NewUserScreen() {
         </div>
       </div>
     </main>
-  ) : !user.auth  && !user.isLoading? (
-    <FactorScreen></FactorScreen>
-  ) : !user.isLoading ? (
-    <UserNotLogged />
-  ) : null;
+  );
 }

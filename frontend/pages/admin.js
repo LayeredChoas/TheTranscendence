@@ -1,8 +1,20 @@
 import AdminScreen from "../src/screens/AdminScreen";
+import { userContext } from "../context/AuthProvider";
+import { useContext } from "react";
+import UserNotLogged from "./../src/elements/UserNotLogged";
+import FactorScreen from "./../src/screens/FactorScreen";
 
 export default function admin()
 {
-    return (
-        <AdminScreen></AdminScreen>
-    )
+    const { user } = useContext(userContext);
+    return (!user.isLoading ? (
+        user.isLoggedIn ? (
+            <AdminScreen></AdminScreen>
+        ) : !user.isLoggedIn && user.auth ? (
+          <FactorScreen></FactorScreen>
+        ) : !user.isLoggedIn ? (
+          <UserNotLogged />
+        ) : null
+      ) : null);
+    
 }

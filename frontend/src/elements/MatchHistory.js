@@ -17,8 +17,9 @@ function MatchHistory(params) {
       setMts(
         m.data.data.map((m) => {
           if (!m.player1) return;
-          const p1 = m.winner == 1 ? "text-winner" : null;
-          const p2 = m.winner == 2 ? "text-winner" : null;
+          console.log(m)
+          const p1 = m.winner == m.p1Id ? "text-winner" : null;
+          const p2 = m.winner == m.p2Id ? "text-winner" : null;
           return (
             <div className="card text-center my-2">
               <h4 className="pt-1">

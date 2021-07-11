@@ -2,7 +2,9 @@ import { useRouter } from "next/dist/client/router";
 import { useContext, useState } from "react";
 import { userContext } from "../../src/context/AuthProvider";
 import ChannelScreen from "../../src/screens/ChannelScreen";
-import { socket } from "../_app";
+import UserNotLogged from "./../src/elements/UserNotLogged";
+import FactorScreen from "./../src/screens/FactorScreen";
+
 
 export default function Com() {
   const router = useRouter();
@@ -17,8 +19,9 @@ export default function Com() {
   if (slug) username = slug[0];
   if (slug?.length > 1 && user.user) Router.push(`/channels`);
   if (username) {
-    return (
-      <div>
+    return (!user.isLoading ? (
+      user.isLoggedIn ? (
+        <div>
         {update ? (
           <ChannelScreen
             user={username}
@@ -28,7 +31,12 @@ export default function Com() {
           <ChannelScreen user={username} reload={reload}></ChannelScreen>
         )}
       </div>
-    );
+      ) : !user.isLoggedIn && user.auth ? (
+        <FactorScreen></FactorScreen>
+      ) : !user.isLoggedIn ? (
+        <UserNotLogged />
+      ) : null
+    ) : null);
   }
   return <div></div>;
 }

@@ -169,7 +169,7 @@ function UserProfileScreen(param) {
     }
   }
   if (userdata.id === 0 && !user.isLoading) getUserInfo();
-  return !user.isLoading && user.isLoggedIn && user.auth ? (
+  return (
     <div class="ProfileBody">
       {er.error && er.message ? (
         <LoginBar type="alert-danger" message={er.message}></LoginBar>
@@ -335,15 +335,10 @@ function UserProfileScreen(param) {
           </div>
         </div>
       ) : userdata.id === -1 && !user.isLoading && !userdata.loading ? (
-        // <Redirect to="/member" />
         <div>kkkk</div>
       ) : null}
     </div>
-  ) : !user.auth && !user.isLoading ? (
-    <FactorScreen></FactorScreen>
-  ) : !user.isLoading ? (
-    <UserNotLogged />
-  ) : null;
+  );
 }
 
 export default UserProfileScreen;

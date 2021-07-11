@@ -138,13 +138,15 @@ export class AuthService {
         return {
           id: u.id,
         };
+      if (!u.factory_auth)
+        return {
+          id: -1,
+        };
       var id = crypto.randomBytes(20).toString('hex');
-      console.log(id);
       if (!id)
         return {
           id: -1,
         };
-      console.log(id)
       var transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
         port: 587,
@@ -172,7 +174,6 @@ export class AuthService {
             };
           }
         }
-        console.log(info)
       });
       const up = await user.update({
         where: {
@@ -186,7 +187,6 @@ export class AuthService {
         return {
           id: -1,
         };
-        console.log('auth sent')
       return {
         id: up.id,
       };

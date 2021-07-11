@@ -40,6 +40,8 @@ export default class MatchService {
             ...ms,
             player1:u1,
             player2:u2,
+            p1Id:ms.player1,
+            p2Id:ms.player2
           })
         }
       }

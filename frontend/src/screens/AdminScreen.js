@@ -16,8 +16,7 @@ export default function AdminScreen() {
     uc: false,
   });
 
-  return !user.isLoading ? (
-    user.isLoggedIn ? (
+  return (
       <div style={{ paddingTop: "2rem" }}>
         <div class="container bootstrap snippets bootdey">
           <div class="row">
@@ -123,10 +122,5 @@ export default function AdminScreen() {
           </div>
         </div>
       </div>
-    ) : !user.isLoggedIn && user.auth ? (
-      <FactorScreen></FactorScreen>
-    ) : !user.isLoggedIn ? (
-      <UserNotLogged />
-    ) : null
-  ) : null;
+    )
 }

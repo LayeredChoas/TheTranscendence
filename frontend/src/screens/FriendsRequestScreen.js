@@ -2,12 +2,11 @@ import axios from "axios";
 import { useContext, useState } from "react";
 import FriendRequestElement from "../elements/FriendRequestElement";
 import UserNotLogged from "../elements/UserNotLogged";
-import {userContext} from '../context/AuthProvider';
+import { userContext } from "../context/AuthProvider";
 // import "./../css_files/FriendsScreen.css";
 import FactorScreen from "./FactorScreen";
 import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
-
 
 export default function FriendsRequestScreen() {
   const { user } = useContext(userContext);
@@ -15,7 +14,9 @@ export default function FriendsRequestScreen() {
 
   async function GetFriendsRequest() {
     try {
-      const val = await axios.get(publicRuntimeConfig.BACKEND_URL  + `/${user.user}/friendsrequest`);
+      const val = await axios.get(
+        publicRuntimeConfig.BACKEND_URL + `/${user.user}/friendsrequest`
+      );
       if (!val || val.data.id <= 0) return;
       if (!val.data) return;
       setFriends(val.data);
@@ -30,7 +31,7 @@ export default function FriendsRequestScreen() {
   }
 
   if (!friends) GetFriendsRequest();
-  return !user.isLoading && user.isLoggedIn && user.auth ? (
+  return (
     <div className="container py-4">
       <div class="row my-2">
         {!friends
@@ -46,9 +47,5 @@ export default function FriendsRequestScreen() {
             })}
       </div>
     </div>
-  ) : !user.auth  && !user.isLoading? (
-    <FactorScreen></FactorScreen>
-  ) : !user.isLoading ? (
-    <UserNotLogged />
-  ) : null;
+  );
 }

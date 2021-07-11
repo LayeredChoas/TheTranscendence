@@ -8,6 +8,9 @@ import { socket } from "../../pages/_app";
 let username_val;
 let ingame;
 let gamesnum;
+let gameId;
+let user_xp;
+let user_pay = 0;
 
 class Vec {
   constructor(x = 0, y = 0) {
@@ -54,14 +57,25 @@ class Player extends Rect {
     super(5, 100);
     this._score = 0;
     this._hit_power = 1.1;
-    this._click = 0;
   }
 }
 
+const bgs = {
+  sb: "#000000",
+  sw: "#12A0EF",
+  w: "",
+};
+
 class Pong {
-  constructor(elm) {
+  constructor(elm, type, rounds, arena, gameId) {
     this._gamesnum = 0;
     this._ingame = false;
+    this._type = type;
+    this._arena = arena;
+    this._bg = bgs[arena];
+    this._gameId = gameId;
+    this._rounds = rounds;
+    gameId = gameId;
     ingame = false;
     gamesnum = 0;
     this._canvas = elm;
@@ -89,7 +103,6 @@ class Pong {
         this._ball.vel.x = -ball.vel.x;
         this._ball.vel.x *= player._hit_power;
         this._ball.vel.y *= player._hit_power;
-        console.log("hit ball");
       }
     }
   }
@@ -102,7 +115,6 @@ class Pong {
       this._ball.vel.x = -ball.vel.x;
       this._ball.vel.x *= player._hit_power;
       this._ball.vel.y *= player._hit_power;
-      console.log("hit ball");
     }
   }
   drawScore() {
@@ -123,8 +135,34 @@ class Pong {
     );
   }
   draw() {
-    this._context.fillStyle = "#12A0EF";
-    this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
+    if (this._arena != "w") {
+      this._context.fillStyle = this._bg;
+      this._context.fillRect(0, 0, this._canvas.width, this._canvas.height);
+    } else {
+      this._context.fillStyle = "#000000";
+      this._context.fillRect(
+        0,
+        0,
+        this._canvas.width / 10,
+        this._canvas.height
+      );
+
+      this._context.fillStyle = "white";
+      this._context.fillRect(
+        this._canvas.width / 10,
+        0,
+        this._canvas.width - this._canvas.width / 10,
+        this._canvas.height
+      );
+
+      this._context.fillStyle = "#000000";
+      this._context.fillRect(
+        this._canvas.width - this._canvas.width / 10,
+        0,
+        this._canvas.width,
+        this._canvas.height
+      );
+    }
     this.drawLine();
     this.drawRect(this._ball);
     this._players.forEach((player) => this.drawRect(player));
@@ -153,12 +191,35 @@ class Pong {
     this._ball.pos.y = this._canvas.height / 2 - this._ball.size.y / 2;
     this._ball.vel.x = 0;
     this._ball.vel.y = 0;
-    console.log("resting");
     this._ingame = false;
     ingame = false;
     socket.emit("rest_game", {
-      data: { ball: this._ball, players: this._players, user: username_val, gamesnum:this._gamesnum },
+      data: {
+        ball: this._ball,
+        players: this._players,
+        user: username_val,
+        gamesnum: this._gamesnum,
+        gameId: this._gameId,
+      },
     });
+    socket.on("rest_game_vals", (data) => {
+      console.log("rest : ", data);
+      if (data.data.gameId === this._gameId) {
+        this._players[0]._score = data.data.players[0]._score;
+        this._players[1]._score = data.data.players[1]._score;
+        this._gamesnum = data.data.gamesnum;
+
+        gamesnum = data.data.gamesnum;
+      }
+      console.log("rest : ", this._gamesnum);
+    });
+    socket.on('update_powers', (data)=>{
+      this._players[0]._hit_power = data.data.players[0]._hit_power
+      this._players[1]._hit_power = data.data.players[1]._hit_power
+
+      this._players[0]._size.y =  data.data.players[0]._size.y
+      this._players[1]._size.y =  data.data.players[1]._size.y
+    })
   }
   start() {
     if (this._ball.vel.x === 0 && this._ball.vel.y === 0) {
@@ -172,7 +233,7 @@ class Pong {
     this._ball.pos.x += this._ball.vel.x * dt;
     this._ball.pos.y += this._ball.vel.y * dt;
 
-    if (this._ball.left <= 0 || this._ball.right > this._canvas.width) {
+    if (this._ball.left <= 20 || this._ball.right >= this._canvas.width - 20) {
       const userId = this._ball.left <= 0 ? 1 : 0;
       this._players[userId]._score++;
       this.reset();
@@ -183,11 +244,10 @@ class Pong {
     this.collide_p1(this._players[0], this._ball);
     this.collide_p2(this._players[1], this._ball);
 
-    // if (b.x != this._ball.pos.x) {
     this.v_time += dt;
     if (this.v_time >= 1) {
       socket.emit("update_ball", {
-        data: { ball: this._ball },
+        data: { ball: this._ball, gameId: this._gameId },
       });
       v_time = 0;
     }
@@ -202,14 +262,19 @@ class Pong {
   dec_size() {
     if (this._players[1].size.y > 25) this._players[1].size.y -= 25;
   }
-  rm_loss() {
-    if (this._players[1]._score >= 1) this._players[1]._score--;
+  emit()
+  {
+    console.log("Pong Emit")
+    socket.emit("power_ups", {
+      data: { gameId: this._gameId, players: this._players}
+    });
   }
 }
 
 export default function GameScreen(params) {
   const { user } = useContext(userContext);
   const [el, setEl] = useState(false);
+  const [end, setEnd] = useState(false);
   const [turn, setTurn] = useState({
     ingame: false,
     gamesnum: 0,
@@ -217,105 +282,160 @@ export default function GameScreen(params) {
   });
   let pong;
   let u = -1;
+  user_xp = 0;
 
   if (process.browser) {
     window.onbeforeunload = () => {
-      socket.emit("leave game", { data: { username: user.user } });
+      socket.emit("leave game", {
+        data: { username: user.user, gameId: gameId },
+      });
     };
   }
 
-  function HandleClick() {
-    try {
-      socket.emit("msgToServer", { data: "Hi server" });
-      console.log("hey");
-    } catch (error) {
-      console.log(error.message);
-    }
-  }
-
   useEffect(() => {
-    socket.emit("in game", { data: { username: user.user } });
+    if (user_xp === 0) user_xp = user.xp;
     username_val = user.user;
     const elm = document.getElementById("pong");
     if (user.user === params.data?.player1) u = 0;
     else if (user.user === params.data?.player2) u = 1;
-    if (elm) {
-      pong = new Pong(elm);
-      if (u >= 0) {
-        elm.addEventListener("mousemove", (event) => {
-          const scale =
-            event.offsetY / event.target.getBoundingClientRect().height;
-          pong._players[u].pos.y =
-            elm.height * scale - pong._players[u].size.y / 2;
-          socket.emit("update_game", {
-            data: { p: pong._players[u], username: user.user, player: u },
-          });
+    if (user.user)
+      if (elm) {
+        socket.emit("in game", {
+          data: { username: user.user, gameId: params.gameId },
         });
-
-        elm.addEventListener("click", (event) => {
-          if (pong._gamesnum % 2 === u && !pong._ingame) {
-            pong.start();
-            pong._ingame = true;
-            pong._gamesnum++;
-            ingame = true;
-            gamesnum = pong._gamesnum;
-            setTurn({
-              ingame,
-              gamesnum,
+        setTimeout(() => {
+          pong = new Pong(
+            elm,
+            params.data.type,
+            params.data.round,
+            params.data.arena,
+            params.gameId
+          );
+          if (u >= 0) {
+            elm.addEventListener("mousemove", (event) => {
+              const scale =
+                event.offsetY / event.target.getBoundingClientRect().height;
+              pong._players[u].pos.y =
+                elm.height * scale - pong._players[u].size.y / 2;
+              socket.emit("update_game", {
+                data: {
+                  p: pong._players[u],
+                  username: user.user,
+                  player: u,
+                  gameId: pong._gameId,
+                },
+              });
+              if (
+                pong._players[0]._score + pong._players[1]._score >=
+                pong._rounds
+              ) {
+                setEnd(true);
+                params.endgame(true);
+              }
             });
-            socket.emit("update_ball", {
-              data: { ball: pong._ball, num: pong._gamesnum },
+
+            elm.addEventListener("click", (event) => {
+              if (pong._gamesnum % 2 === u && !pong._ingame) {
+                pong.start();
+                pong._ingame = true;
+                pong._gamesnum++;
+                ingame = true;
+                gamesnum = pong._gamesnum;
+                setTurn({
+                  ingame,
+                  gamesnum,
+                });
+                socket.emit("update_ball", {
+                  data: {
+                    ball: pong._ball,
+                    num: pong._gamesnum,
+                    gameId: pong._gameId,
+                  },
+                });
+              }
+            });
+            socket.on("live_feed", () => {
+              socket.emit("game_feed", {
+                data: {
+                  ball: pong._ball,
+                  players: pong._players,
+                  gameId: pong._gameId,
+                  gamesnum: pong._gamesnum,
+                },
+              });
             });
           }
-        });
-        socket.on("live_feed", () => {
-          socket.emit("game_feed", {
-            data: { ball: pong._ball, players: pong._players },
+
+          socket.on("update_game", (data) => {
+            if (data.data.p && pong._gameId === data.data.gameId)
+              pong._players[data.data.player].pos = data.data.p.pos;
           });
-        });
+          socket.on("update_ball_pos", (data) => {
+            if (data.data.ball && data.data.gameId === pong._gameId) {
+              pong._ball.pos = data.data.ball.pos;
+              pong._ball.vel = data.data.ball.vel;
+              pong._gamesnum = data.data.num;
+              setTurn({
+                ...turn,
+                ingame: true,
+              });
+            }
+          });
+          socket.on("rest_game_vals", (data) => {
+            if (pong._gameId === data.data.gameId) {
+              pong._players[0]._score = data.data.players[0]._score;
+              pong._players[1]._score = data.data.players[1]._score;
+              pong._ingame = false;
+              ingame = false;
+              console.log(data);
+              setTurn({
+                ...turn,
+                ingame,
+                gamesnum: data.data.gamesnum,
+                u,
+              });
+            }
+          });
+          socket.on("live_game", (data) => {
+            if (data.data.gameId === gameId) {
+              pong._ball.pos = data.data.ball.pos;
+              pong._ball.vel = data.data.ball.vel;
+              pong._gamesnum = data.data.gamesnum;
+              pong._players[0]._score = data.data.players[0]._score;
+              pong._players[1]._score = data.data.players[1]._score;
+              setTurn({
+                ...turn,
+                ingame: pong._ingame,
+                gamesnum: data.data.gamesnum,
+                u,
+              });
+            }
+          });
+          socket.emit("get_game", {
+            data: {
+              gameId: gameId,
+            },
+          });
+        }, [1000]);
       }
-
-      socket.emit("get_game", { data: "da" });
-      socket.on("live_game", (data) => {
-        pong._ball.pos = data.data.ball.pos;
-        pong._ball.vel = data.data.ball.vel;
-      });
-
-      socket.on("update_game", (data) => {
-        if (data.data.p) pong._players[data.data.player].pos = data.data.p.pos;
-      });
-      socket.on("update_ball_pos", (data) => {
-        if (data.data.ball) {
-          pong._ball.pos = data.data.ball.pos;
-          pong._ball.vel = data.data.ball.vel;
-          pong._gamesnum = data.data.num;
-          setTurn({
-            ...turn,
-            ingame:true,
-          })
-        }
-      });
-      socket.on("rest_game_vals", (data) => {
-        pong._players[0]._score = data.data.players[0]._score;
-        pong._players[1]._score = data.data.players[1]._score;
-        pong._ingame = false;
-        ingame = false;
-        console.log(data)
-        setTurn({
-          ...turn,
-          ingame,
-          gamesnum: data.data.gamesnum,
-          u
-        })
-      });
-    }
   }, [user.user]);
 
   function ClickMe(e) {
-    if (e.target.id === "s+") pong.inc_size();
-    else if (e.target.id === "p+") pong.inc_power();
-    else if (e.target.id === "s-") pong.dec_size();
-    else if (e.target.id === "l-") pong.rm_loss();
+    let base_xp = 10;
+
+    if (params.type === "Title") base_xp += 10;
+    if (e.target.id === "s+") {
+      user_pay += 2;
+      if (user_xp > user_pay + base_xp) pong.inc_size();
+    } else if (e.target.id === "p+") {
+      user_pay += 1;
+      if (user_xp > user_pay + base_xp) pong.inc_power();
+    } else if (e.target.id === "s-") {
+      user_pay += 5;
+      if (user_xp > user_pay + base_xp) pong.dec_size();
+    }
+    // pong.emit()
+
   }
 
   useEffect(() => {
@@ -325,8 +445,8 @@ export default function GameScreen(params) {
       u,
     });
   }, []);
-  console.log("main: ", turn);
-  return !user.isLoading && user.isLoggedIn && user.auth ? (
+  console.log("user: ", user.user, params.data.player1);
+  return user.user ? (
     <div className="container text-center text-black">
       <Col>
         <h3>{params.data?.player1 + " vs " + params.data?.player2} </h3>
@@ -343,22 +463,29 @@ export default function GameScreen(params) {
         turn.gamesnum % 2 === turn.u ? (
           <div className="text-black">
             {" "}
-            {console.log("inside", turn)}
             {user.user} Turn To Start The Game, click inside the game
           </div>
         ) : (
-          <div>{user.user != params.data.player1 ? params.data.player1 : params.data.player2} Turn To Start The Game, click inside the game</div>
+          <div>
+            <div>
+              {user.user != params.data.player1
+                ? params.data.player1
+                : params.data.player2}{" "}
+              Turn To Start The Game, click inside the game
+            </div>
+          </div>
         )
       ) : null}
-      {user.user === params.data?.player1 ||
-      user.user === params.data?.player2 ? (
+      {(user.user === params.data.player1 ||
+        user.user === params.data.player2) &&
+      !turn.ingame ? (
         <div>
           <Col className="my-2">Power Ups</Col>
           <Col className="text-center">
             <div
               className="btn btn-primary m-2 pongcanvas"
               id="s+"
-              onClick={HandleClick}
+              onClick={ClickMe}
             >
               Increase My Size (-2XP)
             </div>
@@ -376,20 +503,9 @@ export default function GameScreen(params) {
             >
               Decrease My Opponent Size (-5XP)
             </div>
-            <div
-              className="btn btn-primary m-2 pongcanvas"
-              id="l-"
-              onClick={ClickMe}
-            >
-              Remove A Loss (-5XP)
-            </div>
           </Col>
         </div>
       ) : null}
     </div>
-  ) : !user.auth && !user.isLoading ? (
-    <FactorScreen></FactorScreen>
-  ) : !user.isLoading ? (
-    <UserNotLogged />
   ) : null;
 }

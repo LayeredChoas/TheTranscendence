@@ -57,12 +57,85 @@ export default class GameService {
         id: m.id,
         player1: p1,
         player2: p2,
+        type:m.type,
+        round:m.round,
+        arena:m.arena,
+        winner:await this.userservice.get_user_username(m.winner)
       };
     } catch (error) {
       console.log(error.message);
       return {
         id: -1,
       };
+    }
+  }
+
+  async live_game(b) {
+    try {
+      const g = await match.update({
+        where: {
+          gameId: b.gameId,
+        },
+        data: {
+          live: true,
+        },
+      });
+      if (!g)
+        return {
+          id: -1,
+        };
+      return {
+        id: g.id,
+      };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  async game_end(game)
+  {
+    try {
+      let v = "";
+      if (game.player1.score > game.player2.score)
+        v = game.player1.name
+      else
+        v = game.player2.name
+      const p1 = await this.userservice.get_user_id(v)
+      let p2;
+      const val = await match.update({
+        where:{
+          gameId:game.gameId
+        },
+        data:{
+          winner:p1,
+          live:false
+        }
+      })
+      if (p1 != val.player1)
+        p2 = val.player1
+      else
+      p2 = val.player2
+      if (val.type == "Title")
+      {
+        await this.userservice.change_xp(p1, val.reward)
+        await this.userservice.change_xp(p2, -1 * val.reward)
+        await this.userservice.change_title_game(p2, val.title)
+      }
+      else{
+        await this.userservice.change_xp(p1, val.reward)
+        await this.userservice.change_xp(p2, -1 * val.reward)
+      }
+      return {
+        id: val.id
+      }
+    } catch (error) {
+      console.log(error.message)
+      return {
+        id: -1
+      }
     }
   }
 }

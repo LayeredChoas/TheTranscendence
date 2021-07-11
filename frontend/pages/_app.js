@@ -25,15 +25,13 @@ import { createMemoryHistory } from "history";
 import { useEffect, useState } from "react";
 import { userContext } from "../src/context/AuthProvider";
 import { auth } from "../src/functions/auth";
-import io from 'socket.io-client'
+import io from "socket.io-client";
 import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
-
 
 export const socket = io(publicRuntimeConfig.BACKEND_URL);
 
 const history = createMemoryHistory();
-
 
 function MyApp({ Component, pageProps }) {
   const [user, setUser] = useState({
@@ -41,15 +39,15 @@ function MyApp({ Component, pageProps }) {
     isLoggedIn: false,
     user: undefined,
     token: undefined,
-    avatar:undefined,
-    auth:false,
-    socket
+    avatar: undefined,
+    auth: false,
+    socket,
   });
 
   useEffect(async () => {
     setUser(await auth());
   }, []);
-  
+
   return (
     <>
       <Head>
@@ -77,18 +75,22 @@ function MyApp({ Component, pageProps }) {
           integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
           crossorigin="anonymous"
         />
+        <link
+          href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css"
+          rel="stylesheet"
+        />
         <script
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
           integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"
           crossorigin="anonymous"
         ></script>
       </Head>
-      <userContext.Provider  value={{ user, setUser }}>
+      <userContext.Provider value={{ user, setUser }}>
         <div>
           <Navbar />
           <Component {...pageProps} />
         </div>
-      </userContext.Provider >
+      </userContext.Provider>
     </>
   );
 }

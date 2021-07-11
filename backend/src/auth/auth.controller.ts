@@ -20,8 +20,7 @@ export class AuthController {
 
   @Post('/access')
   async Have_Access(@Body() b) {
-    let user_logged = true
-    console.log(b)
+    let user_logged = true;
     const { token, url } = b.data;
     try {
       let valid = await JWT.verify(token, process.env.JWT_SECRET);
@@ -32,13 +31,21 @@ export class AuthController {
         },
       });
       let auth = false;
-      if ((!ret.auth_code || ret.auth_code.length <= 0) && ret.factory_auth && b.data.red == "red") {
+      if (
+        (!ret.auth_code || ret.auth_code.length <= 0) &&
+        ret.factory_auth &&
+        b.data.red == 'red'
+      ) {
         const v = await this.authservice.send_auth(ret);
-        user_logged = false
+        if (v.id >= 0) {
+          user_logged = false;
+          auth = true;
+        }
+      }
+      if (ret.auth_code) {
+        user_logged = false;
         auth = true;
       }
-      if (ret.auth_code && b.data.red == "red")
-        user_logged = false
       if (!ret) return { id: -1 };
       if (ret.factory_auth && ret.auth_code) auth = true;
       return {
@@ -47,11 +54,10 @@ export class AuthController {
         avatar: ret.avatar,
         xp: ret.rating,
         auth,
-        user_logged
-
+        user_logged,
       };
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
       return { id: -1 };
     }
   }

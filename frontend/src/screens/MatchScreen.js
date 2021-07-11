@@ -112,7 +112,8 @@ export default function MatchScreen() {
       socket.emit('challenge', {data:{
         gameId:val.data.gameId,
         player1:p1,
-        player2:p2
+        player2:p2,
+        rounds:rd
       }})
       socket.on('accept_game', (data)=>{Router.push(`/game/${data.data.gameId}`);})
     } catch (error) {
@@ -124,7 +125,7 @@ export default function MatchScreen() {
     }
   }
 
-  return !user.isLoading && user.isLoggedIn && user.auth ? (
+  return (
     loadingmatch.id ? (
       <LoadingMatch user={loadingmatch.username}></LoadingMatch>
     ) : (
@@ -193,9 +194,5 @@ export default function MatchScreen() {
         </Card>
       </div>
     )
-  ) : !user.auth && !user.isLoading ? (
-    <FactorScreen></FactorScreen>
-  ) : !user.isLoading ? (
-    <UserNotLogged />
-  ) : null;
+  )
 }
