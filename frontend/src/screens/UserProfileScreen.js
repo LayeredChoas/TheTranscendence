@@ -66,7 +66,7 @@ function UserProfileScreen(param) {
         setAvatar(s);
         return "";
       }
-      const path = "/uploads/" + p;
+      const path = publicRuntimeConfig.BACKEND_URL + "/uploads/" + p;
       fetch(path)
         .then(function (response) {
           return response.blob();

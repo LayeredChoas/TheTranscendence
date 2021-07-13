@@ -7,6 +7,7 @@ import LoginBar from "./LoginBar";
 import RightMessage from "./RightMessage";
 import getConfig from "next/config";
 import { socket } from "../../pages/_app";
+import Router from 'next/router'
 const { publicRuntimeConfig } = getConfig();
 
 
@@ -50,11 +51,12 @@ export default function ChatBox(params) {
     }
   }
   function StartAMatch() {
-    setEr({
-      value: true,
-      type: "alert-success",
-      message: "Match Request Sent",
-    });
+    // setEr({
+    //   value: true,
+    //   type: "alert-success",
+    //   message: "Match Request Sent",
+    // });
+    Router.push(`/match#${params.msg.user}`)
   }
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
@@ -88,7 +90,7 @@ export default function ChatBox(params) {
           </div>
           <div
             class="chat-container"
-            style={{ height: "40rem", overflow: "scroll", overflowY: "scroll" }}
+            style={{ height: "40rem", overflow: "scroll", overflowX:"hidden", overflowY: "scroll" }}
           >
             <ul class="chat-box chatContainerScroll">
               {messages.map((m) => {

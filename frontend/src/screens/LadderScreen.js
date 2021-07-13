@@ -27,32 +27,36 @@ export default function LadderScreen() {
   }, []);
   let v = 0;
   return (
-    <div className="text-center" style={{width:"100%", margin:"auto"}}>
+    <div className="text-center" style={{ width: "100%", margin: "auto" }}>
       {users ? (
-          <div class="container mt-3 mb-4">
-            <div class="mt-4 mt-lg-0">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="user-dashboard-info-box table-responsive mb-0 bg-white p-4 shadow-sm" style={{overflowX: "hidden"}}>
-                    <table class="table manage-candidates-top mb-0">
-                      <thead>
-                        <tr>
-                            <th class="text-center"> Ranking</th>
-                          <th class="text-center"> Player Name</th>
-                          <th class="text-center">XP</th>
-                          <th class="action text-right">Level</th>
-                        </tr>
-                      </thead>
-                      {users.map((u) => {
-                        v++;
+        <div class="container mt-3 mb-4">
+          <div class="mt-4 mt-lg-0">
+            <div class="row">
+              <div class="col-md-12">
+                <div
+                  class="user-dashboard-info-box table-responsive mb-0 bg-white p-4 shadow-sm"
+                  style={{ overflowX: "hidden" }}
+                >
+                  <table class="table manage-candidates-top mb-0">
+                    <thead>
+                      <tr>
+                        <th class="text-center"> Ranking</th>
+                        <th class="text-center"> Player Name</th>
+                        <th class="text-center">XP</th>
+                        <th class="action text-right">Level</th>
+                      </tr>
+                    </thead>
+                    {users.map((u) => {
+                      v++;
+                      if (u.name.search("User") >= 0)
                         return <UserLadder user={u} v={v}></UserLadder>;
-                      })}
-                    </table>
-                  </div>
+                    })}
+                  </table>
                 </div>
               </div>
             </div>
           </div>
+        </div>
       ) : null}
     </div>
   );

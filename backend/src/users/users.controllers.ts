@@ -65,4 +65,11 @@ export default class UsersController {
   {
     return this.usersservice.change_title(b.data.user, b.data.title)
   }
+
+  @Post('/user/info')
+  get_user_info(@Body() b)
+  {
+    console.log(b)
+    return this.usersservice.get_user_info(b.data)
+  }
 }

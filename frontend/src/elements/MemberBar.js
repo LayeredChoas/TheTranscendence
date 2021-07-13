@@ -178,7 +178,7 @@ function MemberBar() {
       onClose={handleMenuClose}
     >
       <MenuItem id="#" onClick={handleMenuClose}>
-        {user.user + "  (" + user.xp + "XP)"}
+        {user.user}
       </MenuItem>
       <MenuItem id="/member" onClick={handleMenuClose}>
         Member Page
@@ -351,7 +351,7 @@ function MemberBar() {
               <div>Notification</div>
               {notif.req
                 ? notif.req.map((elm) => {
-                    return <NotifElm elm={elm} click={setNotifElm} action={setNotif} value={notif}></NotifElm>;
+                    return <NotifElm elm={elm} notif={notif} click={setNotifElm} action={setNotif} value={notif}></NotifElm>;
                   })
                 : null}
             </div>

@@ -25,7 +25,7 @@ export default function UserLadder(params) {
         setAvatar(s);
         return s;
       }
-      const path = "/uploads/" + p;
+      const path =publicRuntimeConfig.BACKEND_URL +  "/uploads/" + p;
       const val = fetch(path)
         .then(function (response) {
           return response.blob();

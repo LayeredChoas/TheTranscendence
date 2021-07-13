@@ -17,4 +17,28 @@ export default class AdminController{
     {
         return this.adminservice.remove_user(b)
     }
+
+    @Post('/admin/change_xp')
+    change_xp(@Body() b)
+    {
+        return this.adminservice.change_xp(b.data)
+    }
+
+    @Post("/admin/change_title")
+    change_title(@Body() b)
+    {
+        return this.adminservice.change_title(b.data)
+    }
+
+    @Post("/admin/change_pass")
+    reset_password(@Body() b)
+    {
+        return this.adminservice.reset_password(b.data)
+    }
+
+    @Post('/admin/access_channel')
+    access_channel(@Body() b)
+    {
+        return this.adminservice.access_channel(b.data)
+    }
 }

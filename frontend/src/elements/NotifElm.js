@@ -7,9 +7,19 @@ const { publicRuntimeConfig } = getConfig();
 
 export default function NotifElm(params) {
   async function AcceptGame() {
-    console.log(params.elm);
-    params.action(false);
-    params.click(false);
+    let ret = params.notif.req;
+    console.log("Accept Game");
+
+    for (let index = 0; index < ret.length; index++) {
+      if (ret[index] === params.notif) {
+        ret.splice(index, 1);
+        break;
+      }
+    }
+    params.click({
+      ...params.notif,
+      req: ret,
+    });
     try {
       const val = await axios.post(
         publicRuntimeConfig.BACKEND_URL + "/game/live",
@@ -20,13 +30,42 @@ export default function NotifElm(params) {
         }
       );
       socket.emit("accept_game", { data: params.elm });
+      params.action(false);
     } catch (error) {
       console.log(error.message);
+      params.action(false);
     }
     Router.push(`/game/${params.elm.gameId}`);
   }
-  function DeclineGame() {
+  async function DeclineGame() {
+    let ret = params.notif.req;
     console.log("Decline Game");
+
+    for (let index = 0; index < ret.length; index++) {
+      if (ret[index] === params.notif) {
+        ret.splice(index, 1);
+        break;
+      }
+    }
+    params.click({
+      ...params.notif,
+      req: ret,
+    });
+    try {
+      const val = await axios.post(
+        publicRuntimeConfig.BACKEND_URL + "/game/cancel",
+        {
+          data: {
+            gameId: params.elm.gameId,
+          },
+        }
+      );
+      params.action(false);
+      socket.emit("decline_game", { data: params.elm });
+    } catch (error) {
+      console.log(error.message);
+      params.action(false);
+    }
   }
   return (
     <div

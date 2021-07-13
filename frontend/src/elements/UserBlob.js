@@ -13,7 +13,7 @@ export default function UserBlob(params) {
         setAvatar(s);
         return "";
       }
-      const path = "/uploads/" + p;
+      const path =publicRuntimeConfig.BACKEND_URL +  "/uploads/" + p;
       fetch(path)
         .then(function (response) {
           return response.blob();

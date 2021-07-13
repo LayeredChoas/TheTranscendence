@@ -9,7 +9,7 @@ export default function RightMessage(m) {
         setAvatar(s);
         return "";
       }
-      const path = "/uploads/" + p;
+      const path = publicRuntimeConfig.BACKEND_URL + "/uploads/" + p;
       fetch(path)
         .then(function (response) {
           return response.blob();
@@ -38,7 +38,19 @@ export default function RightMessage(m) {
           hour12: false,
         })}
       </div>
-      <div class="chat-text" style={{ maxWidth: "25rem" }}>
+      <div
+        class="chat-text"
+        style={{
+          maxWidth: "25rem",
+          padding: " .4rem 1rem",
+          borderRadius: "4px",
+          background: "#ffffff",
+          fontWeight: "300",
+          lineHeight: "150%",
+          position: "relative",
+          wordWrap:"break-word"
+        }}
+      >
         {m.msg.message}
       </div>
       <div class="chat-avatar">

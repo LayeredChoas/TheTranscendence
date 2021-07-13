@@ -26,7 +26,7 @@ export default class SearchService {
         });
       }
       for (let index = 0; index < users.length; index++) {
-        if (users[index].adamin_op)
+        if (users[index].admin_op)
           ret.push({
             id: users[index].id,
             type: 'user',
@@ -120,7 +120,7 @@ export default class SearchService {
         time_zone: u.time_zone,
         first_name: u.first_name,
         last_name: u.last_name,
-        admin: u.adamin_op,
+        admin: u.admin_op,
         createdAt: u.createdAt.toDateString(),
         winrate: n,
         level: u.ladder_level,

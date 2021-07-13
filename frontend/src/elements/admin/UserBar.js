@@ -19,7 +19,7 @@ export default function UserBar(params) {
         setAvatar(s);
         return s;
       }
-      const path = "/uploads/" + p;
+      const path = publicRuntimeConfig.BACKEND_URL + "/uploads/" + p;
       const val = fetch(path)
         .then(function (response) {
           return response.blob();
@@ -66,8 +66,7 @@ export default function UserBar(params) {
     }
   }
   async function RemoveUser() {
-    if (user.user === params.user.username)
-    {
+    if (user.user === params.user.username) {
       return params.action({
         type: "alert-danger",
         message: "You Can't Remove Yourself...., Contact GOD",
@@ -83,15 +82,15 @@ export default function UserBar(params) {
         }
       );
       if (!val || val.data.id < 0)
-      return params.action({
-        type: "alert-danger",
-        message: "An Error Occured, Try Again Later",
-      });
-      console.log('removed')
+        return params.action({
+          type: "alert-danger",
+          message: "An Error Occured, Try Again Later",
+        });
+      console.log("removed");
       params.action({
         type: "alert-success",
         message: `${params.user.username} Removed Successfully`,
-      })
+      });
     } catch (error) {
       console.log(error.mesasge);
     }
@@ -101,13 +100,24 @@ export default function UserBar(params) {
     <li className="person" data-chat="person1">
       <Row>
         <Col>
-          <div class="user" id={params.user.username}>
+          <div
+            class="user"
+            id={params.user.username}
+            style={{ position: "absolute", left: "1rem", top: "-0.41rem" }}
+          >
             <img src={avatar} alt={params.user.username} />
           </div>
           <p class="name-time">
             <span class="name">{params.user.username}</span>
           </p>
-          <div style={{ display: "inline-block", marginLeft: "1rem" }}>
+          <div
+            style={{
+              display: "inline-block",
+              marginLeft: "1rem",
+              position: "absolute",
+              right: "1rem",
+            }}
+          >
             <i class="far fa-envelope p-1" onClick={SendMessage}></i>
             <i class="fas fa-user-times p-1 " onClick={RemoveUser}></i>
           </div>

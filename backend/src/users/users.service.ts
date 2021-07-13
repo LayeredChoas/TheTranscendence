@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Param } from '@nestjs/common';
 import { PrismaClient } from '.prisma/client';
 import { randomInt } from 'crypto';
 
@@ -68,7 +68,7 @@ export class UsersService {
             status: 'Online',
             rating: 100,
             title: title,
-            adamin_op: 0,
+            admin_op: false,
             campus: b.campus[0].name,
             country: b.campus[0].country,
             time_zone: b.campus[0].time_zone,
@@ -93,9 +93,22 @@ export class UsersService {
       }
     } else {
       const u = val.username;
-      const token = await JWT.sign({ username: u }, process.env.JWT_SECRET, {
-        expiresIn: 30000,
+      const user_if = await user.findUnique({
+        where: {
+          intra_username: u,
+        },
       });
+      if (!user_if)
+        return {
+          id: -1,
+        };
+      const token = await JWT.sign(
+        { username: user_if.username },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: 30000,
+        },
+      );
       if (!token) {
         return { id: -1 };
       }
@@ -492,6 +505,32 @@ export class UsersService {
         return {
           id: -1,
         };
+      return {
+        id: u_u.id,
+      };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  async get_user_info(b) {
+    try {
+      const u = await user.findUnique({
+        where: {
+          username: b.username,
+        },
+      });
+      if (!u)
+        return {
+          id: -1,
+        };
+      return {
+        id: u.id,
+        u,
+      };
     } catch (error) {
       console.log(error.message);
       return {

@@ -35,19 +35,17 @@ export class MessageGateway
 
   @SubscribeMessage('leave game')
   leave_game(client: Socket, payload: any) {
-    console.log('user left game: ', payload.data.username);
-    // this.userservice.change_status('online', payload.data.username);
     client.leave(payload.data.gameId);
+    for (let index = 0; index < connectd_users.length; index++) {
+      if (connectd_users[index].name == payload.data.username) {
+        return this.userservice.change_status('online', payload.data.username);
+      }
+    }
+    this.userservice.change_status('offline', payload.data.username);
   }
 
   @SubscribeMessage('in game')
   add_to_game(client: Socket, payload: any) {
-    console.log(
-      'user in gameId: ',
-      payload.data.gameId,
-      '',
-      payload.data.username,
-    );
     if (!client.rooms[payload.data.gameId] && payload.data.username) {
       client.join(payload.data.gameId);
       this.userservice.change_status('in_game', payload.data.username);
@@ -57,7 +55,6 @@ export class MessageGateway
 
   @SubscribeMessage('update_game')
   update_game(client: Socket, payload: any) {
-    console.log(payload);
     for (let index = 0; index < connectd_users.length; index++) {
       if (
         connectd_users[index].socket.rooms[payload.data.gameId] &&
@@ -110,15 +107,11 @@ export class MessageGateway
     }
     for (let index = 0; index < connectd_users.length; index++) {
       if (connectd_users[index].socket.rooms[payload.data.gameId]) {
-        console.log('Emitting rest to: ', connectd_users[index].name);
         connectd_users[index].socket.emit('rest_game_vals', {
           data: ret.data,
         });
       }
     }
-
-    console.log('reseting game', ret.data);
-    console.log('saved game', live_games);
   }
 
   @SubscribeMessage('joinRoom')
@@ -144,18 +137,13 @@ export class MessageGateway
         connectd_users[index].socket.rooms[room] &&
         connectd_users[index].name != username
       ) {
-        console.log('user found: ', connectd_users[index].name);
         connectd_users[index].socket.emit('recived_channel', room);
       }
     }
   }
-  public afterInit(server: Server): void {
-    // console.log('Init');
-    // return this.logger.log('Init');
-  }
+  public afterInit(server: Server): void {}
 
   public handleDisconnect(client: Socket): void {
-    console.log('Disconnect');
     let val = '';
     let count = 0;
     let n_u = connectd_users;
@@ -187,7 +175,7 @@ export class MessageGateway
     // return this.logger.log(`Client connected: ${client.id}`);
   }
 
-  //// Handle Game Reqs
+  /// Handle Game Reqs
   @SubscribeMessage('challenge')
   challenge(client: Socket, payload: any) {
     for (let index = 0; index < connectd_users.length; index++) {
@@ -214,19 +202,20 @@ export class MessageGateway
         name: payload.data.player1,
         score: 0,
         size: 0,
-        power: 1,
+        power: 1.1,
       },
       player2: {
         name: payload.data.player2,
         score: 0,
         size: 0,
-        power: 1,
+        power: 1.1,
       },
       rounds: payload.data.rounds,
     });
   }
   @SubscribeMessage('get_game')
   update_click(client: Socket, payload: any) {
+    console.log('call get_game', payload);
     for (let index = 0; index < connectd_users.length; index++) {
       if (
         connectd_users[index].socket.rooms[payload.data.gameId] &&
@@ -253,33 +242,50 @@ export class MessageGateway
     }
   }
 
+  @SubscribeMessage('decline_game')
+  decline_game(client: Socket, payload: any) {
+    for (let index = 0; index < connectd_users.length; index++) {
+      if (
+        connectd_users[index].name == payload.data.player1
+      ) {
+        connectd_users[index].socket.emit('declined_game', {
+          data: payload.data,
+        });
+      }
+    }
+  }
+
   GameOver(game) {
     const g = live_games[game];
     live_games.splice(game, 1);
     return this.gameservice.game_end(g);
   }
 
-  @SubscribeMessage('power_ups')
+  @SubscribeMessage('change_game_power_ups')
   game_powerups(client: Socket, payload: any) {
     let ret = payload;
-    console.log(payload)
     for (let index = 0; index < live_games.length; index++) {
       if (payload.data.gameId == live_games[index].gameId) {
-        // if (live_games[index].player1.size > payload.data.players[0].size.y)
-        live_games[index].player1.size = payload.data.players[0].size.y;
-        live_games[index].player2.size = payload.data.players[1].size.y;
-
-        live_games[index].player1.power = payload.data.players[0]._hit_power;
-        live_games[index].player2.power = payload.data.players[1]._hit_power;
-        ret = live_games[index]
-        return;
+        if (payload.data.user == live_games[index].player1.name) {
+          if (payload.data.val == 's+') live_games[index].player1.size += 1;
+          else if (payload.data.val == 'p+')
+            live_games[index].player1.power += 0.1;
+          else if (payload.data.val == 's-')
+            live_games[index].player2.size -= 1;
+        } else if (payload.data.user == live_games[index].player2.name) {
+          if (payload.data.val === 's+') live_games[index].player2.size += 1;
+          else if (payload.data.val == 'p+')
+            live_games[index].player2.power += 0.1;
+          else if (payload.data.val == 's-')
+            live_games[index].player1.size -= 1;
+        }
+        ret = live_games[index];
       }
     }
-
     for (let index = 0; index < connectd_users.length; index++) {
       if (connectd_users[index].socket.rooms[payload.data.gameId]) {
         connectd_users[index].socket.emit('update_powers', {
-          data: payload.data,
+          data: ret,
         });
       }
     }

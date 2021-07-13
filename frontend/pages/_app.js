@@ -1,11 +1,10 @@
-// import "../styles/globals.css";
+
+/* CSS Files */
 import "./App.css";
 import "./../src/css_files/CenterForm.css";
 import "./../src/css_files/GameScreen.css";
 import "./../src/css_files/MatchScreen.css";
-import "./../src/css_files/SettingsScreen.css"; // Maybe
 import "./../src/css_files/ChangeName.css";
-
 import "./../src/css_files/ImageCanvas.css";
 import "./../src/css_files/MemberBar.css";
 import "./../src/css_files/UserProfile.css";
@@ -14,10 +13,11 @@ import "./../src/css_files/Login.css";
 import "./../src/css_files/MemberScreen.css";
 import "./../src/css_files/DeleteAccount.css";
 import "./../src/css_files/LoginBar.css";
-import "./../src/css_files/MessagesScreen.css";
 import "./../src/css_files/FriendsScreen.css";
 import "./../src/css_files/MainMenu.css";
+import "./../src/css_files/SettingsScreen.css";
 import "./../src/css_files/NewUser.css";
+import "./../src/css_files/MessagesScreen.css";
 
 import Head from "next/head";
 import Navbar from "../src/elements/navbar";
@@ -79,6 +79,21 @@ function MyApp({ Component, pageProps }) {
           href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css"
           rel="stylesheet"
         />
+        <script
+          src="https://kit.fontawesome.com/4614c527da.js"
+          crossorigin="anonymous"
+        ></script>
+        {/* 
+        <link
+          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
+          rel="stylesheet"
+        ></link>
+        <link
+          rel="stylesheet"
+          href="https://pro.fontawesome.com/releases/v5.10.0/css/fontawesome.css"
+          integrity="sha384-eHoocPgXsiuZh+Yy6+7DsKAerLXyJmu2Hadh4QYyt+8v86geixVYwFqUvMU8X90l"
+          crossorigin="anonymous"
+        /> */}
         <script
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
           integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"

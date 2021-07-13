@@ -2,8 +2,8 @@ import { useRouter } from "next/dist/client/router";
 import { useContext, useState } from "react";
 import { userContext } from "../../src/context/AuthProvider";
 import ChannelScreen from "../../src/screens/ChannelScreen";
-import UserNotLogged from "./../src/elements/UserNotLogged";
-import FactorScreen from "./../src/screens/FactorScreen";
+import UserNotLogged from "../../src/elements/UserNotLogged";
+import FactorScreen from "../../src/screens/FactorScreen";
 
 
 export default function Com() {
@@ -13,7 +13,6 @@ export default function Com() {
   const [update, setUpdate] = useState(false);
   let username;
   async function reload(e) {
-      console.log('reload')
     setUpdate(!update);
   }
   if (slug) username = slug[0];

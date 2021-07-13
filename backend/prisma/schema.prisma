@@ -30,7 +30,7 @@ model User {
   blocked             Int[]
   rating              Int
   title               String?
-  adamin_op           Int
+  admin_op            Boolean
   country             String
   campus              String
   time_zone           String

@@ -9,6 +9,8 @@ import ChangeTitle from "../settings/ChangeTitle";
 import FactorAuth from "../settings/FactorAuth";
 import FactorScreen from "./FactorScreen";
 
+
+
 export default function SettignsScreen() {
   const { user } = useContext(userContext);
   const { click } = useRef(false);

@@ -363,7 +363,8 @@ ul {
     margin: 0;
     padding: 0;
 }
-.card {
+
+.message-card {
     border: 0;
     background: #f4f5fb;
     -webkit-border-radius: 2px;

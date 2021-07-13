@@ -205,119 +205,122 @@ export default function ChannelScreen(params) {
       setJoinroom(true);
     }
   }, [name]);
-  return  (
-      <div className="container text-black main-body">
-        <h1>Channel Screen</h1>
-        {banned_u ? (
-          <h1>You Can't Access This Channel</h1>
-        ) : err.type.length > 0 ? (
-          <LoginBar type={err.type} message={err.message}></LoginBar>
-        ) : null}
-        <div
-          class="chat-container"
-          style={{
-            height: "40rem",
-            overflow: "scroll",
-            overflowY: "scroll",
-            width: "80%",
-          }}
-        >
-          <ul class="chat-box chatContainerScroll">
-            {ret.id > 0 && !ret.allowed ? (
-              <form className="text-center" onSubmit={SubmitPass}>
-                <h3></h3>
-                <Col className="mt-5">
-                  <input
-                    id="message"
-                    type="password"
-                    style={{ width: "60%" }}
-                    placeholder="Enter The Channel Password"
-                    ref={g_pass}
-                  ></input>
-                </Col>
-                <button
-                  className="btn btn-primary m-2"
-                  style={{
-                    width: "15%",
-                    textAlign: "center",
-                    fontSize: "0.75rem",
-                  }}
-                >
-                  {" "}
-                  Submit
-                </button>
-              </form>
-            ) : messages.id > 0 ? (
-              <div>
-                {messages.messages.map((m) => {
-                  if (m.sender === user.user)
-                    return (
-                      <RightMessage
-                        user={m.sender}
-                        avatar={m.sender_avatar}
-                        msg={{
-                          createdAt: m.date,
-                          message: m.message,
-                        }}
-                      ></RightMessage>
-                    );
-                  else
-                    return (
-                      <div>
-                        <Row>
-                          <Col sm={10}>
-                            {" "}
-                            <LeftMessage
-                              user={m.sender}
-                              avatar={m.sender_avatar}
-                              msg={{
-                                createdAt: m.date,
-                                message: m.message,
-                              }}
-                            ></LeftMessage>
-                          </Col>
-                          {ret.admin ? (
-                            <MuteOrBan
-                              channel={name}
-                              user={m.sender}
-                              action={setErr}
-                            ></MuteOrBan>
-                          ) : null}
-                        </Row>
-                      </div>
-                    );
-                })}
-                <div class="form-group mt-3 mb-0">
-                  <form className="text-center" onSubmit={SendMessage}>
-                    <Row>
-                      <Col className="text-center" sm={10}>
-                        <input
-                          type="text"
-                          class="form-control"
-                          ref={msg}
-                          id="message"
-                        ></input>
-                      </Col>
-                      <Col sm={1}>
-                        <button className="btn btn-primary"> Send</button>
-                        <div ref={messagesEndRef}></div>
-                      </Col>
-                    </Row>
-                  </form>
-                </div>
+  return (
+    <div className="container text-black main-body">
+      <h1>Channel Screen</h1>
+      {banned_u ? (
+        <h1>You Can't Access This Channel</h1>
+      ) : err.type.length > 0 ? (
+        <LoginBar type={err.type} message={err.message}></LoginBar>
+      ) : null}
+      <div
+        class="chat-container"
+        style={{
+          height: "40rem",
+          overflow: "scroll",
+          overflowY: "scroll",
+          overflowX: "hidden",
+          width: "80%",
+          background: "#f4f5fb",
+        }}
+      >
+        <ul class="chat-box chatContainerScroll">
+          {ret.id > 0 && !ret.allowed ? (
+            <form className="text-center" onSubmit={SubmitPass}>
+              <h3></h3>
+              <Col className="mt-5">
+                <input
+                  id="message"
+                  type="password"
+                  style={{ width: "60%" }}
+                  placeholder="Enter The Channel Password"
+                  ref={g_pass}
+                ></input>
+              </Col>
+              <button
+                className="btn btn-primary m-2"
+                style={{
+                  width: "15%",
+                  textAlign: "center",
+                  fontSize: "0.75rem",
+                }}
+              >
+                {" "}
+                Submit
+              </button>
+            </form>
+          ) : messages.id > 0 ? (
+            <div>
+              {messages.messages.map((m) => {
+                if (m.sender === user.user)
+                  return (
+                    <RightMessage
+                      user={m.sender}
+                      avatar={m.sender_avatar}
+                      msg={{
+                        createdAt: m.date,
+                        message: m.message,
+                      }}
+                    ></RightMessage>
+                  );
+                else
+                  return (
+                    <div>
+                      <Row>
+                        <Col sm={10}>
+                          {" "}
+                          <LeftMessage
+                            user={m.sender}
+                            avatar={m.sender_avatar}
+                            msg={{
+                              createdAt: m.date,
+                              message: m.message,
+                            }}
+                          ></LeftMessage>
+                        </Col>
+                        {ret.admin ? (
+                          <MuteOrBan
+                            channel={name}
+                            user={m.sender}
+                            action={setErr}
+                          ></MuteOrBan>
+                        ) : null}
+                      </Row>
+                    </div>
+                  );
+              })}
+              <div class="form-group mt-3 mb-0">
+                <form className="text-center" onSubmit={SendMessage}>
+                  <Row>
+                    <Col className="text-center" sm={10}>
+                      <input
+                        type="text"
+                        class="form-control"
+                        ref={msg}
+                        id="message"
+                      ></input>
+                    </Col>
+                    <Col sm={1}>
+                      <button className="btn btn-primary"> Send</button>
+                      <div ref={messagesEndRef}></div>
+                    </Col>
+                  </Row>
+                </form>
               </div>
-            ) : null}
-          </ul>
-        </div>
-        {ret.id > 0 && ret.allowed && ret.admin ? (
-          <ChannelAdminPannel private={p} action={setErr}></ChannelAdminPannel>
-        ) : !ret.admin && ret.allowed && p ? (
-          <div>
-            <button className="btn btn-info" onClick={LeaveChannel}>
-              Leave The Channel
-            </button>
-          </div>
-        ) : null}
+            </div>
+          ) : null}
+        </ul>
       </div>
-    )
+      <br></br>
+      {ret.id > 0 && ret.allowed && ret.admin ? (
+        <ChannelAdminPannel private={p} action={setErr}></ChannelAdminPannel>
+      ) : !ret.admin && ret.allowed && p ? (
+        <div>
+          <button className="btn btn-info" onClick={LeaveChannel}>
+            Leave The Channel
+          </button>
+        </div>
+      ) : null}
+    </div>
+  );
 }

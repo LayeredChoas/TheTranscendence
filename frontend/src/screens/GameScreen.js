@@ -5,6 +5,10 @@ import { userContext } from "../context/AuthProvider";
 // import "./../css_files/GameScreen.css";
 import FactorScreen from "./FactorScreen";
 import { socket } from "../../pages/_app";
+import axios from "axios";
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
+
 let username_val;
 let ingame;
 let gamesnum;
@@ -203,23 +207,24 @@ class Pong {
       },
     });
     socket.on("rest_game_vals", (data) => {
-      console.log("rest : ", data);
       if (data.data.gameId === this._gameId) {
+        console.log("rest: ", data.data);
         this._players[0]._score = data.data.players[0]._score;
         this._players[1]._score = data.data.players[1]._score;
         this._gamesnum = data.data.gamesnum;
 
         gamesnum = data.data.gamesnum;
       }
-      console.log("rest : ", this._gamesnum);
     });
-    socket.on('update_powers', (data)=>{
-      this._players[0]._hit_power = data.data.players[0]._hit_power
-      this._players[1]._hit_power = data.data.players[1]._hit_power
-
-      this._players[0]._size.y =  data.data.players[0]._size.y
-      this._players[1]._size.y =  data.data.players[1]._size.y
-    })
+    socket.on("update_powers", (data) => {
+      if (data.data.gameId === this._gameId) {
+        console.log(data.data.player1);
+        if (this._players[0].size.y < 200)
+          this._players[0].size.y = 25 * data.data.player1.size + 100;
+        if (this._players[1].size.y < 200)
+          this._players[1].size.y = 25 * data.data.player2.size + 100;
+      }
+    });
   }
   start() {
     if (this._ball.vel.x === 0 && this._ball.vel.y === 0) {
@@ -233,12 +238,12 @@ class Pong {
     this._ball.pos.x += this._ball.vel.x * dt;
     this._ball.pos.y += this._ball.vel.y * dt;
 
-    if (this._ball.left <= 20 || this._ball.right >= this._canvas.width - 20) {
+    if (this._ball.left <= 10 || this._ball.right >= this._canvas.width - 10) {
       const userId = this._ball.left <= 0 ? 1 : 0;
       this._players[userId]._score++;
       this.reset();
     }
-    if (this._ball.top <= 0 || this._ball.bottom >= this._canvas.height) {
+    if (this._ball.top <= 0 || this._ball.bottom >= this._canvas.height - 10) {
       this._ball.vel.y = -this._ball.vel.y;
     }
     this.collide_p1(this._players[0], this._ball);
@@ -251,23 +256,8 @@ class Pong {
       });
       v_time = 0;
     }
+
     this.draw();
-  }
-  inc_size(player) {
-    if (this._players[0].size.y < 200) this._players[0].size.y += 25;
-  }
-  inc_power(player) {
-    if (this._players[0]._hit_power < 2) this._players[0]._hit_power *= 1.1;
-  }
-  dec_size() {
-    if (this._players[1].size.y > 25) this._players[1].size.y -= 25;
-  }
-  emit()
-  {
-    console.log("Pong Emit")
-    socket.emit("power_ups", {
-      data: { gameId: this._gameId, players: this._players}
-    });
   }
 }
 
@@ -275,6 +265,7 @@ export default function GameScreen(params) {
   const { user } = useContext(userContext);
   const [el, setEl] = useState(false);
   const [end, setEnd] = useState(false);
+  const [userssize, setUsersSize] = useState([100, 100]);
   const [turn, setTurn] = useState({
     ingame: false,
     gamesnum: 0,
@@ -354,21 +345,26 @@ export default function GameScreen(params) {
                 });
               }
             });
-            socket.on("live_feed", () => {
-              socket.emit("game_feed", {
-                data: {
-                  ball: pong._ball,
-                  players: pong._players,
-                  gameId: pong._gameId,
-                  gamesnum: pong._gamesnum,
-                },
-              });
+            socket.on("live_feed", (data) => {
+              if (data.data.gameId === pong._gameId) {
+                console.log("live_feed", pong._players);
+                socket.emit("game_feed", {
+                  data: {
+                    ball: pong._ball,
+                    players: pong._players,
+                    gameId: pong._gameId,
+                    gamesnum: pong._gamesnum,
+                  },
+                });
+              }
             });
           }
 
           socket.on("update_game", (data) => {
-            if (data.data.p && pong._gameId === data.data.gameId)
+            if (data.data.p && pong._gameId === data.data.gameId) {
+              setUsersSize([pong._players[0].size.y, pong._players[1].size.y]);
               pong._players[data.data.player].pos = data.data.p.pos;
+            }
           });
           socket.on("update_ball_pos", (data) => {
             if (data.data.ball && data.data.gameId === pong._gameId) {
@@ -397,12 +393,18 @@ export default function GameScreen(params) {
             }
           });
           socket.on("live_game", (data) => {
-            if (data.data.gameId === gameId) {
+            if (data.data.gameId === pong._gameId) {
               pong._ball.pos = data.data.ball.pos;
               pong._ball.vel = data.data.ball.vel;
               pong._gamesnum = data.data.gamesnum;
               pong._players[0]._score = data.data.players[0]._score;
               pong._players[1]._score = data.data.players[1]._score;
+
+              pong._players[0].size.y = data.data.players[0].size.y;
+              pong._players[1].size.y = data.data.players[1].size.y;
+
+              pong._players[0]._hit_power = data.data.players[0]._hit_power;
+              pong._players[1]._hit_power = data.data.players[1]._hit_power;
               setTurn({
                 ...turn,
                 ingame: pong._ingame,
@@ -413,29 +415,56 @@ export default function GameScreen(params) {
           });
           socket.emit("get_game", {
             data: {
-              gameId: gameId,
+              gameId: params.gameId,
             },
           });
         }, [1000]);
       }
   }, [user.user]);
 
-  function ClickMe(e) {
+  async function ClickMe(e) {
     let base_xp = 10;
+    let other = 0;
+
+    if (turn.u === 0) other = 1;
+    if (user_xp === 0) user_xp = user.xp;
 
     if (params.type === "Title") base_xp += 10;
-    if (e.target.id === "s+") {
-      user_pay += 2;
-      if (user_xp > user_pay + base_xp) pong.inc_size();
-    } else if (e.target.id === "p+") {
-      user_pay += 1;
-      if (user_xp > user_pay + base_xp) pong.inc_power();
-    } else if (e.target.id === "s-") {
-      user_pay += 5;
-      if (user_xp > user_pay + base_xp) pong.dec_size();
+    if (e.target.id === "s+" || e.target.id === "p+" || e.target.id === "s-") {
+      if (e.target.id === "s+") user_pay = 2;
+      else if (e.target.id === "p+") user_pay = 1;
+      else if (e.target.id === "s-") user_pay = 5;
+      if (user_pay === 2 && userssize[turn.u] >= 200) return;
+      if (user_pay === 5 && userssize[other] <= 25) return;
+      try {
+        const val = await axios.post(
+          publicRuntimeConfig.BACKEND_URL + "/game/powerups",
+          {
+            data: {
+              username: user.user,
+              xp: user_pay,
+              base_xp,
+            },
+          }
+        );
+        if (!val || val.data.id <= 0) return;
+        if (user_pay === 2) {
+          if (turn.u === 0)
+            setUsersSize([userssize[turn.u] + 25, userssize[other]]);
+          else setUsersSize([userssize[other], userssize[turn.u] + 25]);
+        }
+        if (user_pay === 5) {
+          if (turn.u === 0)
+            setUsersSize([userssize[turn.u], userssize[other] - 25]);
+          else setUsersSize([userssize[other] - 25, userssize[turn.u]]);
+        }
+        socket.emit("change_game_power_ups", {
+          data: { gameId: params.gameId, user: user.user, val: e.target.id },
+        });
+      } catch (error) {
+        console.log(error.message);
+      }
     }
-    // pong.emit()
-
   }
 
   useEffect(() => {
@@ -445,7 +474,6 @@ export default function GameScreen(params) {
       u,
     });
   }, []);
-  console.log("user: ", user.user, params.data.player1);
   return user.user ? (
     <div className="container text-center text-black">
       <Col>

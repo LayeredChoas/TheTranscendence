@@ -36,7 +36,7 @@ function RedirectScreen(params) {
             const { id, message, token } = val.data;
             if (token) localStorage.setItem("auth_key", token);
             const ret = await auth("red");
-            console.log("ret val:", ret)
+            console.log("ret val:", ret);
             setUser({
               isLoading: ret.isLoading,
               isLoggedIn: ret.isLoggedIn,
@@ -46,39 +46,6 @@ function RedirectScreen(params) {
               xp: ret.xp,
               auth: ret.auth,
             });
-            // if (ret) {
-            //   if (!ret.auth && ret.back_auth) {
-            //     console.log(ret);
-            //     const v = await axios.post(
-            //       publicRuntimeConfig.BACKEND_URL + "/send/auth",
-            //       {
-            //         data: {
-            //           username: ret.user,
-            //         },
-            //       }
-            //     );
-            //     setUser({
-            //       isLoading: false,
-            //       isLoggedIn: true,
-            //       user: ret.user,
-            //       token: ret.token,
-            //       avatar: ret.avatar,
-            //       xp: ret.xp,
-            //       auth: false,
-            //     });
-            //   } else {
-            //     console.log(ret);
-            //     setUser({
-            //       isLoading: false,
-            //       isLoggedIn: true,
-            //       user: ret.user,
-            //       token: ret.token,
-            //       avatar: ret.avatar,
-            //       xp: ret.xp,
-            //       auth: true,
-            //     });
-            //   }
-            // }
             if (message) Router.push("/member");
             else Router.push("/new-user");
           }
@@ -89,7 +56,6 @@ function RedirectScreen(params) {
       }
     }, 5000);
   }, []);
-  async function StartFunction() {}
   return (
     <Container>
       <Row>

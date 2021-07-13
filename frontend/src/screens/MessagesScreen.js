@@ -62,7 +62,7 @@ export default function MessagesScreen() {
         <div class="content-wrapper">
           <div class="row gutters">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-              <div class="card m-0">
+              <div class="card message-card m-0">
                 <div class="row no-gutters">
                   <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3">
                     <div class="users-container">

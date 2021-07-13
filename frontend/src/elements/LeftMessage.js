@@ -10,7 +10,7 @@ export default function LeftMessage(m) {
         setAvatar(s);
         return "";
       }
-      const path = "/uploads/" + p;
+      const path = publicRuntimeConfig.BACKEND_URL + "/uploads/" + p;
       fetch(path)
         .then(function (response) {
           return response.blob();
@@ -50,7 +50,19 @@ export default function LeftMessage(m) {
           <img src={avatar} alt={m.user} />
           <div class="chat-name">{m.user}</div>
         </div>
-        <div class="chat-text" style={{ maxWidth: "25rem" }}>
+        <div
+          class="chat-text"
+          style={{
+            maxWidth: "25rem",
+            padding: " .4rem 1rem",
+            borderRadius: "4px",
+            background: "#ffffff",
+            fontWeight: "300",
+            lineHeight: "150%",
+            position: "relative",
+            wordWrap:"break-word"
+          }}
+        >
           {m.msg.message}
         </div>
         <div class="chat-hour" style={{ fontSize: "0.6rem" }}>

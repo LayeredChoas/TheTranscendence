@@ -1,14 +1,10 @@
-// import "../css_files/NewUser.css";
-// import "../css_files/ImageCanvas.css";
-// import "../css_files/SettingsScreen.css";
-import { useContext, useState} from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import LoginBar from "../elements/LoginBar";
-import {userContext} from '../context/AuthProvider';
+import { userContext } from "../context/AuthProvider";
 import UserNotLogged from "../elements/UserNotLogged";
 import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
-// import styles from './sty.module.css'
 
 export default function ChangePhoto() {
   const [file, setFile] = useState(false);
@@ -38,7 +34,10 @@ export default function ChangePhoto() {
       setError("Please Select A File ...");
     }
     try {
-      const val = await axios.post(publicRuntimeConfig.BACKEND_URL + `/upload/${user.user}`, myfile);
+      const val = await axios.post(
+        publicRuntimeConfig.BACKEND_URL + `/upload/${user.user}`,
+        myfile
+      );
       if (val.data.id <= 0) return setError("An Error Occured Try Again Later");
       setFile(false);
       setSelFile(false);
@@ -49,7 +48,7 @@ export default function ChangePhoto() {
         token: user.token,
         avatar: val.data.avatar,
       });
-      get_av(val.data.avatar);
+      setAvatar(false);
       return val;
     } catch (error) {
       console.log(error.message);
@@ -58,16 +57,13 @@ export default function ChangePhoto() {
   }
   /* Get User Image */
   async function get_av(s) {
-    console.log(user)
-    if (user_avatar)
-      return ;
     try {
       const p = s.split("/uploads/")[1];
       if (!p) {
         setAvatar(s);
         return "";
       }
-      const path = "/uploads/" + p;
+      const path = publicRuntimeConfig.BACKEND_URL + "/uploads/" + p;
       fetch(path)
         .then(function (response) {
           return response.blob();
@@ -79,8 +75,9 @@ export default function ChangePhoto() {
             setAvatar(imgObjectURL);
           }
         });
-
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   function RestFile() {
@@ -88,13 +85,15 @@ export default function ChangePhoto() {
     setFile(false);
     setError(false);
   }
-  
+  useEffect(async () => {
+    await get_av(user.avatar);
+  }, [user.avatar]);
   return (
     <div>
       {!user.isLoading && user.isLoggedIn ? (
         <div class="tab-pane fade active show">
           <div class="card-body media align-items-center">
-            <img src={user_avatar} alt="" class="d-block ui-w-80" onLoad={() =>{get_av(user.avatar)}}/>
+            <img src={user_avatar} alt="" class="d-block ui-w-80" />
             <div class="media-body ml-4">
               <label class="btn btn-outline-primary">
                 Upload new photo

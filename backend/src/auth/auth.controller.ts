@@ -27,9 +27,10 @@ export class AuthController {
       const username = valid.username;
       const ret = await user.findUnique({
         where: {
-          username,
+          username:username,
         },
       });
+      console.log(valid)
       let auth = false;
       if (
         (!ret.auth_code || ret.auth_code.length <= 0) &&

@@ -25,15 +25,25 @@ export default function AdminUsers() {
       {ale.type.length ? (
         <LoginBar type={ale.type} message={ale.message}></LoginBar>
       ) : null}
-      <div class="row">
+      <div
+        class="row"
+        style={{
+          border: "0.1rem solid",
+          borderRadius: "1rem",
+          background: "#f4f5fa !important",
+        }}
+      >
         <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-          <div class="card m-0">
-            <div class="users-container">
+          <div class="card m-0" style={{ border: "none" }}>
+            <div
+              class="users-container"
+              style={{ border: "none", background: "#f4f5fa !important" }}
+            >
               <ul class="users">
                 {users
                   ? users.map((u) => {
-                      if (u.type === 'user')
-                      return <UserBar user={u} action={setAle}></UserBar>;
+                      if (u.name.search("User") >= 0)
+                        return <UserBar user={u} action={setAle}></UserBar>;
                     })
                   : null}
               </ul>

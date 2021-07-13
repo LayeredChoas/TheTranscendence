@@ -1,6 +1,6 @@
-import { Card, Input, InputLabel } from "@material-ui/core";
+import { Card, Input, InputLabel, setRef } from "@material-ui/core";
 import axios from "axios";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Col } from "react-bootstrap";
 import UserNotLogged from "../elements/UserNotLogged";
 import { userContext } from "../context/AuthProvider";
@@ -10,27 +10,36 @@ import getConfig from "next/config";
 import Router from "next/router";
 import LoadingMatch from "../elements/LoadingMatch";
 const { publicRuntimeConfig } = getConfig();
-import {socket} from "./../../pages/_app"
+import { socket } from "./../../pages/_app";
+import { useRouter } from "next/router";
+import LoginBar from "../elements/LoginBar";
 
 export default function MatchScreen() {
   const [title, setTitle] = useState(false);
   const [rounds, setRounds] = useState(true);
   const { user } = useContext(userContext);
+  const [err, setEr] = useState({ type: "", message: "" });
   const [msg, setMsg] = useState({
     error: false,
     message: "",
   });
   const [loadingmatch, setLoading] = useState({
-    id:false,
-    username:""
+    id: false,
+    username: "",
   });
+  const [input_name, setInputName] = useState(null);
 
   const username_var = useRef();
   const arena_var = useRef();
   const gametype_var = useRef();
   const rounds_var = useRef();
   const title_var = useRef();
+  const router = useRouter();
 
+  const username_f = router.asPath.split("#")[1];
+  useEffect(() => {
+    setInputName(username_f);
+  }, []);
   function HandleChange(e) {
     if (rounds_var.current) console.log(rounds_var.current.value);
     if (e.target.value === "Title") {
@@ -106,16 +115,33 @@ export default function MatchScreen() {
         });
       }
       setLoading({
-        id:true,
-        username:username_var.current.value
-      })
-      socket.emit('challenge', {data:{
-        gameId:val.data.gameId,
-        player1:p1,
-        player2:p2,
-        rounds:rd
-      }})
-      socket.on('accept_game', (data)=>{Router.push(`/game/${data.data.gameId}`);})
+        id: true,
+        username: username_var.current.value,
+      });
+      socket.emit("challenge", {
+        data: {
+          gameId: val.data.gameId,
+          player1: p1,
+          player2: p2,
+          rounds: rd,
+        },
+      });
+      socket.on("accept_game", (data) => {
+        Router.push(`/game/${data.data.gameId}`);
+      });
+      socket.on("declined_game", (data) => {
+        if (val.data.gameId === data.data.gameId) {
+          console.log(data.data)
+          setEr({
+            type: "alert-danger",
+            message: `${data.data.player2} Declined The Game`,
+          });
+          setLoading({
+            id: false,
+            username: "",
+          });
+        }
+      });
     } catch (error) {
       console.log(error.message);
       setMsg({
@@ -125,74 +151,81 @@ export default function MatchScreen() {
     }
   }
 
-  return (
-    loadingmatch.id ? (
-      <LoadingMatch user={loadingmatch.username}></LoadingMatch>
-    ) : (
-      <div className="text-black text-center MatchScreenitems">
-        <h3 className="py-5">Create A New Match</h3>
-        {msg.error ? (
-          <div class="alert alert-danger" role="alert">
-            {msg.message}
+  return loadingmatch.id ? (
+    <LoadingMatch user={loadingmatch.username}></LoadingMatch>
+  ) : (
+    <div className="text-black text-center MatchScreenitems">
+      {err.type && err.message ? (
+        <LoginBar type={err.type} message={err.message}></LoginBar>
+      ) : null}
+
+      <h3 className="py-5">Create A New Match</h3>
+      {msg.error ? (
+        <div class="alert alert-danger" role="alert">
+          {msg.message}
+        </div>
+      ) : null}
+      <Card className="text-black">
+        <div class="form-group MatchScreenelem">
+          <label className="form-label">Player Username</label>
+          <input
+            ref={username_var}
+            value={input_name}
+            type="text"
+            class="form-control"
+          />
+        </div>
+
+        <div class="form-group MatchScreenelem">
+          <label className="form-label">Arena</label>
+          <select ref={arena_var} class="custom-select">
+            <option value="sb" selected>
+              Simple Black
+            </option>
+            <option value="sw">Simple White</option>
+            <option value="w">Wild</option>
+          </select>
+        </div>
+
+        <div class="form-group MatchScreenelem">
+          <label className="form-label">Game Type</label>
+          <select
+            ref={gametype_var}
+            class="custom-select"
+            onChange={HandleChange}
+          >
+            <option value="Rounds">Rounds (±10XP)</option>
+            <option value="Title">Title (±10XP)</option>
+            <option value="Shot">One Shot (±20XP)</option>
+          </select>
+        </div>
+
+        {rounds ? (
+          <div class="form-group MatchScreenelem">
+            <label className="form-label">Rounds</label>
+            <select ref={rounds_var} class="custom-select">
+              <option value="3" selected>
+                3
+              </option>
+              <option value="5">5</option>
+              <option value="7">7</option>
+            </select>
           </div>
         ) : null}
-        <Card className="text-black">
-          <div class="form-group MatchScreenelem">
-            <label className="form-label">Player Username</label>
-            <input ref={username_var} type="text" class="form-control" />
-          </div>
 
-          <div class="form-group MatchScreenelem">
-            <label className="form-label">Arena</label>
-            <select ref={arena_var} class="custom-select">
-              <option value="sb" selected>
-                Simple Black
-              </option>
-              <option value="sw">Simple White</option>
-              <option value="w">Wild</option>
-            </select>
-          </div>
-
-          <div class="form-group MatchScreenelem">
-            <label className="form-label">Game Type</label>
-            <select
-              ref={gametype_var}
-              class="custom-select"
-              onChange={HandleChange}
-            >
-              <option value="Rounds">Rounds (±10XP)</option>
-              <option value="Title">Title (±10XP)</option>
-              <option value="Shot">One Shot (±20XP)</option>
-            </select>
-          </div>
-
-          {rounds ? (
+        {title ? (
+          <div>
             <div class="form-group MatchScreenelem">
-              <label className="form-label">Rounds</label>
-              <select ref={rounds_var} class="custom-select">
-                <option value="3" selected>
-                  3
-                </option>
-                <option value="5">5</option>
-                <option value="7">7</option>
-              </select>
+              <label className="form-label">The Loser Title </label>
+              <input ref={title_var} type="text" class="form-control" />
             </div>
-          ) : null}
+          </div>
+        ) : null}
 
-          {title ? (
-            <div>
-              <div class="form-group MatchScreenelem">
-                <label className="form-label">The Loser Title </label>
-                <input ref={title_var} type="text" class="form-control" />
-              </div>
-            </div>
-          ) : null}
-
-          <button onClick={CreateMatch} className="btn btn-primary my-2">
-            Challenge
-          </button>
-        </Card>
-      </div>
-    )
-  )
+        <button onClick={CreateMatch} className="btn btn-primary my-2">
+          Challenge
+        </button>
+      </Card>
+    </div>
+  );
 }
