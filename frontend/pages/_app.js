@@ -83,17 +83,6 @@ function MyApp({ Component, pageProps }) {
           src="https://kit.fontawesome.com/4614c527da.js"
           crossorigin="anonymous"
         ></script>
-        {/* 
-        <link
-          href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css"
-          rel="stylesheet"
-        ></link>
-        <link
-          rel="stylesheet"
-          href="https://pro.fontawesome.com/releases/v5.10.0/css/fontawesome.css"
-          integrity="sha384-eHoocPgXsiuZh+Yy6+7DsKAerLXyJmu2Hadh4QYyt+8v86geixVYwFqUvMU8X90l"
-          crossorigin="anonymous"
-        /> */}
         <script
           src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
           integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4"

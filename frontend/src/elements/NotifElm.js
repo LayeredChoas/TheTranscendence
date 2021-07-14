@@ -8,7 +8,6 @@ const { publicRuntimeConfig } = getConfig();
 export default function NotifElm(params) {
   async function AcceptGame() {
     let ret = params.notif.req;
-    console.log("Accept Game");
 
     for (let index = 0; index < ret.length; index++) {
       if (ret[index] === params.notif) {
@@ -31,6 +30,7 @@ export default function NotifElm(params) {
       );
       socket.emit("accept_game", { data: params.elm });
       params.action(false);
+      params.click(false);
     } catch (error) {
       console.log(error.message);
       params.action(false);
@@ -39,16 +39,15 @@ export default function NotifElm(params) {
   }
   async function DeclineGame() {
     let ret = params.notif.req;
-    console.log("Decline Game");
-
     for (let index = 0; index < ret.length; index++) {
-      if (ret[index] === params.notif) {
+      if (ret[index] === params.elm) {
         ret.splice(index, 1);
         break;
       }
     }
-    params.click({
-      ...params.notif,
+    console.log(ret)
+    params.action({
+      num:ret.length,
       req: ret,
     });
     try {
@@ -60,7 +59,7 @@ export default function NotifElm(params) {
           },
         }
       );
-      params.action(false);
+      // params.action(false);
       socket.emit("decline_game", { data: params.elm });
     } catch (error) {
       console.log(error.message);

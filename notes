@@ -1,0 +1,19 @@
+User can block other users, and won't receive their private messages nor view their messages in public/private channels.
+
+User can enable/disable 2 factor authentification (2FA) and, if enabled, must use it to connect to the website.
+
+When administrator of a channel, user can kick, ban mute other users, but not owners
+
+There is a website owner. He can appoint moderators who will have the same rights as him (besides removing him from owner)
+
+
+Website Administration:
+
+See all chat channels (without joining)
+Give or remove rights to a chat channel to a user
+
+There is a spectator mode, a user can watch any live game, through the chat interface, friend interface or guild interface.
+
+There must be a permanent ladder system on which the users can play, with a ranking system. Users can play on ladder or casual, which will have no impact on their ladder rating.
+
+

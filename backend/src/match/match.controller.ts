@@ -15,4 +15,10 @@ export default class MatchController {
   {
     return this.matchservice.create_match(b);
   }
+
+  @Post('/match/random')
+  random_match(@Body() b)
+  {
+    return this.matchservice.random_match(b.data)
+  }
 }

@@ -110,8 +110,9 @@ function MemberBar() {
       if (r.data.player2 === user.user) {
         let req = notif.req;
         req.push(r.data);
+        setNotif(false);
         setNotif({
-          num: notif.num + 1,
+          num: req.length,
           req,
         });
       }
@@ -351,7 +352,15 @@ function MemberBar() {
               <div>Notification</div>
               {notif.req
                 ? notif.req.map((elm) => {
-                    return <NotifElm elm={elm} notif={notif} click={setNotifElm} action={setNotif} value={notif}></NotifElm>;
+                    return (
+                      <NotifElm
+                        elm={elm}
+                        notif={notif}
+                        click={setNotifElm}
+                        action={setNotif}
+                        value={notif}
+                      ></NotifElm>
+                    );
                   })
                 : null}
             </div>

@@ -65,7 +65,7 @@ export default function MatchScreen() {
     if (
       !username_var ||
       !username_var.current.value ||
-      username_var.current.value.length < 5 ||
+      (username_var.current.value.length < 5 && username_var.current.value != "Rand") ||
       username_var.current.value === user.user
     )
       return setMsg({
@@ -89,7 +89,9 @@ export default function MatchScreen() {
       if (rounds_var.current) rd = rounds_var.current.value;
       if (gametype_var.current.value === "Shot") rw = 20;
       if (title_var.current) ti = title_var.current.value;
-      const val = await axios.post(
+      let val;
+      if (username_var.current.value != "Rand")
+       val = await axios.post(
         publicRuntimeConfig.BACKEND_URL + "/create_match",
         {
           data: {
@@ -103,6 +105,23 @@ export default function MatchScreen() {
           },
         }
       );
+      else
+      {
+        val = await axios.post(
+          publicRuntimeConfig.BACKEND_URL + "/match/random",
+          {
+            data: {
+              player1: user.user,
+              player2: username_var.current.value,
+              type: gametype_var.current.value,
+              arena: arena_var.current.value,
+              reward: rw,
+              rounds: rd,
+              title: ti,
+            },
+          }
+        );
+      }
       if (!val || val.data.id <= 0) {
         if (val.data.message && val.data.message === "user")
           return setMsg({
@@ -118,6 +137,8 @@ export default function MatchScreen() {
         id: true,
         username: username_var.current.value,
       });
+      if (val.data.on)
+        return Router.push(`/game/${val.data.gameId}`);
       socket.emit("challenge", {
         data: {
           gameId: val.data.gameId,
@@ -168,6 +189,7 @@ export default function MatchScreen() {
       <Card className="text-black">
         <div class="form-group MatchScreenelem">
           <label className="form-label">Player Username</label>
+          <div style={{fontSize:"0.7rem"}}>(For Random Pairing, Put "Rand" As A Player)</div>
           <input
             ref={username_var}
             value={input_name}

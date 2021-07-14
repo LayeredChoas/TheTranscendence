@@ -97,6 +97,7 @@ export default class GameService {
 
   async game_end(game) {
     try {
+      console.log(game)
       let v = '';
       if (game.player1.score > game.player2.score) v = game.player1.name;
       else v = game.player2.name;

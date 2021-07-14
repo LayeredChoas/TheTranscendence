@@ -34,7 +34,8 @@ export default function ChangeDisplayName() {
         type: "alert-danger",
         message: "WTF, That's Your Display Name Already....",
       });
-    const re = /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/;
+      // +(?<![_.])$
+    const re = /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})([^-\s])$/;
     if (!re.test(displayname))
       return setError({
         type: "alert-danger",

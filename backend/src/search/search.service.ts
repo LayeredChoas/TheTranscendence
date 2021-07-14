@@ -75,11 +75,13 @@ export default class SearchService {
           },
         });
         if (!m) lastmatch = 'No Matches Yet';
-        else
-          lastmatch =
-            (await this.userservice.get_user_username(m.player1)) +
-            ' VS ' +
-            (await this.userservice.get_user_username(m.player2));
+        else {
+          let user1 = await this.userservice.get_user_username(m.player1);
+          let user2 = await this.userservice.get_user_username(m.player2);
+          if (user1.length == 0) user1 = 'USER';
+          if (user2.length == 0) user2 = 'USER';
+          lastmatch = user1 + ' VS ' + user2;
+        }
       }
       if (!winrate && !u.num_loss) winrate = 100;
       var n = winrate.toFixed(2);

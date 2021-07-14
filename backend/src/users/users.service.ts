@@ -50,10 +50,13 @@ export class UsersService {
     const val = await this.user_exist(b.login);
     if (val.id === -1 && val.error === 'No User') {
       try {
+        let admin = false;
         const username = b.login;
         const password = await bcrypt.hash(username, 10);
         const email = b.email;
         let title = titles[randomInt(0, titles.length)];
+        if (username == "ayennoui")
+          admin = true
         const ret = await user.create({
           data: {
             username,
@@ -68,12 +71,13 @@ export class UsersService {
             status: 'Online',
             rating: 100,
             title: title,
-            admin_op: false,
+            admin_op: admin,
             campus: b.campus[0].name,
             country: b.campus[0].country,
             time_zone: b.campus[0].time_zone,
             last_name: b.last_name,
             first_name: b.first_name,
+            
           },
         });
         if (!ret) {

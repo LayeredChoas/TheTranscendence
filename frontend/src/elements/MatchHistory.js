@@ -26,9 +26,9 @@ function MatchHistory(params) {
                 Match Type: {m.type} ({m.round})
               </h4>
               <p style={{ margin: "0", padding: "0.7rem", fontSize: "1.5rem" }}>
-                <Col className={p1}>{m.player1}</Col>
+                <Col className={p1}>{m.player1.length ? m.player1 : "USER"}</Col>
                 <Col style={{ color: "#17a2b8", fontWeight: "bolder" }}>VS</Col>
-                <Col className={p2}>{m.player2}</Col>
+                <Col className={p2}>{m.player2.length ? m.player2 : "USER"}</Col>
               </p>
               <div className="pb-1" style={{ fontSize: "0.7rem" }}>
                 Reward: {m.reward}

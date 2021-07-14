@@ -1,3 +1,4 @@
+import { MessageGateway } from './../gateway/message.gateway';
 import { UsersService } from './../users/users.service';
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '.prisma/client';
@@ -6,7 +7,7 @@ const { user, match } = new PrismaClient();
 
 @Injectable()
 export default class MatchService {
-  constructor(private readonly userservice: UsersService) {}
+  constructor(private readonly userservice: UsersService, private readonly messagegateway : MessageGateway) {}
 
   async get_user_matches(username) {
     try {
@@ -31,18 +32,17 @@ export default class MatchService {
             id: m_tab[index],
           },
         });
-        if (ms && ms.winner != 0){
+        if (ms && ms.winner != 0) {
           let u1 = await this.userservice.get_user_username(ms.player1);
           let u2 = await this.userservice.get_user_username(ms.player2);
-          if (u1.length <= 0 || u2.length <= 0)
-            continue;
+          if (u1.length <= 0 || u2.length <= 0) continue;
           all_m.push({
             ...ms,
-            player1:u1,
-            player2:u2,
-            p1Id:ms.player1,
-            p2Id:ms.player2
-          })
+            player1: u1,
+            player2: u2,
+            p1Id: ms.player1,
+            p2Id: ms.player2,
+          });
         }
       }
       return {
@@ -59,16 +59,14 @@ export default class MatchService {
 
   async create_match(b) {
     try {
-      console.log(b)
+      console.log(b);
       let p1 = await this.userservice.get_user_id(b.data.player1);
       let p2 = await this.userservice.get_user_id(b.data.player2);
       const gameId = uuidv4();
-      console.log(gameId)
-      console.log(p1, p2);
       if (p1 < 0 || p2 < 0)
         return {
           id: -1,
-          message:"user"
+          message: 'user',
         };
       const m = await match.create({
         data: {
@@ -80,7 +78,7 @@ export default class MatchService {
           reward: b.data.reward,
           round: parseInt(b.data.rounds),
           title: b.data.title,
-          gameId
+          gameId,
         },
       });
       if (!m)
@@ -133,7 +131,115 @@ export default class MatchService {
         };
       return {
         id: m.id,
-        gameId:m.gameId
+        gameId: m.gameId,
+      };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  async random_match(b) {
+    try {
+      const mas = await match.findFirst({
+        where: {
+          random: true,
+        },
+      });
+      if (!mas) {
+        let p1 = await this.userservice.get_user_id(b.player1);
+        const gameId = uuidv4();
+        const n_match = await match.create({
+          data: {
+            player1: p1,
+            player2: 0,
+            winner: 0,
+            type: b.type,
+            arena: b.arena,
+            reward: b.reward,
+            round: parseInt(b.rounds),
+            title: b.title,
+            gameId,
+            random: true,
+          },
+        });
+        if (!n_match)
+          return {
+            id: -1,
+          };
+        return {
+          id: n_match.id,
+          gameId,
+          on:false
+        };
+      } else {
+        let p2 = await this.userservice.get_user_id(b.player1);
+        const up_match = await match.update({
+          where: {
+            id: mas.id,
+          },
+          data: {
+            player2: p2,
+            random:false,
+            live:true
+          },
+        });
+        if (!up_match)
+          return {
+            id: -1,
+          };
+        let res = await user.findUnique({
+          where: {
+            id: up_match.player1,
+          },
+          select: {
+            matches: true,
+          },
+        });
+        let u_u = await user.update({
+          where: {
+            id: up_match.player1,
+          },
+          data: {
+            matches: {
+              set: [...res.matches, up_match.id],
+            },
+          },
+        });
+        if (!res || !u_u)
+          return {
+            id: -1,
+          };
+        res = await user.findUnique({
+          where: {
+            id: up_match.player2,
+          },
+          select: {
+            matches: true,
+          },
+        });
+        u_u = await user.update({
+          where: {
+            id: up_match.player2,
+          },
+          data: {
+            matches: {
+              set: [...res.matches, up_match.id],
+            },
+          },
+        });
+        if (!res || !u_u)
+          return {
+            id: -1,
+          };
+        await this.messagegateway.accept_game(null, {data:{...up_match, rounds:up_match.round, player1:await this.userservice.get_user_username(up_match.player1), player2:u_u.username}})
+        return {
+          id: up_match.id,
+          gameId: up_match.gameId,
+          on:true
+        };
       }
     } catch (error) {
       console.log(error.message);

@@ -31,38 +31,12 @@ import userContext from "./../src/context/AuthProvider";
 const history = createMemoryHistory();
 
 export default function Home() {
-
   return (
     <div className={styles.container}>
       <Router history={history}>
         {/* <Navbar /> */}
         <div className="App.MainBody">
-          <Switch>
-            <Route path="/" exact component={Body}></Route>
-            <Route path="/login"></Route>
-
-            <Route path="/register" component={RegisterScreen}></Route>
-            <Route path="/logout" component={LogoutScreen}></Route>
-            <Route path="/redirect" component={RedirectScreen}></Route>
-
-            {/* Private Directories */}
-
-            <Route path="/member" component={MembersScreen}></Route>
-            <Route path="/new-user" component={NewUserScreen}></Route>
-            <Route path="/settings" component={SettignsScreen}></Route>
-            <Route path="/user" component={UserProfileScreen}></Route>
-            <Route path="/channels" component={ChannelsScreen}></Route>
-            <Route path="/friends" component={FriendsScreen}></Route>
-            <Route
-              path="/friends_request"
-              component={FriendsRequestScreen}
-            ></Route>
-            <Route path="/messages" component={MessagesScreen}></Route>
-            <Route path="/match" component={MatchScreen}></Route>
-            <Route path="/game" component={GameScreen}></Route>
-            <Route path="/channel" component={ChannelScreen}></Route>
-            <Route path="/admin" component={AdminScreen}></Route>
-          </Switch>
+          <Route path="/" exact component={Body}></Route>
         </div>
       </Router>
     </div>

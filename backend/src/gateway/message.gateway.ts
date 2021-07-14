@@ -28,16 +28,27 @@ export class MessageGateway
 
   @SubscribeMessage('init_user')
   init_user(client: Socket, payload: any) {
-    console.log('Init User');
     connectd_users.push({ name: payload.data.username, socket: client });
     this.userservice.change_status('online', payload.data.username);
   }
 
   @SubscribeMessage('leave game')
-  leave_game(client: Socket, payload: any) {
+  async leave_game(client: Socket, payload: any) {
+    console.log("leave game IN ", payload)
     client.leave(payload.data.gameId);
     for (let index = 0; index < connectd_users.length; index++) {
       if (connectd_users[index].name == payload.data.username) {
+        for (let index = 0; index < live_games.length; index++) {
+          if (live_games[index].gameId == payload.data.gameId) {
+            if (live_games[index].player1.name == payload.data.username)
+              live_games[index].p1 = 0;
+            if (live_games[index].player2.name == payload.data.username)
+              live_games[index].p2 = 0;
+              console.log("leave game: ", live_games[index])
+            if (live_games[index].p2 == 0 && live_games[index].p1 == 0)
+              await this.GameOver(index);
+          }
+        }
         return this.userservice.change_status('online', payload.data.username);
       }
     }
@@ -48,6 +59,14 @@ export class MessageGateway
   add_to_game(client: Socket, payload: any) {
     if (!client.rooms[payload.data.gameId] && payload.data.username) {
       client.join(payload.data.gameId);
+      for (let index = 0; index < live_games.length; index++) {
+        if (live_games[index].gameId == payload.data.gameId) {
+          if (live_games[index].player1.name == payload.data.username)
+            live_games[index].p1 = 1;
+          if (live_games[index].player2.name == payload.data.username)
+            live_games[index].p2 = 1;
+        }
+      }
       this.userservice.change_status('in_game', payload.data.username);
       console.log(payload.data.username, ' Joined ', payload.data.gameId);
     }
@@ -79,7 +98,7 @@ export class MessageGateway
   }
 
   @SubscribeMessage('rest_game')
-  rest_game(client: Socket, payload: any) {
+  async rest_game(client: Socket, payload: any) {
     let ret = payload;
 
     for (let index = 0; index < live_games.length; index++) {
@@ -102,7 +121,9 @@ export class MessageGateway
         )
           ret.data.gamesnum =
             ret.data.players[0]._score + ret.data.players[1]._score;
-        if (ret.data.gamesnum >= live_games[index].rounds) this.GameOver(index);
+        if (ret.data.gamesnum >= live_games[index].rounds) {
+          await this.GameOver(index);
+        }
       }
     }
     for (let index = 0; index < connectd_users.length; index++) {
@@ -211,11 +232,12 @@ export class MessageGateway
         power: 1.1,
       },
       rounds: payload.data.rounds,
+      p1: 0,
+      p2: 0,
     });
   }
   @SubscribeMessage('get_game')
   update_click(client: Socket, payload: any) {
-    console.log('call get_game', payload);
     for (let index = 0; index < connectd_users.length; index++) {
       if (
         connectd_users[index].socket.rooms[payload.data.gameId] &&
@@ -235,6 +257,7 @@ export class MessageGateway
         connectd_users[index].socket.rooms[payload.data.gameId] &&
         connectd_users[index].socket != client
       ) {
+        console.log('live_game: ', payload.data);
         connectd_users[index].socket.emit('live_game', {
           data: payload.data,
         });
@@ -245,9 +268,7 @@ export class MessageGateway
   @SubscribeMessage('decline_game')
   decline_game(client: Socket, payload: any) {
     for (let index = 0; index < connectd_users.length; index++) {
-      if (
-        connectd_users[index].name == payload.data.player1
-      ) {
+      if (connectd_users[index].name == payload.data.player1) {
         connectd_users[index].socket.emit('declined_game', {
           data: payload.data,
         });

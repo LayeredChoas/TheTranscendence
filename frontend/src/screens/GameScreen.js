@@ -6,6 +6,8 @@ import { userContext } from "../context/AuthProvider";
 import FactorScreen from "./FactorScreen";
 import { socket } from "../../pages/_app";
 import axios from "axios";
+import battlePic from "./../css_files/img/battle.png";
+import Image from "next/image";
 import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
 
@@ -208,7 +210,6 @@ class Pong {
     });
     socket.on("rest_game_vals", (data) => {
       if (data.data.gameId === this._gameId) {
-        console.log("rest: ", data.data);
         this._players[0]._score = data.data.players[0]._score;
         this._players[1]._score = data.data.players[1]._score;
         this._gamesnum = data.data.gamesnum;
@@ -278,7 +279,7 @@ export default function GameScreen(params) {
   if (process.browser) {
     window.onbeforeunload = () => {
       socket.emit("leave game", {
-        data: { username: user.user, gameId: gameId },
+        data: { username: user.user, gameId: params.gameId },
       });
     };
   }
@@ -347,13 +348,18 @@ export default function GameScreen(params) {
             });
             socket.on("live_feed", (data) => {
               if (data.data.gameId === pong._gameId) {
-                console.log("live_feed", pong._players);
+                let ingame1 = false;
+                if (pong._ball.vel.x != 0 || pong._ball.vel.y != 0) {
+                  ingame1 = true;
+                  setTurn({ ...turn, ingame: true });
+                }
                 socket.emit("game_feed", {
                   data: {
                     ball: pong._ball,
                     players: pong._players,
                     gameId: pong._gameId,
                     gamesnum: pong._gamesnum,
+                    ingame: ingame1,
                   },
                 });
               }
@@ -383,7 +389,6 @@ export default function GameScreen(params) {
               pong._players[1]._score = data.data.players[1]._score;
               pong._ingame = false;
               ingame = false;
-              console.log(data);
               setTurn({
                 ...turn,
                 ingame,
@@ -405,6 +410,7 @@ export default function GameScreen(params) {
 
               pong._players[0]._hit_power = data.data.players[0]._hit_power;
               pong._players[1]._hit_power = data.data.players[1]._hit_power;
+              pong._ingame = data.data.ingame;
               setTurn({
                 ...turn,
                 ingame: pong._ingame,
@@ -476,8 +482,12 @@ export default function GameScreen(params) {
   }, []);
   return user.user ? (
     <div className="container text-center text-black">
-      <Col>
-        <h3>{params.data?.player1 + " vs " + params.data?.player2} </h3>
+      <Col style={{marginLeft:"-1.7rem"}}>
+        <h3 className="m-2">
+          <div className="mr-3" style={{display:"inline-block"}}>{params.data?.player1 }</div>
+          <Image src={battlePic} width="25" height="25"></Image>
+          <div className="ml-3" style={{display:"inline-block"}}>{ params.data?.player2}</div>
+        </h3>
       </Col>
       <Col className="py-3">
         <canvas
