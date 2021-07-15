@@ -583,7 +583,7 @@ export class UsersService {
         return {
           id: -1,
         };
-        num_losses = d_u.num_loss + 1;
+      num_losses = d_u.num_loss + 1;
       const u = await user.update({
         where: {
           id: p,
@@ -592,6 +592,31 @@ export class UsersService {
           num_loss: num_losses,
         },
       });
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  async add_gameId(username, gameId) {
+    try {
+      const u = await user.update({
+        where: {
+          username: username,
+        },
+        data: {
+          inGame: gameId,
+        },
+      });
+      if (!u)
+        return {
+          id: -1,
+        };
+      return {
+        id: u.id,
+      };
     } catch (error) {
       console.log(error.message);
       return {

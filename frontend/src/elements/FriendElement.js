@@ -1,7 +1,7 @@
 import { useState } from "react";
+import Router from "next/router";
 
 export default function FriendElement(props) {
-
   const [avatar, setAvatar] = useState(false);
   function get_av(s) {
     try {
@@ -10,7 +10,7 @@ export default function FriendElement(props) {
         setAvatar(s);
         return s;
       }
-      const path = publicRuntimeConfig.BACKEND_URL +  "/uploads/" + p;
+      const path = publicRuntimeConfig.BACKEND_URL + "/uploads/" + p;
       const val = fetch(path)
         .then(function (response) {
           return response.blob();
@@ -23,7 +23,9 @@ export default function FriendElement(props) {
           }
         });
       return val;
-    } catch (error) {}
+    } catch (error) {
+      console.log(error.message);
+    }
   }
   if (!avatar) get_av(props.user.avatar);
   return (
@@ -45,7 +47,15 @@ export default function FriendElement(props) {
               : props.user.title}
           </p>
           <div className="text-center">
-            <p class="status">{props.user.status}</p>
+            <p
+              class="status"
+              onClick={() => {
+                if (props.user.status === "in_game")
+                  Router.push(`/game/${props.user.gameId}`);
+              }}
+            >
+              {props.user.status}
+            </p>
           </div>
         </div>
       </div>

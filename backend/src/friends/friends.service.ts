@@ -6,7 +6,7 @@ const { user, friendship } = new PrismaClient();
 
 @Injectable()
 export default class FriendsService {
-  constructor (private readonly messageservice : MessageService){}
+  constructor(private readonly messageservice: MessageService) {}
   async get_friends(username) {
     try {
       const u = await user.findUnique({
@@ -39,20 +39,21 @@ export default class FriendsService {
         });
         if (!f1) continue;
         const c = await this.messageservice.get_unread(u.id, f1.id);
-        
+
         const v1 = c.id < 0 ? 0 : c.count;
         ret.push({
           username: f1.username,
           title: f1.title,
           status: f1.status,
           avatar: f1.avatar,
-          message_c:v1
+          message_c: v1,
+          gameId: f1.inGame,
         });
       }
-      
+
       return {
         id: u.id,
-        friends: ret
+        friends: ret,
       };
     } catch (error) {
       console.log(error.message);
@@ -197,8 +198,8 @@ export default class FriendsService {
         },
         data: {
           friends: {
-            set: [...fs, id]
-          }
+            set: [...fs, id],
+          },
         },
       });
     } catch (error) {
@@ -210,7 +211,7 @@ export default class FriendsService {
     try {
       const val = await friendship.update({
         where: {
-          id:id
+          id: id,
         },
         data: {
           status: true,

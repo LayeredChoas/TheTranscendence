@@ -3,7 +3,6 @@ import { useContext, useState } from "react";
 import FriendElement from "../elements/FriendElement";
 import UserNotLogged from "../elements/UserNotLogged";
 import { userContext } from "../context/AuthProvider";
-// import "./../css_files/FriendsScreen.css";
 import FactorScreen from "./FactorScreen";
 import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { socket } from "../../pages/_app";
+import Router from "next/router";
 
 export default function UserBlob(params) {
   const [avatar, setAvatar] = useState(false);
@@ -13,7 +14,7 @@ export default function UserBlob(params) {
         setAvatar(s);
         return "";
       }
-      const path =publicRuntimeConfig.BACKEND_URL +  "/uploads/" + p;
+      const path = publicRuntimeConfig.BACKEND_URL + "/uploads/" + p;
       fetch(path)
         .then(function (response) {
           return response.blob();
@@ -34,7 +35,7 @@ export default function UserBlob(params) {
   }, [v]);
 
   if (!avatar) get_av(params.user.avatar);
-  console.log(params.user.username, params.user.status)
+  console.log(params.user.username, params.user.status);
   return (
     <div>
       {
@@ -48,7 +49,15 @@ export default function UserBlob(params) {
           }}
         >
           <div class="user" id={params.user.username}>
-            <img src={avatar} alt={params.user.username} />
+            <img
+              src={avatar}
+              alt={params.user.username}
+              onClick={() => {
+                if (params.user.status === "in_game")
+                  Router.push(`/game/${params.user.gameId}`);
+                else Router.push(`/user/${params.user.username}`);
+              }}
+            />
             <span className={`user-status ${params.user.status}`}></span>
           </div>
           <p class="name-time" style={{ width: "70%" }}>

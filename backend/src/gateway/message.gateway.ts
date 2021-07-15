@@ -54,7 +54,7 @@ export class MessageGateway
   }
 
   @SubscribeMessage('in game')
-  add_to_game(client: Socket, payload: any) {
+  async add_to_game(client: Socket, payload: any) {
     if (!client.rooms[payload.data.gameId] && payload.data.username) {
       client.join(payload.data.gameId);
       for (let index = 0; index < live_games.length; index++) {
@@ -65,7 +65,8 @@ export class MessageGateway
             live_games[index].p2 = 1;
         }
       }
-      this.userservice.change_status('in_game', payload.data.username);
+      await this.userservice.change_status('in_game', payload.data.username);
+      await this.userservice.add_gameId(payload.data.username, payload.data.gameId);
       // console.log(payload.data.username, ' Joined ', payload.data.gameId);
     }
   }

@@ -24,7 +24,7 @@ model User {
   num_won_tournaments Int
   avatar              String
   factory_auth        Boolean  @default(false)
-  factory_email       String?
+  factory_email       String? @unique
   auth_code           String?
   status              String
   blocked             Int[]
@@ -40,6 +40,7 @@ model User {
   matches             Int[]
   friends             Int[]
   messages            Int[]
+  inGame              String?
 }
 
 model Friendship {

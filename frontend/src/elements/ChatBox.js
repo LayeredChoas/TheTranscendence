@@ -51,11 +51,6 @@ export default function ChatBox(params) {
     }
   }
   function StartAMatch() {
-    // setEr({
-    //   value: true,
-    //   type: "alert-success",
-    //   message: "Match Request Sent",
-    // });
     Router.push(`/match#${params.msg.user}`)
   }
   const messagesEndRef = useRef(null);
