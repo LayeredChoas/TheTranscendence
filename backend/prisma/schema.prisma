@@ -58,7 +58,7 @@ model Channel{
   admin               Int[]
   messages            Int[]
   banned              Int[]
-
+  owner               Int
   muted               Int[]
   release              Int[]
 }

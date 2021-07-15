@@ -37,6 +37,7 @@ export default class ChannelService {
               status: 'private',
               admin: u.id,
               users: [u.id],
+              owner: u.id,
             },
           });
           if (!c_c)
@@ -50,6 +51,7 @@ export default class ChannelService {
               name: channelname,
               status: 'public',
               admin: u.id,
+              owner: u.id,
             },
           });
           if (!c_c)
@@ -190,6 +192,7 @@ export default class ChannelService {
         id: 1,
         messages,
         ret,
+        owner: await this.userservice.get_user_username(val[0].owner),
       };
     } catch (error) {
       console.log(error.message);
@@ -280,6 +283,13 @@ export default class ChannelService {
             message: 'muted',
           };
         }
+      }
+      for (let index = 0; index < c.banned.length; index++) {
+        if (c.banned[index] == u)
+          return {
+            id: -1,
+            message: 'ban',
+          };
       }
       const msg = await messsage.create({
         data: {

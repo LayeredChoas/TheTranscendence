@@ -1,6 +1,6 @@
 (FIXED) ==> User can block other users, and won't receive their private messages nor view their messages in public/private channels.
 
-User can enable/disable 2 factor authentification (2FA) and, if enabled, must use it to connect to the website.
+(FIXED) ==> User can enable/disable 2 factor authentification (2FA) and, if enabled, must use it to connect to the website.
 
 When administrator of a channel, user can kick, ban mute other users, but not owners
 

@@ -2,7 +2,7 @@ import axios from "axios";
 import { useContext, useRef, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import { useHistory } from "react-router-dom";
-import {userContext} from '../context/AuthProvider';
+import { userContext } from "../context/AuthProvider";
 import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
 import Router from "next/router";
@@ -33,11 +33,14 @@ export default function ChannelAdminPannel(params) {
       users: [],
     });
     try {
-      const val = await axios.post(publicRuntimeConfig.BACKEND_URL + "/channel/banned", {
-        data: {
-          name,
-        },
-      });
+      const val = await axios.post(
+        publicRuntimeConfig.BACKEND_URL + "/channel/banned",
+        {
+          data: {
+            name,
+          },
+        }
+      );
       if (!val || val.data.id < 0) return;
       setBan({
         id: true,
@@ -50,12 +53,15 @@ export default function ChannelAdminPannel(params) {
 
   async function UnBanUser(username) {
     try {
-      const val = await axios.post(publicRuntimeConfig.BACKEND_URL + "/channel/unban", {
-        data: {
-          name,
-          username,
-        },
-      });
+      const val = await axios.post(
+        publicRuntimeConfig.BACKEND_URL + "/channel/unban",
+        {
+          data: {
+            name,
+            username,
+          },
+        }
+      );
       if (!val || val.data.id < 0)
         return params.action({
           type: "alert-danger",
@@ -79,12 +85,15 @@ export default function ChannelAdminPannel(params) {
 
   async function DeleteChannel() {
     try {
-      const val = await axios.delete(publicRuntimeConfig.BACKEND_URL + "/channel/delete", {
-        data: {
-          name,
-          username: user.user,
-        },
-      });
+      const val = await axios.delete(
+        publicRuntimeConfig.BACKEND_URL + "/channel/delete",
+        {
+          data: {
+            name,
+            username: user.user,
+          },
+        }
+      );
       if (!val || val.data.id < 0)
         return params.action({
           type: "alert-danger",
@@ -97,12 +106,15 @@ export default function ChannelAdminPannel(params) {
   }
   async function LeaveChannel() {
     try {
-      const val = await axios.post(publicRuntimeConfig.BACKEND_URL + "/channel/leave", {
-        data: {
-          name,
-          username: user.user,
-        },
-      });
+      const val = await axios.post(
+        publicRuntimeConfig.BACKEND_URL + "/channel/leave",
+        {
+          data: {
+            name,
+            username: user.user,
+          },
+        }
+      );
       if (!val || val.data.id < 0) {
         let msg;
 
@@ -131,12 +143,15 @@ export default function ChannelAdminPannel(params) {
         message: "Enter A Valid Username",
       });
     try {
-      const val = await axios.post(publicRuntimeConfig.BACKEND_URL + "/channel/admin", {
-        data: {
-          name,
-          username: u,
-        },
-      });
+      const val = await axios.post(
+        publicRuntimeConfig.BACKEND_URL + "/channel/admin",
+        {
+          data: {
+            name,
+            username: u,
+          },
+        }
+      );
       if (!val || val.data.id < 0) {
         let msg;
 
@@ -181,13 +196,16 @@ export default function ChannelAdminPannel(params) {
       }
     }
     try {
-      const val = await axios.post(publicRuntimeConfig.BACKEND_URL + "/channel/status", {
-        data: {
-          name,
-          status,
-          password: pass.current.value,
-        },
-      });
+      const val = await axios.post(
+        publicRuntimeConfig.BACKEND_URL + "/channel/status",
+        {
+          data: {
+            name,
+            status,
+            password: pass.current.value,
+          },
+        }
+      );
       document.getElementById("n_pass").value = "";
       document.getElementById("o_pass").value = "";
       if (!val || val.data.id < 0)
@@ -228,13 +246,16 @@ export default function ChannelAdminPannel(params) {
         message: "Enter A Valid Password",
       });
     try {
-      const val = await axios.put(publicRuntimeConfig.BACKEND_URL + "/channel/password", {
-        data: {
-          name,
-          old_p: pass.current.value,
-          pass: g_pass.current.value,
-        },
-      });
+      const val = await axios.put(
+        publicRuntimeConfig.BACKEND_URL + "/channel/password",
+        {
+          data: {
+            name,
+            old_p: pass.current.value,
+            pass: g_pass.current.value,
+          },
+        }
+      );
       document.getElementById("n_pass").value = "";
       document.getElementById("o_pass").value = "";
       if (!val || val.data.id < 0) {
@@ -262,7 +283,7 @@ export default function ChannelAdminPannel(params) {
   }
   return (
     <div>
-      <div className="text-center">Admin Panel</div>
+      <div className="text-center">Owner Panel</div>
 
       <button
         className="btn btn-primary m-2"
