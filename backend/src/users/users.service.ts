@@ -55,8 +55,7 @@ export class UsersService {
         const password = await bcrypt.hash(username, 10);
         const email = b.email;
         let title = titles[randomInt(0, titles.length)];
-        if (username == "ayennoui")
-          admin = true
+        if (username == 'ayennoui') admin = true;
         const ret = await user.create({
           data: {
             username,
@@ -68,16 +67,16 @@ export class UsersService {
             ladder_level: 0,
             num_won_tournaments: 0,
             avatar: b.image_url,
-            status: 'Online',
+            status: 'online',
             rating: 100,
             title: title,
             admin_op: admin,
+            owner: admin,
             campus: b.campus[0].name,
             country: b.campus[0].country,
             time_zone: b.campus[0].time_zone,
             last_name: b.last_name,
             first_name: b.first_name,
-            
           },
         });
         if (!ret) {

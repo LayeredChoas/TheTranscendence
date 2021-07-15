@@ -49,6 +49,27 @@ export default class SearchService {
     }
   }
 
+  async get_search_mods() {
+    var ret = [];
+    try {
+      var users = await user.findMany();
+      for (let index = 0; index < users.length; index++) {
+        if (users[index].admin_op)
+          ret.push({
+            id: users[index].id,
+            type: 'mod',
+            name: users[index].username + ' - User',
+            username: users[index].username,
+            avatar: users[index].avatar,
+            xp: users[index].rating,
+          });
+      }
+      return ret;
+    } catch (error) {
+      return ret;
+    }
+  }
+
   async get_user_data(username, me) {
     let fr = false;
     let bl = false;

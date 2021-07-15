@@ -30,7 +30,8 @@ model User {
   blocked             Int[]
   rating              Int
   title               String?
-  admin_op            Boolean
+  admin_op            Boolean @default(false)
+  owner               Boolean @default(false)
   country             String
   campus              String
   time_zone           String

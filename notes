@@ -2,9 +2,9 @@
 
 (FIXED) ==> User can enable/disable 2 factor authentification (2FA) and, if enabled, must use it to connect to the website.
 
-When administrator of a channel, user can kick, ban mute other users, but not owners
+(FIXED) ==> When administrator of a channel, user can kick, ban mute other users, but not owners
 
-There is a website owner. He can appoint moderators who will have the same rights as him (besides removing him from owner)
+(FIXED) ==> There is a website owner. He can appoint moderators who will have the same rights as him (besides removing him from owner)
 
 
 Website Administration:

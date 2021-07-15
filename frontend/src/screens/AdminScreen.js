@@ -10,6 +10,8 @@ import AdminMUX from "../elements/admin/AdminMUX";
 import AdminMUT from "../elements/admin/AdminMUT";
 import AdminRUP from "../elements/admin/AdminRUP";
 import AdminChannels from "../elements/admin/AdminChannels";
+import AdminMod from "../elements/admin/AdminMod";
+import AdminAddMod from "../elements/admin/AdminAddMod";
 const { publicRuntimeConfig } = getConfig();
 
 export default function AdminScreen() {
@@ -112,6 +114,28 @@ export default function AdminScreen() {
                       <span class="glyphicon glyphicon-comment"></span>
                       Channels
                     </a>
+                    <a
+                      class="btn btn-primary btn-lg"
+                      style={{ margin: "1rem" }}
+                      role="button"
+                      onClick={() => {
+                        setSel({ mod: true });
+                      }}
+                    >
+                      <span class="glyphicon glyphicon-comment"></span>
+                      Site Moderators
+                    </a>
+                    <a
+                      class="btn btn-primary btn-lg"
+                      style={{ margin: "1rem" }}
+                      role="button"
+                      onClick={() => {
+                        setSel({ addmod: true });
+                      }}
+                    >
+                      <span class="glyphicon glyphicon-comment"></span>
+                      Add Site Moderator
+                    </a>
                   </div>
                 </div>
                 <div className="row">
@@ -124,6 +148,8 @@ export default function AdminScreen() {
                     {sel.mut ? <div><AdminMUT></AdminMUT></div> : null}
                     {sel.rup ? <div><AdminRUP></AdminRUP></div> : null}
                     {sel.channels ? <div><AdminChannels></AdminChannels></div> : null}
+                    {sel.mod ? (<div><AdminMod></AdminMod></div>) : null}
+                    {sel.addmod ? (<div><AdminAddMod></AdminAddMod></div>) : null}
                   </div>
                 </div>
               </div>
