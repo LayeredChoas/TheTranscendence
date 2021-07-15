@@ -51,8 +51,7 @@ export default function MatchScreen() {
     } else if (e.target.value === "Shot") {
       setTitle(false);
       setRounds(false);
-    }
-    else if (e.target.value === "Casual") {
+    } else if (e.target.value === "Casual") {
       setTitle(false);
       setRounds(true);
     }
@@ -69,7 +68,8 @@ export default function MatchScreen() {
     if (
       !username_var ||
       !username_var.current.value ||
-      (username_var.current.value.length < 5 && username_var.current.value != "Rand") ||
+      (username_var.current.value.length < 5 &&
+        username_var.current.value != "Rand") ||
       username_var.current.value === user.user
     )
       return setMsg({
@@ -96,22 +96,21 @@ export default function MatchScreen() {
       if (title_var.current) ti = title_var.current.value;
       let val;
       if (username_var.current.value != "Rand")
-       val = await axios.post(
-        publicRuntimeConfig.BACKEND_URL + "/create_match",
-        {
-          data: {
-            player1: user.user,
-            player2: username_var.current.value,
-            type: gametype_var.current.value,
-            arena: arena_var.current.value,
-            reward: rw,
-            rounds: rd,
-            title: ti,
-          },
-        }
-      );
-      else
-      {
+        val = await axios.post(
+          publicRuntimeConfig.BACKEND_URL + "/create_match",
+          {
+            data: {
+              player1: user.user,
+              player2: username_var.current.value,
+              type: gametype_var.current.value,
+              arena: arena_var.current.value,
+              reward: rw,
+              rounds: rd,
+              title: ti,
+            },
+          }
+        );
+      else {
         val = await axios.post(
           publicRuntimeConfig.BACKEND_URL + "/match/random",
           {
@@ -133,6 +132,11 @@ export default function MatchScreen() {
             error: true,
             message: "Enter A Valid Player Username",
           });
+          if (val.data.message && val.data.message === "xp")
+          return setMsg({
+            error: true,
+            message: "On Of The Players Doen't Have Enough XP..",
+          });
         return setMsg({
           error: true,
           message: "An Error Happen Try Again Later",
@@ -142,8 +146,7 @@ export default function MatchScreen() {
         id: true,
         username: username_var.current.value,
       });
-      if (val.data.on)
-        return Router.push(`/game/${val.data.gameId}`);
+      if (val.data.on) return Router.push(`/game_redirect/${val.data.gameId}`);
       socket.emit("challenge", {
         data: {
           gameId: val.data.gameId,
@@ -153,11 +156,10 @@ export default function MatchScreen() {
         },
       });
       socket.on("accept_game", (data) => {
-        Router.push(`/game/${data.data.gameId}`);
+        Router.push(`/game_redirect/${data.data.gameId}`);
       });
       socket.on("declined_game", (data) => {
         if (val.data.gameId === data.data.gameId) {
-          console.log(data.data)
           setEr({
             type: "alert-danger",
             message: `${data.data.player2} Declined The Game`,
@@ -194,7 +196,9 @@ export default function MatchScreen() {
       <Card className="text-black">
         <div class="form-group MatchScreenelem">
           <label className="form-label">Player Username</label>
-          <div style={{fontSize:"0.7rem"}}>(For Random Pairing, Put "Rand" As A Player)</div>
+          <div style={{ fontSize: "0.7rem" }}>
+            (For Random Pairing, Put "Rand" As A Player)
+          </div>
           <input
             ref={username_var}
             value={input_name}

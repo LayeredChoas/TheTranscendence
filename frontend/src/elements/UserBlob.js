@@ -54,7 +54,7 @@ export default function UserBlob(params) {
               alt={params.user.username}
               onClick={() => {
                 if (params.user.status === "in_game")
-                  Router.push(`/game/${params.user.gameId}`);
+                  Router.push(`/game_redirect/${params.user.gameId}`);
                 else Router.push(`/user/${params.user.username}`);
               }}
             />

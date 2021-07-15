@@ -7,7 +7,10 @@ const { user, match } = new PrismaClient();
 
 @Injectable()
 export default class MatchService {
-  constructor(private readonly userservice: UsersService, private readonly messagegateway : MessageGateway) {}
+  constructor(
+    private readonly userservice: UsersService,
+    private readonly messagegateway: MessageGateway,
+  ) {}
 
   async get_user_matches(username) {
     try {
@@ -60,18 +63,31 @@ export default class MatchService {
   async create_match(b) {
     try {
       console.log(b);
-      let p1 = await this.userservice.get_user_id(b.data.player1);
-      let p2 = await this.userservice.get_user_id(b.data.player2);
+      const p1 = await user.findUnique({
+        where: {
+          username: b.data.player1,
+        },
+      });
+      const p2 = await user.findUnique({
+        where: {
+          username: b.data.player2,
+        },
+      });
       const gameId = uuidv4();
-      if (p1 < 0 || p2 < 0)
+      if (p1.id < 0 || p2.id < 0)
         return {
           id: -1,
           message: 'user',
         };
+      if (p1.rating < b.data.reward || p2.rating < b.data.reward)
+        return {
+          id: -1,
+          message: 'xp',
+        };
       const m = await match.create({
         data: {
-          player1: p1,
-          player2: p2,
+          player1: p1.id,
+          player2: p2.id,
           winner: 0,
           type: b.data.type,
           arena: b.data.arena,
@@ -87,7 +103,7 @@ export default class MatchService {
         };
       let res = await user.findUnique({
         where: {
-          id: p1,
+          id: p1.id,
         },
         select: {
           matches: true,
@@ -95,7 +111,7 @@ export default class MatchService {
       });
       let u_u = await user.update({
         where: {
-          id: p1,
+          id: p1.id,
         },
         data: {
           matches: {
@@ -109,7 +125,7 @@ export default class MatchService {
         };
       res = await user.findUnique({
         where: {
-          id: p2,
+          id: p2.id,
         },
         select: {
           matches: true,
@@ -117,7 +133,7 @@ export default class MatchService {
       });
       u_u = await user.update({
         where: {
-          id: p2,
+          id: p2.id,
         },
         data: {
           matches: {
@@ -149,6 +165,16 @@ export default class MatchService {
         },
       });
       if (!mas) {
+        const u1 = await user.findUnique({
+          where: {
+            username: b.player1,
+          },
+        });
+        if (u1.rating < b.reward)
+          return {
+            id: -1,
+            message: 'xp',
+          };
         let p1 = await this.userservice.get_user_id(b.player1);
         const gameId = uuidv4();
         const n_match = await match.create({
@@ -172,18 +198,28 @@ export default class MatchService {
         return {
           id: n_match.id,
           gameId,
-          on:false
+          on: false,
         };
       } else {
         let p2 = await this.userservice.get_user_id(b.player1);
+        const u2 = await user.findUnique({
+          where: {
+            id: p2,
+          },
+        });
+        if (u2.rating < mas.reward)
+          return {
+            id: -1,
+            message: 'xp',
+          };
         const up_match = await match.update({
           where: {
             id: mas.id,
           },
           data: {
             player2: p2,
-            random:false,
-            live:true
+            random: false,
+            live: true,
           },
         });
         if (!up_match)
@@ -234,11 +270,18 @@ export default class MatchService {
           return {
             id: -1,
           };
-        await this.messagegateway.accept_game(null, {data:{...up_match, rounds:up_match.round, player1:await this.userservice.get_user_username(up_match.player1), player2:u_u.username}})
+        await this.messagegateway.accept_game(null, {
+          data: {
+            ...up_match,
+            rounds: up_match.round,
+            player1: await this.userservice.get_user_username(up_match.player1),
+            player2: u_u.username,
+          },
+        });
         return {
           id: up_match.id,
           gameId: up_match.gameId,
-          on:true
+          on: true,
         };
       }
     } catch (error) {

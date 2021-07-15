@@ -15,6 +15,7 @@ import { UsersService } from 'src/users/users.service';
 import GameService from 'src/game/game.service';
 let connectd_users = [];
 let live_games = [];
+// let req_live;
 
 @WebSocketGateway()
 export class MessageGateway
@@ -66,7 +67,10 @@ export class MessageGateway
         }
       }
       await this.userservice.change_status('in_game', payload.data.username);
-      await this.userservice.add_gameId(payload.data.username, payload.data.gameId);
+      await this.userservice.add_gameId(
+        payload.data.username,
+        payload.data.gameId,
+      );
       // console.log(payload.data.username, ' Joined ', payload.data.gameId);
     }
   }
@@ -100,6 +104,7 @@ export class MessageGateway
   async rest_game(client: Socket, payload: any) {
     let ret = payload;
 
+    console.log('Resting The WholeGame');
     for (let index = 0; index < live_games.length; index++) {
       if (live_games[index].gameId == payload.data.gameId) {
         if (live_games[index].player1.score > payload.data.players[0]._score)
@@ -237,6 +242,7 @@ export class MessageGateway
   }
   @SubscribeMessage('get_game')
   update_click(client: Socket, payload: any) {
+    // req_live = client;
     for (let index = 0; index < connectd_users.length; index++) {
       if (
         connectd_users[index].socket.rooms[payload.data.gameId] &&
@@ -245,6 +251,7 @@ export class MessageGateway
         connectd_users[index].socket.emit('live_feed', {
           data: payload.data,
         });
+        return;
       }
     }
   }

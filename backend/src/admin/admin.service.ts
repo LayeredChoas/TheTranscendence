@@ -103,6 +103,7 @@ export default class AdminService {
 
   async change_xp(b) {
     try {
+      console.log(b);
       const u = await user.findUnique({
         where: {
           username: b.username,

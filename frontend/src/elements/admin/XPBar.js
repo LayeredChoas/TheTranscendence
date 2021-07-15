@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { Col, Row } from "react-bootstrap";
 import getConfig from "next/config";
 import Router from "next/router";
@@ -10,6 +10,7 @@ const { publicRuntimeConfig } = getConfig();
 export default function XPBar(params) {
   const { user } = useContext(userContext);
   const [avatar, setAvatar] = useState(false);
+  const xp_val = useRef()
 
   function get_av(s) {
     try {
@@ -38,7 +39,7 @@ export default function XPBar(params) {
 
   async function ChangeXP(num) {
     try {
-      const in_val = document.getElementById("xp_holder").value;
+      const in_val = xp_val.current.value
       const val = await axios.post(
         publicRuntimeConfig.BACKEND_URL + "/admin/change_xp",
         {
@@ -90,7 +91,7 @@ export default function XPBar(params) {
               right: "1rem",
             }}
           >
-            <input id="xp_holder" style={{ width: "2rem" }}></input>
+            <input ref={xp_val} id="xp_holder" style={{ width: "2rem" }}></input>
             <i
               class="fas fa-plus p-1"
               onClick={() => {

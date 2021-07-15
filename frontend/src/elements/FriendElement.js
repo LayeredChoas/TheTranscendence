@@ -51,7 +51,7 @@ export default function FriendElement(props) {
               class="status"
               onClick={() => {
                 if (props.user.status === "in_game")
-                  Router.push(`/game/${props.user.gameId}`);
+                  Router.push(`/game_redirect/${props.user.gameId}`);
               }}
             >
               {props.user.status}

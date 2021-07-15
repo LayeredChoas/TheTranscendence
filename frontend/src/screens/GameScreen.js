@@ -73,10 +73,11 @@ const bgs = {
 };
 
 class Pong {
-  constructor(elm, type, rounds, arena, gameId) {
+  constructor(elm, type, rounds, arena, gameId, u) {
     this._gamesnum = 0;
     this._ingame = false;
     this._type = type;
+    this._user = u;
     this._arena = arena;
     this._bg = bgs[arena];
     this._gameId = gameId;
@@ -93,7 +94,7 @@ class Pong {
     let lasttime, lasttimev1;
     let callback = (millis) => {
       if (lasttime) {
-        this.update((millis - lasttime) / 5000);
+        this.update((millis - lasttime) / 4000);
       }
       lasttime = millis;
       requestAnimationFrame(callback);
@@ -199,15 +200,19 @@ class Pong {
     this._ball.vel.y = 0;
     this._ingame = false;
     ingame = false;
-    socket.emit("rest_game", {
-      data: {
-        ball: this._ball,
-        players: this._players,
-        user: username_val,
-        gamesnum: this._gamesnum,
-        gameId: this._gameId,
-      },
-    });
+
+    if (this._user === 0 || this._user === 1) {
+      socket.emit("rest_game", {
+        data: {
+          ball: this._ball,
+          players: this._players,
+          user: username_val,
+          gamesnum: this._gamesnum,
+          gameId: this._gameId,
+        },
+      });
+
+    }
     socket.on("rest_game_vals", (data) => {
       if (data.data.gameId === this._gameId) {
         this._players[0]._score = data.data.players[0]._score;
@@ -240,7 +245,7 @@ class Pong {
     this._ball.pos.y += this._ball.vel.y * dt;
 
     if (this._ball.left <= 10 || this._ball.right >= this._canvas.width - 10) {
-      const userId = this._ball.left <= 0 ? 1 : 0;
+      const userId = this._ball.left <= 10 ? 1 : 0;
       this._players[userId]._score++;
       this.reset();
     }
@@ -251,7 +256,7 @@ class Pong {
     this.collide_p2(this._players[1], this._ball);
 
     this.v_time += dt;
-    if (this.v_time >= 1) {
+    if (this.v_time >= 1 && (this._user == 0 || this._user == 1)) {
       socket.emit("update_ball", {
         data: { ball: this._ball, gameId: this._gameId },
       });
@@ -301,7 +306,8 @@ export default function GameScreen(params) {
             params.data.type,
             params.data.round,
             params.data.arena,
-            params.gameId
+            params.gameId,
+            u
           );
           if (u >= 0) {
             elm.addEventListener("mousemove", (event) => {
@@ -346,24 +352,6 @@ export default function GameScreen(params) {
                 });
               }
             });
-            socket.on("live_feed", (data) => {
-              if (data.data.gameId === pong._gameId) {
-                let ingame1 = false;
-                if (pong._ball.vel.x != 0 || pong._ball.vel.y != 0) {
-                  ingame1 = true;
-                  setTurn({ ...turn, ingame: true });
-                }
-                socket.emit("game_feed", {
-                  data: {
-                    ball: pong._ball,
-                    players: pong._players,
-                    gameId: pong._gameId,
-                    gamesnum: pong._gamesnum,
-                    ingame: ingame1,
-                  },
-                });
-              }
-            });
           }
 
           socket.on("update_game", (data) => {
@@ -375,7 +363,8 @@ export default function GameScreen(params) {
           socket.on("update_ball_pos", (data) => {
             if (data.data.ball && data.data.gameId === pong._gameId) {
               pong._ball.pos = data.data.ball.pos;
-              pong._ball.vel = data.data.ball.vel;
+              pong._ball.vel.x = data.data.ball.vel.x;
+              pong._ball.vel.y = data.data.ball.vel.y;
               pong._gamesnum = data.data.num;
               setTurn({
                 ...turn,
@@ -397,10 +386,36 @@ export default function GameScreen(params) {
               });
             }
           });
+
+          socket.on("live_feed", (data) => {
+            if (data.data.gameId === pong._gameId) {
+              let ingame1 = false;
+              if (pong._ball.vel.x != 0 || pong._ball.vel.y != 0) {
+                ingame1 = true;
+                setTurn({ ...turn, ingame: true });
+              }
+              socket.emit("game_feed", {
+                data: {
+                  ball: pong._ball,
+                  players: pong._players,
+                  gameId: pong._gameId,
+                  gamesnum: pong._gamesnum,
+                  ingame: ingame1,
+                },
+              });
+            }
+          });
+
           socket.on("live_game", (data) => {
             if (data.data.gameId === pong._gameId) {
-              pong._ball.pos = data.data.ball.pos;
+              // console.log(data);
+              pong._ball.pos = data.data.ball.pos
               pong._ball.vel = data.data.ball.vel;
+              // pong._ball.pos.x = data.data.ball.pos.x;
+              // pong._ball.pos.y = data.data.ball.pos.y;
+
+              // pong._ball.vel.x = data.data.ball.vel.x;
+              // pong._ball.vel.y = data.data.ball.vel.y;
               pong._gamesnum = data.data.gamesnum;
               pong._players[0]._score = data.data.players[0]._score;
               pong._players[1]._score = data.data.players[1]._score;
@@ -419,6 +434,7 @@ export default function GameScreen(params) {
               });
             }
           });
+
           socket.emit("get_game", {
             data: {
               gameId: params.gameId,
@@ -482,11 +498,15 @@ export default function GameScreen(params) {
   }, []);
   return user.user ? (
     <div className="container text-center text-black">
-      <Col style={{marginLeft:"-1.7rem"}}>
+      <Col style={{ marginLeft: "-1.7rem" }}>
         <h3 className="m-2">
-          <div className="mr-3" style={{display:"inline-block"}}>{params.data?.player1 }</div>
+          <div className="mr-3" style={{ display: "inline-block" }}>
+            {params.data?.player1}
+          </div>
           <Image src={battlePic} width="25" height="25"></Image>
-          <div className="ml-3" style={{display:"inline-block"}}>{ params.data?.player2}</div>
+          <div className="ml-3" style={{ display: "inline-block" }}>
+            {params.data?.player2}
+          </div>
         </h3>
       </Col>
       <Col className="py-3">
