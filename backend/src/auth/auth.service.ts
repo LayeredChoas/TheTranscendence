@@ -197,4 +197,55 @@ export class AuthService {
       };
     }
   }
+
+  async valid_auth(b) {
+    try {
+      const u = await user.findUnique({
+        where: {
+          username: b.username,
+        },
+      });
+      if (!u)
+        return {
+          id: -1,
+        };
+      return {
+        id: u.id,
+        auth: u.factory_auth,
+        email: u.factory_email,
+      };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  async deactivate_auth(b) {
+    try {
+      const u = await user.update({
+        where: {
+          username: b.username,
+        },
+        data: {
+          factory_auth: false,
+          factory_email: null,
+          auth_code: null,
+        },
+      });
+      if (!u)
+        return {
+          id: -1,
+        };
+      return {
+        id: u.id,
+      };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
 }

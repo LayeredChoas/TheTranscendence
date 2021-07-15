@@ -63,6 +63,12 @@ export class AuthController {
     }
   }
 
+  @Post('/user/validauth')
+  valid_auth(@Body() b)
+  {
+    return this.authservice.valid_auth(b.data)
+  }
+
   @Post('/user/auth')
   auth_user(@Body() b) {
     return this.authservice.auth_user(b.data);
@@ -76,5 +82,10 @@ export class AuthController {
   @Post('/send/auth')
   send_auth(@Body() b) {
     return this.authservice.send_auth(b.data);
+  }
+
+  @Post('/user/deactivateauth')
+  deactivate_auth(@Body() b) {
+    return this.authservice.deactivate_auth(b.data);
   }
 }
