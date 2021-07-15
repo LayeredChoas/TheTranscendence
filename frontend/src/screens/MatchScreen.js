@@ -52,6 +52,10 @@ export default function MatchScreen() {
       setTitle(false);
       setRounds(false);
     }
+    else if (e.target.value === "Casual") {
+      setTitle(false);
+      setRounds(true);
+    }
   }
 
   async function CreateMatch() {
@@ -88,6 +92,7 @@ export default function MatchScreen() {
       let ti = "";
       if (rounds_var.current) rd = rounds_var.current.value;
       if (gametype_var.current.value === "Shot") rw = 20;
+      if (gametype_var.current.value === "Casual") rw = 0;
       if (title_var.current) ti = title_var.current.value;
       let val;
       if (username_var.current.value != "Rand")
@@ -219,6 +224,7 @@ export default function MatchScreen() {
             <option value="Rounds">Rounds (±10XP)</option>
             <option value="Title">Title (±10XP)</option>
             <option value="Shot">One Shot (±20XP)</option>
+            <option value="Casual">Casual (0XP)</option>
           </select>
         </div>
 

@@ -541,4 +541,62 @@ export class UsersService {
       };
     }
   }
+
+  async add_win(p) {
+    try {
+      let num_wins = 0;
+      const d_u = await user.findUnique({
+        where: {
+          id: p,
+        },
+      });
+      if (!d_u)
+        return {
+          id: -1,
+        };
+      num_wins = d_u.num_wins + 1;
+      const u = await user.update({
+        where: {
+          id: p,
+        },
+        data: {
+          num_wins: num_wins,
+        },
+      });
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  async add_loss(p) {
+    try {
+      let num_losses = 0;
+      const d_u = await user.findUnique({
+        where: {
+          id: p,
+        },
+      });
+      if (!d_u)
+        return {
+          id: -1,
+        };
+        num_losses = d_u.num_loss + 1;
+      const u = await user.update({
+        where: {
+          id: p,
+        },
+        data: {
+          num_loss: num_losses,
+        },
+      });
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
 }

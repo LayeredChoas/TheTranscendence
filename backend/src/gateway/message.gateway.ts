@@ -34,7 +34,6 @@ export class MessageGateway
 
   @SubscribeMessage('leave game')
   async leave_game(client: Socket, payload: any) {
-    console.log("leave game IN ", payload)
     client.leave(payload.data.gameId);
     for (let index = 0; index < connectd_users.length; index++) {
       if (connectd_users[index].name == payload.data.username) {
@@ -44,7 +43,6 @@ export class MessageGateway
               live_games[index].p1 = 0;
             if (live_games[index].player2.name == payload.data.username)
               live_games[index].p2 = 0;
-              console.log("leave game: ", live_games[index])
             if (live_games[index].p2 == 0 && live_games[index].p1 == 0)
               await this.GameOver(index);
           }
@@ -68,7 +66,7 @@ export class MessageGateway
         }
       }
       this.userservice.change_status('in_game', payload.data.username);
-      console.log(payload.data.username, ' Joined ', payload.data.gameId);
+      // console.log(payload.data.username, ' Joined ', payload.data.gameId);
     }
   }
 
@@ -257,7 +255,6 @@ export class MessageGateway
         connectd_users[index].socket.rooms[payload.data.gameId] &&
         connectd_users[index].socket != client
       ) {
-        console.log('live_game: ', payload.data);
         connectd_users[index].socket.emit('live_game', {
           data: payload.data,
         });
