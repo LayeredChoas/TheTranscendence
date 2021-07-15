@@ -167,65 +167,139 @@ export default class AdminService {
     }
   }
 
- async reset_password(b)
-  {
+  async reset_password(b) {
     try {
-      return this.userservice.change_password(b)
+      return this.userservice.change_password(b);
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
       return {
-        id:-1
-      }
+        id: -1,
+      };
     }
   }
-  async access_channel(b)
-  {
+  async access_channel(b) {
     try {
-      const c=  await channel.findUnique({
-        where:{
-          name:b.channel
-        }
-      })
-      const u = await this.userservice.get_user_id(b.username)
+      const c = await channel.findUnique({
+        where: {
+          name: b.channel,
+        },
+      });
+      const u = await this.userservice.get_user_id(b.username);
       if (!c || u <= 0)
         return {
-          id:-1
-        }
-      let admins = c.admin
-      let users = c.users
+          id: -1,
+        };
+      let admins = c.admin;
+      let users = c.users;
       for (let index = 0; index < admins.length; index++) {
-        if (u == admins[index])
-        {
+        if (u == admins[index]) {
           return {
             id: u,
-            status:c.status
-          }
+            status: c.status,
+          };
         }
       }
-      admins.push(u)
-      users.push(u)
+      admins.push(u);
+      users.push(u);
       const u_c = await channel.update({
-        where:{
-          name:b.channel
+        where: {
+          name: b.channel,
         },
-        data:{
-          admin:admins,
-          users
-        }
-      })
+        data: {
+          admin: admins,
+          users,
+        },
+      });
       if (!u)
         return {
-          id: -1
-        }
+          id: -1,
+        };
       return {
         id: u_c,
-        status:u_c.status
-      }
+        status: u_c.status,
+      };
     } catch (error) {
-      console.log(error.message)
+      console.log(error.message);
       return {
-        id: -1
-      }
+        id: -1,
+      };
+    }
+  }
+
+  async remove_mod(b) {
+    try {
+      const u = await user.findUnique({
+        where: {
+          username: b.username,
+        },
+      });
+      if (u.owner)
+        return {
+          id: -1,
+          message: 'owner',
+        };
+      const val = await user.update({
+        where: {
+          username: b.username,
+        },
+        data: {
+          admin_op: false,
+        },
+      });
+      if (!val)
+        return {
+          id: -1,
+        };
+      return {
+        id: val.id,
+      };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  async add_mod(b) {
+    try {
+      const uId = await this.userservice.get_user_id(b.username);
+      if (uId <= 0)
+        return {
+          id: -1,
+          message: 'user',
+        };
+      const u_f = await user.findUnique({
+        where: {
+          username: b.username,
+        },
+      });
+      if (!u_f)
+        return {
+          id: -1,
+        };
+      if (u_f.admin_op)
+        return {
+          id: -1,
+          message: 'mod',
+        };
+      const u = await user.update({
+        where: {
+          username: b.username,
+        },
+        data: {
+          admin_op: true,
+        },
+      });
+      if (!u)
+        return {
+          id: -1,
+        };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
     }
   }
 }

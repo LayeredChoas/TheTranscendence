@@ -10,6 +10,11 @@ export default class SearchController {
     return this.searchservice.get_search_elems();
   }
 
+  @Get('/search/mod')
+  get_search_mods() {
+    return this.searchservice.get_search_mods();
+  }
+
   @Post('/user')
   get_user_data(@Body() b) {
     return this.searchservice.get_user_data(b.data.username, b.data.me);
