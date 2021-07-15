@@ -170,6 +170,22 @@ export default class ChannelService {
           id: -1,
         };
       ret.id = 1;
+      const u_ban = await user.findUnique({
+        where: {
+          id: u,
+        },
+      });
+      for (let index = 0; index < u_ban.blocked.length; index++) {
+        const b_u = await this.userservice.get_user_username(
+          u_ban.blocked[index],
+        );
+        for (let index = 0; index < messages.messages.length; index++) {
+          if (messages.messages[index].sender == b_u) {
+            messages.messages.splice(index, 1);
+            index--;
+          }
+        }
+      }
       return {
         id: 1,
         messages,
