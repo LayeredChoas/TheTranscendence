@@ -26,6 +26,7 @@ import UserNotLogged from "../elements/UserNotLogged";
 import FactorScreen from "./FactorScreen";
 import Router from "next/router";
 import getConfig from "next/config";
+import LoginBar from "../elements/LoginBar";
 const { publicRuntimeConfig } = getConfig();
 
 const useStyles = makeStyles((theme) => ({
@@ -177,7 +178,10 @@ export default function ChannelsScreen() {
   return (
     <Container>
       {s_inside ? (
-        <Alert severity="success">Channel {nm} Created Successfully</Alert>
+        <LoginBar
+          type="alert-success"
+          message={`Channel Created Successfully`}
+        ></LoginBar>
       ) : null}
       <Dialog
         open={open}
@@ -185,7 +189,10 @@ export default function ChannelsScreen() {
         aria-labelledby="form-dialog-title"
       >
         {e_inside ? (
-          <Alert severity="error">This is an error message!</Alert>
+          <LoginBar
+            type="alert-danger"
+            message={`An Error Occured, Try Again Later`}
+          ></LoginBar>
         ) : null}
         <DialogTitle id="form-dialog-title">New Channel</DialogTitle>
         <DialogContent>

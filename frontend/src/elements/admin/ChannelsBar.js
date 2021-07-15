@@ -37,7 +37,6 @@ export default function UserBar(params) {
   if (!avatar) get_av(params.user.avatar);
   async function RemoveChannel() {
     try {
-        console.log(params.user)
       const val = await axios.post(
         publicRuntimeConfig.BACKEND_URL + "/admin/access_channel",
         {
@@ -69,13 +68,7 @@ export default function UserBar(params) {
             class="user text-center"
             id={params.user.username}
             style={{ position: "relative", left: "1rem", top: "0rem" }}
-          >
-            {/* <img
-              src="https://icon-library.com/images/omni-channel-icon/omni-channel-icon-25.jpg"
-              style={{ width: "1.5rem", height: "1.5rem" }}
-              alt={params.user.username}
-            /> */}
-          </div>
+          ></div>
           <p class="name-time text-center" style={{ marginLeft: "-8rem" }}>
             <span class="name">{params.user.username}</span>
           </p>

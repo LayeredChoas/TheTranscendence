@@ -27,7 +27,7 @@ export default function ChannelScreen(params) {
   const history = useHistory();
   const [joinroom, setJoinroom] = useState(false);
   const [listenroom, setListenroom] = useState(false);
-  const [channelOwner, setChannelOwner] = useState(false)
+  const [channelOwner, setChannelOwner] = useState(false);
 
   let c_name = document.location.pathname;
   let name = c_name.split("/channel/")[1];
@@ -103,7 +103,7 @@ export default function ChannelScreen(params) {
       }
       setMessages(val.data.messages);
       setRet(val.data.ret);
-      setChannelOwner(val.data.owner)
+      setChannelOwner(val.data.owner);
     } catch (error) {
       console.log(error.message);
     }
@@ -259,7 +259,7 @@ export default function ChannelScreen(params) {
           ) : messages.id > 0 ? (
             <div>
               {messages.messages.map((m) => {
-                console.log(messages)
+                console.log(ret);
                 if (m.sender === user.user)
                   return (
                     <RightMessage
@@ -286,8 +286,7 @@ export default function ChannelScreen(params) {
                             }}
                           ></LeftMessage>
                         </Col>
-                        {ret.admin && m.sender != channelOwner ? (
-                          
+                        {ret.admin && m.sender != channelOwner && !m.admin ? (
                           <MuteOrBan
                             channel={name}
                             user={m.sender}
@@ -321,7 +320,9 @@ export default function ChannelScreen(params) {
         </ul>
       </div>
       <br></br>
-      {ret.id > 0 && ret.allowed && ret.admin && user.user === channelOwner? (
+      {ret.id > 0 &&
+      ((ret.allowed && ret.admin && user.user === channelOwner) ||
+        ret.siteadmin) ? (
         <ChannelAdminPannel private={p} action={setErr}></ChannelAdminPannel>
       ) : !ret.admin && ret.allowed && p ? (
         <div>
