@@ -30,7 +30,6 @@ export class AuthController {
           username:username,
         },
       });
-      console.log(valid)
       let auth = false;
       if (
         (!ret.auth_code || ret.auth_code.length <= 0) &&

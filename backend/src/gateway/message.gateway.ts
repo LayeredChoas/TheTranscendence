@@ -28,9 +28,9 @@ export class MessageGateway
   @WebSocketServer() server: Server;
 
   @SubscribeMessage('init_user')
-  init_user(client: Socket, payload: any) {
+  async init_user(client: Socket, payload: any) {
     connectd_users.push({ name: payload.data.username, socket: client });
-    this.userservice.change_status('online', payload.data.username);
+    await this.userservice.change_status('online', payload.data.username);
   }
 
   @SubscribeMessage('leave game')
@@ -56,7 +56,7 @@ export class MessageGateway
 
   @SubscribeMessage('in game')
   async add_to_game(client: Socket, payload: any) {
-    if (!client.rooms[payload.data.gameId] && payload.data.username) {
+    if (!client.rooms[payload.data.gameId]) {
       client.join(payload.data.gameId);
       for (let index = 0; index < live_games.length; index++) {
         if (live_games[index].gameId == payload.data.gameId) {
@@ -71,7 +71,6 @@ export class MessageGateway
         payload.data.username,
         payload.data.gameId,
       );
-      // console.log(payload.data.username, ' Joined ', payload.data.gameId);
     }
   }
 
@@ -103,8 +102,6 @@ export class MessageGateway
   @SubscribeMessage('rest_game')
   async rest_game(client: Socket, payload: any) {
     let ret = payload;
-
-    console.log('Resting The WholeGame');
     for (let index = 0; index < live_games.length; index++) {
       if (live_games[index].gameId == payload.data.gameId) {
         if (live_games[index].player1.score > payload.data.players[0]._score)
@@ -238,6 +235,7 @@ export class MessageGateway
       rounds: payload.data.rounds,
       p1: 0,
       p2: 0,
+      ingame: false,
     });
   }
   @SubscribeMessage('get_game')
@@ -314,6 +312,106 @@ export class MessageGateway
           data: ret,
         });
       }
+    }
+  }
+
+  /* Live Game Fix*/
+  @SubscribeMessage('PlayerPos')
+  PlayerPos(client: Socket, payload: any) {
+    for (let index = 0; index < connectd_users.length; index++) {
+      if (
+        connectd_users[index].socket.rooms[payload.data.gameId] &&
+        connectd_users[index].socket != client
+      )
+        connectd_users[index].socket.emit('PlayersPos', { data: payload.data });
+    }
+  }
+
+  @SubscribeMessage('StartGame')
+  StartGame(client: Socket, payload: any) {
+    for (let index = 0; index < live_games.length; index++) {
+      if (live_games[index].gameId == payload.data.gameId) {
+        live_games[index].ingame = true;
+        break;
+      }
+    }
+    for (let index = 0; index < connectd_users.length; index++) {
+      if (
+        connectd_users[index].socket.rooms[payload.data.gameId] &&
+        connectd_users[index].socket != client
+      )
+        connectd_users[index].socket.emit('StartsGame', { data: payload.data });
+    }
+  }
+
+  @SubscribeMessage('PlayerScored')
+  async PlayerScored(client: Socket, payload: any) {
+    let ret = payload;
+
+    for (let index = 0; index < live_games.length; index++) {
+      if (live_games[index].gameId == payload.data.gameId) {
+        if (live_games[index].player1.score > payload.data.p1S)
+          ret.data.p1S = live_games[index].player1.score;
+        else live_games[index].player1.score = ret.data.p1S;
+
+        if (live_games[index].player2.score > payload.data.p2S)
+          ret.data.p2S = live_games[index].player2.score;
+        else live_games[index].player2.score = ret.data.p2S;
+        if (ret.data.p2S + ret.data.p1S >= live_games[index].rounds) {
+          await this.GameOver(index);
+        }
+        break;
+      }
+    }
+    for (let index = 0; index < connectd_users.length; index++) {
+      if (
+        connectd_users[index].socket.rooms[payload.data.gameId] &&
+        connectd_users[index].socket != client
+      )
+        connectd_users[index].socket.emit('PlayersScored', { data: ret.data });
+    }
+  }
+
+  @SubscribeMessage('GetCurrentGame')
+  async GetCurrentGame(client: Socket, payload: any) {
+    let ret = payload;
+
+    for (let index = 0; index < connectd_users.length; index++) {
+      if (
+        connectd_users[index].socket.rooms[payload.data.gameId] &&
+        connectd_users[index].socket != client
+      )
+        connectd_users[index].socket.emit('WantCurrentGame', {
+          data: ret.data,
+        });
+      return;
+    }
+  }
+
+  @SubscribeMessage('CurrentGameState')
+  async CurrentGameState(client: Socket, payload: any) {
+    const ret = payload;
+
+    for (let index = 0; index < live_games.length; index++) {
+      if (live_games[index].gameId == payload.data.gameId) {
+        if (live_games[index].player1.score > payload.data.p1S)
+          ret.data.p1S = live_games[index].player1.score;
+        else live_games[index].player1.score = ret.data.p1S;
+
+        if (live_games[index].player2.score > payload.data.p2S)
+          ret.data.p2S = live_games[index].player2.score;
+        else live_games[index].player2.score = ret.data.p2S;
+        break ;
+      }
+    }
+    for (let index = 0; index < connectd_users.length; index++) {
+      if (
+        connectd_users[index].socket.rooms[payload.data.gameId] /*&&
+        connectd_users[index].socket != client */
+      )
+        connectd_users[index].socket.emit('FullCurrentGame', {
+          data: ret.data,
+        });
     }
   }
 }

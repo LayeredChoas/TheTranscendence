@@ -91,7 +91,7 @@ export class UsersService {
           };
         }
       } catch (error) {
-        // console.log(error);
+        console.log(error.message);
         return { id: -1, error: error.message };
       }
     } else {
@@ -316,7 +316,6 @@ export class UsersService {
         b_users.push(u.id);
         bl = true;
       }
-      console.log(b_users);
       const ret = await user.update({
         where: {
           username,
@@ -371,7 +370,6 @@ export class UsersService {
   }
 
   async change_title(username, title) {
-    console.log(username, title);
     try {
       const r = await user.findUnique({
         where: {
