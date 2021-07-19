@@ -365,10 +365,12 @@ export class MessageGateway
     }
     for (let index = 0; index < connectd_users.length; index++) {
       if (
-        connectd_users[index].socket.rooms[payload.data.gameId] &&
-        connectd_users[index].socket != client
+        connectd_users[index].socket.rooms[payload.data.gameId]
       )
+      {
+        console.log(connectd_users[index].name, " Score")
         connectd_users[index].socket.emit('PlayersScored', { data: ret.data });
+      }
     }
   }
 

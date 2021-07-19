@@ -97,7 +97,7 @@ class Pong {
     this.socket = socket;
     let callback = (millis) => {
       if (lasttime) {
-        this.update((millis - lasttime) / 10000);
+        this.update((millis - lasttime) / 3000);
       }
       lasttime = millis;
       requestAnimationFrame(callback);
@@ -106,22 +106,21 @@ class Pong {
   }
 
   collide_p1(player, ball) {
-    if (this._ball.left <= player.right) {
-      if (
-        this._ball.pos.y >= player.pos.y &&
-        this._ball.pos.y <= player.pos.y + player.size.y
-      ) {
-        this._ball.vel.x = -ball.vel.x;
-        this._ball.vel.x *= player._hit_power;
-        this._ball.vel.y *= player._hit_power;
-      }
+    if (
+      this._ball.pos.y >= player.pos.y &&
+      this._ball.pos.y <= player.pos.y + player.size.y &&
+      this._ball.left <= player.right
+    ) {
+      this._ball.vel.x = -ball.vel.x;
+      this._ball.vel.x *= player._hit_power;
+      this._ball.vel.y *= player._hit_power;
     }
   }
   collide_p2(player, ball) {
     if (
-      this._ball.right >= player.left &&
       this._ball.pos.y >= player.pos.y &&
-      this._ball.pos.y <= player.pos.y + player.size.y
+      this._ball.pos.y <= player.pos.y + player.size.y &&
+      this._ball.right >= player.left
     ) {
       this._ball.vel.x = -ball.vel.x;
       this._ball.vel.x *= player._hit_power;
@@ -201,8 +200,8 @@ class Pong {
   reset() {
     const BallVelX = this._ball.vel.x;
     const BallVelY = this._ball.vel.y;
-    this._players[0].pos.x = 20;
-    this._players[1].pos.x = this._canvas.width - 20;
+    this._players[0].pos.x = 1;
+    this._players[1].pos.x = this._canvas.width - 6;
     this._players.forEach((player) => {
       player.pos.y = this._canvas.height / 2 - player.size.y / 2;
       player._hit_power = 1.1;
@@ -251,14 +250,14 @@ class Pong {
     //     gamesnum = data.data.gamesnum;
     //   }
     // });
-    // socket.on("update_powers", (data) => {
-    //   if (data.data.gameId === this._gameId) {
-    //     if (this._players[0].size.y < 200)
-    //       this._players[0].size.y = 25 * data.data.player1.size + 100;
-    //     if (this._players[1].size.y < 200)
-    //       this._players[1].size.y = 25 * data.data.player2.size + 100;
-    //   }
-    // });
+    socket.on("update_powers", (data) => {
+      if (data.data.gameId === this._gameId) {
+        if (this._players[0].size.y < 200)
+          this._players[0].size.y = 25 * data.data.player1.size + 100;
+        if (this._players[1].size.y < 200)
+          this._players[1].size.y = 25 * data.data.player2.size + 100;
+      }
+    });
   }
   start() {
     if (this._ball.vel.x === 0 && this._ball.vel.y === 0) {
@@ -272,8 +271,8 @@ class Pong {
     this._ball.pos.x += this._ball.vel.x * dt;
     this._ball.pos.y += this._ball.vel.y * dt;
 
-    if (this._ball.left <= 10 || this._ball.right >= this._canvas.width - 10) {
-      const userId = this._ball.left <= 10 ? 1 : 0;
+    if (this._ball.pos.x < 0 || this._ball.pos.x > this._canvas.width) {
+      const userId = this._ball.pos.x < 0 ? 1 : 0;
       this._players[userId]._score++;
       this.reset();
     }
@@ -308,7 +307,9 @@ export default function GameScreen(params) {
   let pong;
   let u = -1;
   user_xp = 0;
-
+  socket.emit("in game", {
+    data: { username: user.user, gameId: params.gameId },
+  });
   if (process.browser) {
     window.onbeforeunload = () => {
       socket.emit("leave game", {
@@ -325,9 +326,6 @@ export default function GameScreen(params) {
     else if (user.user === params.data?.player2) u = 1;
     if (user.user)
       if (elm) {
-        socket.emit("in game", {
-          data: { username: user.user, gameId: params.gameId },
-        });
         setTimeout(() => {
           pong = new Pong(
             elm,
@@ -462,12 +460,12 @@ export default function GameScreen(params) {
             setTurn({
               gamesnum: pong._gamesnum,
               ingame: false,
-              u: pong._user,
+              u,
             });
           });
 
           socket.on("FullCurrentGame", (data) => {
-            console.log(data);
+            console.log('Got The Game')
             /* Reseting The Ball */
             pong._ball.pos.x = data.data.BallPosX;
             pong._ball.pos.y = data.data.BallPosY;
@@ -501,6 +499,7 @@ export default function GameScreen(params) {
               u: pong._user,
             });
           });
+          console.log('want the game')
           socket.emit("GetCurrentGame", {
             data: {
               gameId: params.gameId,
