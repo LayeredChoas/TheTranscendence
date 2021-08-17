@@ -40,7 +40,7 @@ export default function UserBlob(params) {
     <div>
       {
         <li
-          class="person"
+          className="person"
           data-chat="person1"
           id={params.user.username}
           onClick={() => {
@@ -48,7 +48,7 @@ export default function UserBlob(params) {
             params.click(params.user.username);
           }}
         >
-          <div class="user" id={params.user.username}>
+          <div className="user" id={params.user.username}>
             <img
               src={avatar}
               alt={params.user.username}
@@ -60,10 +60,10 @@ export default function UserBlob(params) {
             />
             <span className={`user-status ${params.user.status}`}></span>
           </div>
-          <p class="name-time" style={{ width: "70%" }}>
-            <span class="name">{params.user.username}</span>
+          <p className="name-time" style={{ width: "70%" }}>
+            <span className="name">{params.user.username}</span>
             {params.user.message_c > 0 ? (
-              <span class="badge badge-danger" style={{ float: "right" }}>
+              <span className="badge badge-danger" style={{ float: "right" }}>
                 {params.user.message_c}
               </span>
             ) : null}

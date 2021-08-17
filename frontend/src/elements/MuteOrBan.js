@@ -61,11 +61,11 @@ export default function MuteOrBan(params) {
   return (
     <Col>
       {" "}
-      <i class="fas fa-ban fa-xs" onClick={BanUser}></i>
+      <i className="fas fa-ban fa-xs" onClick={BanUser}></i>
       <br></br>
       <div>
         <div style={{ display: "inline" }}>
-          <i class="fas fa-volume-mute fa-xs"></i>
+          <i className="fas fa-volume-mute fa-xs"></i>
 
           <div
             className="ml-1"

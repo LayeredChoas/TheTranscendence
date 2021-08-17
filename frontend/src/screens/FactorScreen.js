@@ -96,25 +96,25 @@ export default function FactorScreen() {
           <LoginBar type={er.type} message={er.message}></LoginBar>
         ) : null}
         <label for="exampleInputEmail1 text-center"></label>
-        <small id="emailHelp" class="form-text text-muted DisplayNameText">
+        <small id="emailHelp" className="form-text text-muted DisplayNameText">
           We Sent An Authentication Code To Your Email Address, Enter It Below
           To Continue
         </small>
       </div>
 
       <form className="ChangeName text-center" onSubmit={SubmitCode}>
-        <div class="form-group text-center">
+        <div className="form-group text-center">
           <div className="text-center">
             <input
               type="text"
-              class="form-control DisplayNameInput text-center"
+              className="form-control DisplayNameInput text-center"
               placeholder="Authentication Code"
               style={{ minWidth: "25rem" }}
               ref={code}
             />
           </div>
         </div>
-        <button type="submit" class="btn btn-primary" onClick={SubmitCode}>
+        <button type="submit" className="btn btn-primary" onClick={SubmitCode}>
           Submit
         </button>
       </form>

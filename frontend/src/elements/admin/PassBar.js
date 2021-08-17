@@ -69,7 +69,7 @@ export default function PassBar(params) {
       <Row>
         <Col>
           <div
-            class="user"
+            className="user"
             id={params.user.username}
             style={{ position: "absolute", left: "1rem", top: "-0.41rem" }}
           >
@@ -82,8 +82,8 @@ export default function PassBar(params) {
             />
           </div>
 
-          <p class="name-time">
-            <span class="name">{params.user.username}</span>
+          <p className="name-time">
+            <span className="name">{params.user.username}</span>
           </p>
           <div
             style={{
@@ -93,7 +93,7 @@ export default function PassBar(params) {
               right: "1rem",
             }}
           >
-            <i class="fas fa-unlock" onClick={ResetPass}></i>
+            <i className="fas fa-unlock" onClick={ResetPass}></i>
           </div>
         </Col>
       </Row>

@@ -41,7 +41,7 @@ export default function ChangePassword() {
   return (
     <div className="text-black">
       <form onSubmit={FormSubmit}>
-        <div class="card-body pb-2">
+        <div className="card-body pb-2">
           {error ? (
             <div className="text-center">
               <LoginBar type="alert-danger" message={error}></LoginBar>
@@ -51,23 +51,23 @@ export default function ChangePassword() {
               <LoginBar type="alert-success" message="Password Changed"></LoginBar>
             </div>
           ) : null}
-          <div class="form-group">
-            <label class="form-label">New password</label>
-            <input ref={pass} type="password" class="form-control" />
+          <div className="form-group">
+            <label className="form-label">New password</label>
+            <input ref={pass} type="password" className="form-control" />
           </div>
 
-          <div class="form-group">
-            <label class="form-label">Repeat new password</label>
-            <input ref={passg} type="password" class="form-control" />
+          <div className="form-group">
+            <label className="form-label">Repeat new password</label>
+            <input ref={passg} type="password" className="form-control" />
           </div>
         </div>
 
-        <div class="text-right mt-3">
-          <button type="submit" class="btn btn-primary m-2">
+        <div className="text-right mt-3">
+          <button type="submit" className="btn btn-primary m-2">
             Save changes
           </button>
           &nbsp;
-          <input type="reset" value="Reset" class="btn btn-default m-3 " />
+          <input type="reset" value="Reset" className="btn btn-default m-3 " />
         </div>
       </form>
     </div>

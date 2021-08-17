@@ -143,39 +143,39 @@ export default function FactorAuth() {
           ) : null}
 
           <form onSubmit={AddAuth}>
-            <div class="form-group text-center">
+            <div className="form-group text-center">
               <label for="exampleInputEmail1"></label>
               <small
                 id="emailHelp"
-                class="form-text text-muted DisplayNameText"
+                className="form-text text-muted DisplayNameText"
               >
                 Email 2-Factor Authentication
               </small>
               <input
                 id="email"
                 type="email"
-                class="form-control DisplayNameInput"
+                className="form-control DisplayNameInput"
                 placeholder="Enter Your New Email Address"
                 ref={em}
                 style={{ width: "17rem" }}
               />
             </div>
-            <div class="form-group text-center">
+            <div className="form-group text-center">
               <label for="exampleInputEmail1"></label>
               <small
                 id="emailHelp"
-                class="form-text text-muted DisplayNameText"
+                className="form-text text-muted DisplayNameText"
               >
                 Account Password
               </small>
               <input
                 id="password"
                 type="password"
-                class="form-control DisplayNameInput"
+                className="form-control DisplayNameInput"
                 placeholder="Enter Your Account Password"
                 ref={pass}
               />
-              <button type="submit" class="btn btn-primary m-5">
+              <button type="submit" className="btn btn-primary m-5">
                 Change
               </button>
             </div>

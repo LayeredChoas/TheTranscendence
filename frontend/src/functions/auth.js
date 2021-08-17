@@ -19,7 +19,6 @@ export async function auth(props) {
         red: props,
       },
     });
-    console.log("pppp+>>>> " , val.data)
     if (val.data.id === -1)
       return {
         isLoading: false,

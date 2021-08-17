@@ -95,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
 
 function MemberBar() {
   const [Draw, setDraw] = useState(false);
-  const [items, SetItems] = useState(false);
+  const [items, SetItems] = useState([]);
   const history = useHistory();
   const { user, setUser } = useContext(userContext);
   const [notif, setNotif] = useState({

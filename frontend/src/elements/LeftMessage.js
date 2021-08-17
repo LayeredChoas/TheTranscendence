@@ -45,13 +45,13 @@ export default function LeftMessage(m) {
         </div>
       ) : null}
 
-      <li class="chat-left">
-        <div class="chat-avatar">
+      <li className="chat-left">
+        <div className="chat-avatar">
           <img src={avatar} alt={m.user} />
-          <div class="chat-name">{m.user}</div>
+          <div className="chat-name">{m.user}</div>
         </div>
         <div
-          class="chat-text"
+          className="chat-text"
           style={{
             maxWidth: "25rem",
             padding: " .4rem 1rem",
@@ -65,7 +65,7 @@ export default function LeftMessage(m) {
         >
           {m.msg.message}
         </div>
-        <div class="chat-hour" style={{ fontSize: "0.6rem" }}>
+        <div className="chat-hour" style={{ fontSize: "0.6rem" }}>
           {d.toLocaleString("en-US", {
             month: "short",
             day: "2-digit",

@@ -48,7 +48,7 @@ function MatchHistory(params) {
       <div className="row">
         <button
           type="button"
-          class="close"
+          className="close"
           aria-label="Close"
           onClick={() => {
             params.hFunction(false);

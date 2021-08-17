@@ -228,7 +228,7 @@ export default function ChannelScreen(params) {
         <LoginBar type={err.type} message={err.message}></LoginBar>
       ) : null}
       <div
-        class="chat-container"
+        className="chat-container"
         style={{
           height: "40rem",
           overflow: "scroll",
@@ -238,7 +238,7 @@ export default function ChannelScreen(params) {
           background: "#f4f5fb",
         }}
       >
-        <ul class="chat-box chatContainerScroll">
+        <ul className="chat-box chatContainerScroll">
           {ret.id > 0 && !ret.allowed ? (
             <form className="text-center" onSubmit={SubmitPass}>
               <h3></h3>
@@ -304,13 +304,13 @@ export default function ChannelScreen(params) {
                     </div>
                   );
               })}
-              <div class="form-group mt-3 mb-0">
+              <div className="form-group mt-3 mb-0">
                 <form className="text-center" onSubmit={SendMessage}>
                   <Row>
                     <Col className="text-center" sm={10}>
                       <input
                         type="text"
-                        class="form-control"
+                        className="form-control"
                         ref={msg}
                         id="message"
                       ></input>

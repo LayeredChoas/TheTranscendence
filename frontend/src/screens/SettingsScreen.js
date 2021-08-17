@@ -36,18 +36,18 @@ export default function SettignsScreen() {
     if (e.target.id === "7") setSel({ seventh: "active" });
   }
   return (
-    <div class="container light-style flex-grow-1 container-p-y">
+    <div className="container light-style flex-grow-1 container-p-y">
      <Head>
        <title>
          Settings
        </title>
        </Head>
-      <h4 class="font-weight-bold py-3 mb-4 text-black">Account settings</h4>
+      <h4 className="font-weight-bold py-3 mb-4 text-black">Account settings</h4>
 
-      <div class="card overflow-hidden">
-        <div class="row no-gutters row-bordered row-border-light">
-          <div class="col-md-3 pt-0">
-            <div class="list-group list-group-flush account-settings-links">
+      <div className="card overflow-hidden">
+        <div className="row no-gutters row-bordered row-border-light">
+          <div className="col-md-3 pt-0">
+            <div className="list-group list-group-flush account-settings-links">
               <a
                 className={`list-group-item list-group-item-action ${sel.first}`}
                 data-toggle="list"
@@ -112,8 +112,8 @@ export default function SettignsScreen() {
               </a>
             </div>
           </div>
-          <div class="col-md-9">
-            <div class="tab-content">
+          <div className="col-md-9">
+            <div className="tab-content">
               {sel.first ? <ChangePhoto /> : null}
               {sel.second ? <ChangePassword /> : null}
               {sel.third ? <ChangeDisplayName /> : null}

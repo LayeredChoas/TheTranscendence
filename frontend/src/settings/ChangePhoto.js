@@ -91,38 +91,38 @@ export default function ChangePhoto() {
   return (
     <div>
       {!user.isLoading && user.isLoggedIn ? (
-        <div class="tab-pane fade active show">
-          <div class="card-body media align-items-center">
-            <img src={user_avatar} alt="" class="d-block ui-w-80" />
-            <div class="media-body ml-4">
-              <label class="btn btn-outline-primary">
+        <div className="tab-pane fade active show">
+          <div className="card-body media align-items-center">
+            <img src={user_avatar.toString()} alt="" className="d-block ui-w-80" />
+            <div className="media-body ml-4">
+              <label className="btn btn-outline-primary">
                 Upload new photo
                 <input
                   onChange={GetFile}
                   type="file"
-                  class="account-settings-fileinput"
+                  className="account-settings-fileinput"
                 />
               </label>{" "}
               &nbsp;
               <button
                 onClick={RestFile}
                 type="button"
-                class="btn btn-default md-btn-flat"
+                className="btn btn-default md-btn-flat"
               >
                 Reset
               </button>
-              <div class="text-light small mt-1">
+              <div className="text-light small mt-1">
                 Allowed JPG, JEPG, GIF or PNG.
               </div>
             </div>
           </div>
-          <hr class="border-light m-0" />
+          <hr className="border-light m-0" />
 
-          <div class="text-center mt-3">
+          <div className="text-center mt-3">
             <button
               onClick={SubmitFile}
               type="button"
-              class="btn btn-primary m-5"
+              className="btn btn-primary m-5"
             >
               Save changes
             </button>
@@ -132,7 +132,7 @@ export default function ChangePhoto() {
               <LoginBar type="alert-danger" message={error}></LoginBar>{" "}
             </div>
           ) : (
-            <div class="text-light text-center mt small mt-1">{SelFile}</div>
+            <div className="text-light text-center mt small mt-1">{SelFile}</div>
           )}
         </div>
       ) : !user.isLoading ? (

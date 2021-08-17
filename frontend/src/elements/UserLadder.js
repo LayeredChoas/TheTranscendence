@@ -45,21 +45,21 @@ export default function UserLadder(params) {
   }, []);
   console.log(params.v)
   return (
-    <tr class="candidates-list" style={{background:colors[level]}}>
+    <tr className="candidates-list" style={{background:colors[level]}}>
         <td>#{params.v}</td>
       <td class={`${params.user.username}`}>
-        <div class="thumb">
+        <div className="thumb">
           <img
-            class="img-fluid"
+            className="img-fluid"
             src={avatar}
             alt=""
             style={{ borderRadius: "2rem", maxHeight: "4rem", maxWidth: "4rem" }}
           />
         </div>
-        <div class="candidate-list-details">
-          <div class="candidate-list-info">
-            <div class="candidate-list-title">
-              <h5 class="mb-0 text-center">
+        <div className="candidate-list-details">
+          <div className="candidate-list-info">
+            <div className="candidate-list-title">
+              <h5 className="mb-0 text-center">
                 <a href={`/user/${params.user.username}`} style={{fontSize:"1.05rem", color:"#270000"}}>
                   {params.user.username}
                 </a>
@@ -69,7 +69,7 @@ export default function UserLadder(params) {
         </div>
       </td>
       <td>{params.user.xp}</td>
-      <td class="action text-right">{level}</td>
+      <td className="action text-right">{level}</td>
     </tr>
   );
 }

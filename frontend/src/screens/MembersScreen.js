@@ -22,7 +22,6 @@ export default function MembersScreen() {
       const val = await axios.get(
         publicRuntimeConfig.BACKEND_URL + "/live_game"
       );
-      console.log(val);
       if (!val || val.data.id < 0) return;
       setGames(val.data.games);
       if (val.data.games.length >= 1)
@@ -35,7 +34,6 @@ export default function MembersScreen() {
   useEffect(() => {
     GetGames();
   }, []);
-  console.log(user);
   return (
     <>
     <Head>
@@ -63,7 +61,7 @@ export default function MembersScreen() {
             >
               <Col>
                 <i
-                  class="fas fa-expand-arrows-alt"
+                  className="fas fa-expand-arrows-alt"
                   style={{
                     position: "absolute",
                     left: "1.1rem",

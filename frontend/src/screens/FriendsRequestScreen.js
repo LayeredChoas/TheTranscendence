@@ -39,7 +39,7 @@ export default function FriendsRequestScreen() {
           Friends Requests
         </title>
       </Head>
-      <div class="row my-2">
+      <div className="row my-2">
         {!friends
           ? null
           : friends.map((f) => {

@@ -101,7 +101,7 @@
     /* IE10 */
     background-image: -o-linear-gradient(right, #e9eff5, #ffffff);
     /* Opera 11.10+ */
-    background-image: linear-gradient(right, #e9eff5, #ffffff);
+    background-image: linear-gradient(to left, #e9eff5, #ffffff);
 }
 
 .users .person.active-user {
@@ -117,7 +117,7 @@
     /* IE10 */
     background-image: -o-linear-gradient(right, #f7f9fb, #ffffff);
     /* Opera 11.10+ */
-    background-image: linear-gradient(right, #f7f9fb, #ffffff);
+    background-image: linear-gradient(to left, #f7f9fb, #ffffff);
 }
 
 .users .person:last-child {

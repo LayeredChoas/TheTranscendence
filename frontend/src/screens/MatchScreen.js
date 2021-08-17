@@ -206,12 +206,12 @@ export default function MatchScreen() {
 
       <h3 className="py-5">Create A New Match</h3>
       {msg.error ? (
-        <div class="alert alert-danger" role="alert">
+        <div className="alert alert-danger" role="alert">
           {msg.message}
         </div>
       ) : null}
       <Card className="text-black">
-        <div class="form-group MatchScreenelem">
+        <div className="form-group MatchScreenelem">
           <label className="form-label">Player Username</label>
           <div style={{ fontSize: "0.7rem" }}>
             (For Random Pairing, Put "Rand" As A Player)
@@ -220,13 +220,13 @@ export default function MatchScreen() {
             ref={username_var}
             value={input_name}
             type="text"
-            class="form-control"
+            className="form-control"
           />
         </div>
 
-        <div class="form-group MatchScreenelem">
+        <div className="form-group MatchScreenelem">
           <label className="form-label">Arena</label>
-          <select ref={arena_var} class="custom-select">
+          <select ref={arena_var} className="custom-select">
             <option value="sb" selected>
               Simple Black
             </option>
@@ -235,11 +235,11 @@ export default function MatchScreen() {
           </select>
         </div>
 
-        <div class="form-group MatchScreenelem">
+        <div className="form-group MatchScreenelem">
           <label className="form-label">Game Type</label>
           <select
             ref={gametype_var}
-            class="custom-select"
+            className="custom-select"
             onChange={HandleChange}
           >
             <option value="Rounds">Rounds (±10XP)</option>
@@ -250,9 +250,9 @@ export default function MatchScreen() {
         </div>
 
         {rounds ? (
-          <div class="form-group MatchScreenelem">
+          <div className="form-group MatchScreenelem">
             <label className="form-label">Rounds</label>
-            <select ref={rounds_var} class="custom-select">
+            <select ref={rounds_var} className="custom-select">
               <option value="3" selected>
                 3
               </option>
@@ -264,9 +264,9 @@ export default function MatchScreen() {
 
         {title ? (
           <div>
-            <div class="form-group MatchScreenelem">
+            <div className="form-group MatchScreenelem">
               <label className="form-label">The Loser Title </label>
-              <input ref={title_var} type="text" class="form-control" />
+              <input ref={title_var} type="text" className="form-control" />
             </div>
           </div>
         ) : null}

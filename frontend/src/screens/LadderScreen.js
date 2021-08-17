@@ -35,21 +35,21 @@ export default function LadderScreen() {
         </title>
       </Head>
       {users ? (
-        <div class="container mt-3 mb-4">
-          <div class="mt-4 mt-lg-0">
-            <div class="row">
-              <div class="col-md-12">
+        <div className="container mt-3 mb-4">
+          <div className="mt-4 mt-lg-0">
+            <div className="row">
+              <div className="col-md-12">
                 <div
-                  class="user-dashboard-info-box table-responsive mb-0 bg-white p-4 shadow-sm"
+                  className="user-dashboard-info-box table-responsive mb-0 bg-white p-4 shadow-sm"
                   style={{ overflowX: "hidden" }}
                 >
-                  <table class="table manage-candidates-top mb-0">
+                  <table className="table manage-candidates-top mb-0">
                     <thead>
                       <tr>
-                        <th class="text-center"> Ranking</th>
-                        <th class="text-center"> Player Name</th>
-                        <th class="text-center">XP</th>
-                        <th class="action text-right">Level</th>
+                        <th className="text-center"> Ranking</th>
+                        <th className="text-center"> Player Name</th>
+                        <th className="text-center">XP</th>
+                        <th className="action text-right">Level</th>
                       </tr>
                     </thead>
                     {users.map((u) => {

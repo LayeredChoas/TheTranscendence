@@ -76,23 +76,23 @@ export default function FriendRequestElement(props) {
   }
   if (!avatar) get_av(r.avatar);
   return (
-    <div class="col-md-4">
-      <div class="card text-center" style={{ width: "14rem" }}>
-        <div class="user-heading-list round-list">
+    <div className="col-md-4">
+      <div className="card text-center" style={{ width: "14rem" }}>
+        <div className="user-heading-list round-list">
           <a href={`/user/${r.user}`}>
-            <img src={avatar} class="card-img-top text-black" />
+            <img src={avatar} className="card-img-top text-black" />
           </a>
         </div>
-        <div class="card-body">
-          <h5 class="card-title text-center text-black">{r.user}</h5>
+        <div className="card-body">
+          <h5 className="card-title text-center text-black">{r.user}</h5>
           <div className="text-center">
             {!r.status ? (
               <div>
-                <button class="btn btn-primary mx-1" onClick={AcceptRequest}>Accept</button>
-                <button class="btn btn-primary mx-1" onClick={DeleteRequest}>Decline</button>
+                <button className="btn btn-primary mx-1" onClick={AcceptRequest}>Accept</button>
+                <button className="btn btn-primary mx-1" onClick={DeleteRequest}>Decline</button>
               </div>
             ) : (
-              <button class="btn btn-primary mx-1"onClick={DeleteRequest}>Cancel</button>
+              <button className="btn btn-primary mx-1"onClick={DeleteRequest}>Cancel</button>
             )}
           </div>
         </div>

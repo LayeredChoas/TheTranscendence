@@ -67,7 +67,7 @@ export default function XPBar(params) {
       <Row>
         <Col>
           <div
-            class="user"
+            className="user"
             id={params.user.username}
             style={{ position: "absolute", left: "1rem", top: "-0.41rem" }}
           >
@@ -80,8 +80,8 @@ export default function XPBar(params) {
             />
           </div>
 
-          <p class="name-time">
-            <span class="name">{params.user.username}</span>
+          <p className="name-time">
+            <span className="name">{params.user.username}</span>
           </p>
           <div
             style={{
@@ -93,13 +93,13 @@ export default function XPBar(params) {
           >
             <input ref={xp_val} id="xp_holder" style={{ width: "2rem" }}></input>
             <i
-              class="fas fa-plus p-1"
+              className="fas fa-plus p-1"
               onClick={() => {
                 ChangeXP(1);
               }}
             ></i>
             <i
-              class="fas fa-minus p-1 "
+              className="fas fa-minus p-1 "
               onClick={() => {
                 ChangeXP(-1);
               }}

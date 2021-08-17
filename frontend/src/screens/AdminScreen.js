@@ -53,93 +53,93 @@ export default function AdminScreen() {
   </Head>
   !admin.loading && admin.admin ? (
     <div style={{ paddingTop: "2rem" }}>
-      <div class="container bootstrap snippets bootdey">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="panel panel-primary">
-              <div class="panel-heading">
-                <h3 class="panel-title text-center m-5">
-                  <span class="glyphicon glyphicon-bookmark"></span> Admin Panel View
+      <div className="container bootstrap snippets bootdey">
+        <div className="row">
+          <div className="col-md-12">
+            <div className="panel panel-primary">
+              <div className="panel-heading">
+                <h3 className="panel-title text-center m-5">
+                  <span className="glyphicon glyphicon-bookmark"></span> Admin Panel View
                 </h3>
               </div>
-              <div class="panel-body">
-                <div class="row">
-                  <div class="col-xs-12 col-md-12 text-center text-white">
+              <div className="panel-body">
+                <div className="row">
+                  <div className="col-xs-12 col-md-12 text-center text-white">
                     <a
-                      class="btn btn-primary btn-lg "
+                      className="btn btn-primary btn-lg "
                       style={{ margin: "1rem" }}
                       role="button"
                       onClick={() => {
                         setSel({ users: true });
                       }}
                     >
-                      <span class="glyphicon glyphicon-list-alt"></span>
+                      <span className="glyphicon glyphicon-list-alt"></span>
                       Users
                     </a>
                     <a
-                      class="btn btn-primary btn-lg"
+                      className="btn btn-primary btn-lg"
                       style={{ margin: "1rem" }}
                       role="button"
                       onClick={() => {
                         setSel({ muxp: true });
                       }}
                     >
-                      <span class="glyphicon glyphicon-bookmark"></span>
+                      <span className="glyphicon glyphicon-bookmark"></span>
                       Modify Users XP
                     </a>
                     <a
-                      class="btn btn-primary btn-lg"
+                      className="btn btn-primary btn-lg"
                       style={{ margin: "1rem" }}
                       role="button"
                       onClick={() => {
                         setSel({ mut: true });
                       }}
                     >
-                      <span class="glyphicon glyphicon-signal"></span>
+                      <span className="glyphicon glyphicon-signal"></span>
                       Modify Users Title
                     </a>
                     <a
-                      class="btn btn-primary btn-lg"
+                      className="btn btn-primary btn-lg"
                       style={{ margin: "1rem" }}
                       role="button"
                       onClick={() => {
                         setSel({ rup: true });
                       }}
                     >
-                      <span class="glyphicon glyphicon-signal"></span>
+                      <span className="glyphicon glyphicon-signal"></span>
                       Reset User Password
                     </a>
                     <a
-                      class="btn btn-primary btn-lg"
+                      className="btn btn-primary btn-lg"
                       style={{ margin: "1rem" }}
                       role="button"
                       onClick={() => {
                         setSel({ channels: true });
                       }}
                     >
-                      <span class="glyphicon glyphicon-comment"></span>
+                      <span className="glyphicon glyphicon-comment"></span>
                       Channels
                     </a>
                     <a
-                      class="btn btn-primary btn-lg"
+                      className="btn btn-primary btn-lg"
                       style={{ margin: "1rem" }}
                       role="button"
                       onClick={() => {
                         setSel({ mod: true });
                       }}
                     >
-                      <span class="glyphicon glyphicon-comment"></span>
+                      <span className="glyphicon glyphicon-comment"></span>
                       Site Moderators
                     </a>
                     <a
-                      class="btn btn-primary btn-lg"
+                      className="btn btn-primary btn-lg"
                       style={{ margin: "1rem" }}
                       role="button"
                       onClick={() => {
                         setSel({ addmod: true });
                       }}
                     >
-                      <span class="glyphicon glyphicon-comment"></span>
+                      <span className="glyphicon glyphicon-comment"></span>
                       Add Site Moderator
                     </a>
                   </div>

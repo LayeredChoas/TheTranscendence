@@ -65,12 +65,12 @@ export default function UserBar(params) {
       <Row>
         <Col>
           <div
-            class="user text-center"
+            className="user text-center"
             id={params.user.username}
             style={{ position: "relative", left: "1rem", top: "0rem" }}
           ></div>
-          <p class="name-time text-center" style={{ marginLeft: "-8rem" }}>
-            <span class="name">{params.user.username}</span>
+          <p className="name-time text-center" style={{ marginLeft: "-8rem" }}>
+            <span className="name">{params.user.username}</span>
           </p>
           <div
             style={{
@@ -80,7 +80,7 @@ export default function UserBar(params) {
               right: "1rem",
             }}
           >
-            <i class="fas fa-columns" onClick={RemoveChannel}></i>
+            <i className="fas fa-columns" onClick={RemoveChannel}></i>
           </div>
         </Col>
       </Row>

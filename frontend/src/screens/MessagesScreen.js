@@ -57,24 +57,24 @@ export default function MessagesScreen() {
       <Head>
         <title>Messages</title>
       </Head>
-      <div class="container text-black pt-5">
-        <div class="page-title">
-          <div class="row gutters">
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
-              <h5 class="title">Friends Chat</h5>
+      <div className="container text-black pt-5">
+        <div className="page-title">
+          <div className="row gutters">
+            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12">
+              <h5 className="title">Friends Chat</h5>
             </div>
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12"> </div>
+            <div className="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12"> </div>
           </div>
         </div>
 
-        <div class="content-wrapper">
-          <div class="row gutters">
-            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-              <div class="card message-card m-0">
-                <div class="row no-gutters">
-                  <div class="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3">
-                    <div class="users-container">
-                      <ul class="users">
+        <div className="content-wrapper">
+          <div className="row gutters">
+            <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+              <div className="card message-card m-0">
+                <div className="row no-gutters">
+                  <div className="col-xl-4 col-lg-4 col-md-4 col-sm-3 col-3">
+                    <div className="users-container">
+                      <ul className="users">
                         {users.loaded && users.data && users.data.length > 0
                           ? users.data.map((u) => {
                               if (u.status === "Online") u.status = "online";
@@ -92,7 +92,7 @@ export default function MessagesScreen() {
                     </div>
                   </div>
 
-                  <div class="col-xl-8 col-lg-8 col-md-8 col-sm-9 col-9">
+                  <div className="col-xl-8 col-lg-8 col-md-8 col-sm-9 col-9">
                     <ChatBox
                       msg={messages}
                       rerender={GetUserMessages}

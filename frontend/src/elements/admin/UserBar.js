@@ -101,14 +101,14 @@ export default function UserBar(params) {
       <Row>
         <Col>
           <div
-            class="user"
+            className="user"
             id={params.user.username}
             style={{ position: "absolute", left: "1rem", top: "-0.41rem" }}
           >
             <img src={avatar} alt={params.user.username} />
           </div>
-          <p class="name-time">
-            <span class="name">{params.user.username}</span>
+          <p className="name-time">
+            <span className="name">{params.user.username}</span>
           </p>
           <div
             style={{
@@ -118,8 +118,8 @@ export default function UserBar(params) {
               right: "1rem",
             }}
           >
-            <i class="far fa-envelope p-1" onClick={SendMessage}></i>
-            <i class="fas fa-user-times p-1 " onClick={RemoveUser}></i>
+            <i className="far fa-envelope p-1" onClick={SendMessage}></i>
+            <i className="fas fa-user-times p-1 " onClick={RemoveUser}></i>
           </div>
         </Col>
       </Row>

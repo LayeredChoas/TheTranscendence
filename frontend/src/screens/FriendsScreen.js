@@ -30,7 +30,7 @@ export default function FriendsScreen() {
       <Head>
         <title>Friends</title>
       </Head>
-      <div class="row my-2">
+      <div className="row my-2">
         {!friends
           ? null
           : friends.friends.map((f) => {
