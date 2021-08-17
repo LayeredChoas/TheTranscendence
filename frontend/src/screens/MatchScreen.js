@@ -132,6 +132,11 @@ export default function MatchScreen() {
             error: true,
             message: "Enter A Valid Player Username",
           });
+          if (val.data.message && val.data.message === "match")
+          return setMsg({
+            error: true,
+            message: "You Already Have A Pending Match, Chill...",
+          });
           if (val.data.message && val.data.message === "xp")
           return setMsg({
             error: true,

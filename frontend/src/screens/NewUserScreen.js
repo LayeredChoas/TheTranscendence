@@ -20,11 +20,11 @@ export default function NewUserScreen() {
 
   async function FormSubmit(e) {
     e.preventDefault();
-    if (pass.current.value != passg.current.value)
-      return setError("Password Didn't Match");
-    if (passg.current.value.length < 5)
-      return setError("Password Can't be Less Than 5 Characters");
     try {
+      if (pass.current.value != passg.current.value)
+        return setError("Password Didn't Match");
+      if (passg.current.value.length < 5)
+        return setError("Password Can't be Less Than 5 Characters");
       const val = await axios.post(
         publicRuntimeConfig.BACKEND_URL + "/change_password",
         {

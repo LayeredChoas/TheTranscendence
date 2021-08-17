@@ -11,21 +11,34 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { createReadStream } from 'fs';
+import inputValidation from 'src/inputValidation/inputValidation.service';
 import { UsersService } from './users.service';
 
 @Controller()
 export default class UsersController {
-  constructor(private readonly usersservice: UsersService) {}
-
+  constructor(
+    private readonly usersservice: UsersService,
+    private readonly inputvalidation: inputValidation,
+  ) {}
 
   @Post('/create_user')
-  create_user(@Body() b)
-  {
-    return this.usersservice.create_user(b)
+  create_user(@Body() b) {
+    return this.usersservice.create_user(b);
   }
   @Post('/login')
   user_login(@Body() b) {
-    return this.usersservice.user_login(b);
+    const { username, password } = b;
+    if (
+      this.inputvalidation.usernameValidation(username) &&
+      this.inputvalidation.passwordValidation(password)
+    )
+      return this.usersservice.user_login(b);
+    return {
+      id: -1,
+      error: 'Bad Info',
+      username: undefined,
+      token: undefined,
+    };
   }
 
   @Post('/change_password')
@@ -46,7 +59,11 @@ export default class UsersController {
 
   @Post('/change_username')
   change_username(@Body() b) {
-    return this.usersservice.change_username(b);
+    if (this.inputvalidation.usernameValidation(b.data.username))
+      return this.usersservice.change_username(b);
+    return {
+      id: -1,
+    };
   }
 
   @Delete('/delete_user')
@@ -61,15 +78,13 @@ export default class UsersController {
   }
 
   @Post('/change_title')
-  change_title(@Body() b)
-  {
-    return this.usersservice.change_title(b.data.user, b.data.title)
+  change_title(@Body() b) {
+    return this.usersservice.change_title(b.data.user, b.data.title);
   }
 
   @Post('/user/info')
-  get_user_info(@Body() b)
-  {
-    console.log(b)
-    return this.usersservice.get_user_info(b.data)
+  get_user_info(@Body() b) {
+    console.log(b);
+    return this.usersservice.get_user_info(b.data);
   }
 }

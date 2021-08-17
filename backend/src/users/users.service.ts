@@ -122,6 +122,7 @@ export class UsersService {
   /* Read User */
   async user_login(b) {
     const { username, password } = b;
+    console.log(b)
     if (!username || !password)
       return {
         id: -1,

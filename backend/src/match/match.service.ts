@@ -207,6 +207,11 @@ export default class MatchService {
             id: p2,
           },
         });
+        if (mas.player1 == p2)
+          return {
+            id: -1,
+            message: "match"
+          }
         if (u2.rating < mas.reward)
           return {
             id: -1,

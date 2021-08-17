@@ -34,13 +34,6 @@ export default function ChangeDisplayName() {
         type: "alert-danger",
         message: "WTF, That's Your Display Name Already....",
       });
-      // +(?<![_.])$
-    const re = /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})([^-\s])$/;
-    if (!re.test(displayname))
-      return setError({
-        type: "alert-danger",
-        message: "Enter A Valid Display Name",
-      });
     try {
       const res = await axios.post(publicRuntimeConfig.BACKEND_URL + "/change_username", {
         data: {
