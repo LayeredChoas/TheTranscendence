@@ -6,6 +6,7 @@ import { userContext } from "../context/AuthProvider";
 // import "./../css_files/FriendsScreen.css";
 import FactorScreen from "./FactorScreen";
 import getConfig from "next/config";
+import Head from "next/head";
 const { publicRuntimeConfig } = getConfig();
 
 export default function FriendsRequestScreen() {
@@ -33,6 +34,11 @@ export default function FriendsRequestScreen() {
   if (!friends) GetFriendsRequest();
   return (
     <div className="container py-4">
+      <Head>
+        <title>
+          Friends Requests
+        </title>
+      </Head>
       <div class="row my-2">
         {!friends
           ? null

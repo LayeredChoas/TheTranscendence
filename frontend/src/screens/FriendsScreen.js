@@ -5,6 +5,7 @@ import UserNotLogged from "../elements/UserNotLogged";
 import { userContext } from "../context/AuthProvider";
 import FactorScreen from "./FactorScreen";
 import getConfig from "next/config";
+import Head from "next/head";
 const { publicRuntimeConfig } = getConfig();
 
 export default function FriendsScreen() {
@@ -25,14 +26,17 @@ export default function FriendsScreen() {
 
   if (!friends) GetFriends();
   return (
-      <div className="container py-4">
-        <div class="row my-2">
-          {!friends
-            ? null
-            : friends.friends.map((f) => {
-                return <FriendElement user={f}></FriendElement>;
-              })}
-        </div>
+    <div className="container py-4">
+      <Head>
+        <title>Friends</title>
+      </Head>
+      <div class="row my-2">
+        {!friends
+          ? null
+          : friends.friends.map((f) => {
+              return <FriendElement user={f}></FriendElement>;
+            })}
       </div>
-    )
+    </div>
+  );
 }

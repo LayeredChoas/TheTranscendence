@@ -10,6 +10,7 @@ import battlePic from "./../css_files/img/battle.png";
 import Image from "next/image";
 import getConfig from "next/config";
 import { setRef } from "@material-ui/core";
+import Head from "next/head";
 const { publicRuntimeConfig } = getConfig();
 
 let username_val;
@@ -465,7 +466,7 @@ export default function GameScreen(params) {
           });
 
           socket.on("FullCurrentGame", (data) => {
-            console.log('Got The Game')
+            console.log("Got The Game");
             /* Reseting The Ball */
             pong._ball.pos.x = data.data.BallPosX;
             pong._ball.pos.y = data.data.BallPosY;
@@ -499,7 +500,7 @@ export default function GameScreen(params) {
               u: pong._user,
             });
           });
-          console.log('want the game')
+          console.log("want the game");
           socket.emit("GetCurrentGame", {
             data: {
               gameId: params.gameId,
@@ -563,15 +564,13 @@ export default function GameScreen(params) {
     }
   }
 
-  // useEffect(() => {
-  //   setTurn({
-  //     gamesnum: gamesnum,
-  //     ingame: ingame,
-  //     u,
-  //   });
-  // }, []);
   return user.user ? (
     <div className="container text-center text-black">
+      <Head>
+        <title>
+          {params.data.player1} VS {params.data.player2}
+        </title>
+      </Head>
       <Col style={{ marginLeft: "-1.7rem" }}>
         <h3 className="m-2">
           <div className="mr-3" style={{ display: "inline-block" }}>

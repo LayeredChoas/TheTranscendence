@@ -8,6 +8,7 @@ import UserNotLogged from "../elements/UserNotLogged";
 import FactorScreen from "./FactorScreen";
 import Router from "next/router";
 import getConfig from "next/config";
+import Head from "next/head";
 const { publicRuntimeConfig } = getConfig();
 
 export default function NewUserScreen() {
@@ -43,6 +44,11 @@ export default function NewUserScreen() {
   }
   return (
     <main className="my-form UserForm">
+      <Head>
+        <title>
+          New User
+        </title>
+      </Head>
       <div className="cotainer">
         <div className="row justify-content-center">
           <div className="col-md-8">

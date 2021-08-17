@@ -13,6 +13,7 @@ const { publicRuntimeConfig } = getConfig();
 import { socket } from "./../../pages/_app";
 import { useRouter } from "next/router";
 import LoginBar from "../elements/LoginBar";
+import Head from "next/head";
 
 export default function MatchScreen() {
   const [title, setTitle] = useState(false);
@@ -185,9 +186,20 @@ export default function MatchScreen() {
   }
 
   return loadingmatch.id ? (
-    <LoadingMatch user={loadingmatch.username}></LoadingMatch>
+    <LoadingMatch user={loadingmatch.username}>
+      <Head>
+        <title>
+          Loading Match
+        </title>
+      </Head>
+    </LoadingMatch>
   ) : (
     <div className="text-black text-center MatchScreenitems">
+      <Head>
+        <title>
+          New Game
+        </title>
+      </Head>
       {err.type && err.message ? (
         <LoginBar type={err.type} message={err.message}></LoginBar>
       ) : null}

@@ -14,6 +14,8 @@ import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
 import Router from "next/router";
 import { socket } from "../../pages/_app";
+import Head from "next/head";
+
 let p = false;
 
 export default function ChannelScreen(params) {
@@ -214,6 +216,11 @@ export default function ChannelScreen(params) {
   }, [name]);
   return (
     <div className="container text-black main-body">
+      <Head>
+        <title>
+          Channel {name}
+        </title>
+      </Head>
       <h1>Channel Screen</h1>
       {banned_u ? (
         <h1>You Can't Access This Channel</h1>

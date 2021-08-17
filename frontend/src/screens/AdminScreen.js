@@ -13,7 +13,7 @@ import AdminChannels from "../elements/admin/AdminChannels";
 import AdminMod from "../elements/admin/AdminMod";
 import AdminAddMod from "../elements/admin/AdminAddMod";
 const { publicRuntimeConfig } = getConfig();
-
+import Head from 'next/head'
 export default function AdminScreen() {
   const { user } = useContext(userContext);
   const [sel, setSel] = useState({
@@ -45,7 +45,13 @@ export default function AdminScreen() {
       return setAdmin({ loading: false, admin: false });
     }
   }, [user.user]);
-  return !admin.loading && admin.admin ? (
+  return <>
+  <Head>
+    <title>
+      Admin Page
+    </title>
+  </Head>
+  !admin.loading && admin.admin ? (
     <div style={{ paddingTop: "2rem" }}>
       <div class="container bootstrap snippets bootdey">
         <div class="row">
@@ -159,4 +165,5 @@ export default function AdminScreen() {
       </div>
     </div>
   ) : null;
+  </>
 }

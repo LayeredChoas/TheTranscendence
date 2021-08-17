@@ -16,5 +16,11 @@ export default function LogoutScreen() {
     });
     Router.push("/");
   }, []);
-  return <div />;
+  return <div>
+    <Head>
+      <title>
+        Logout
+      </title>
+    </Head>
+  </div>;
 }

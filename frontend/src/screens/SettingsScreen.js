@@ -8,6 +8,7 @@ import DeleteAccount from "../settings/DeleteAccount";
 import ChangeTitle from "../settings/ChangeTitle";
 import FactorAuth from "../settings/FactorAuth";
 import FactorScreen from "./FactorScreen";
+import Head from "next/head";
 
 
 
@@ -36,6 +37,11 @@ export default function SettignsScreen() {
   }
   return (
     <div class="container light-style flex-grow-1 container-p-y">
+     <Head>
+       <title>
+         Settings
+       </title>
+       </Head>
       <h4 class="font-weight-bold py-3 mb-4 text-black">Account settings</h4>
 
       <div class="card overflow-hidden">

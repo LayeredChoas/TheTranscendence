@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
 import UserLadder from "./../elements/UserLadder";
+import Head from "next/head";
 function sort_by_key(array, key) {
   return array.sort(function (a, b) {
     var x = a[key];
@@ -28,6 +29,11 @@ export default function LadderScreen() {
   let v = 0;
   return (
     <div className="text-center" style={{ width: "100%", margin: "auto" }}>
+      <Head>
+        <title>
+          Ladder
+        </title>
+      </Head>
       {users ? (
         <div class="container mt-3 mb-4">
           <div class="mt-4 mt-lg-0">

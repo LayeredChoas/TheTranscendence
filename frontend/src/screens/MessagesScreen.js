@@ -4,11 +4,11 @@ import { useContext, useEffect, useRef, useState } from "react";
 import ChatBox from "../elements/ChatBox";
 import UserBlob from "../elements/UserBlob";
 import UserNotLogged from "../elements/UserNotLogged";
-import {userContext} from '../context/AuthProvider';
+import { userContext } from "../context/AuthProvider";
 import FactorScreen from "./FactorScreen";
 import getConfig from "next/config";
+import Head from "next/head";
 const { publicRuntimeConfig } = getConfig();
-
 
 export default function MessagesScreen() {
   const { user } = useContext(userContext);
@@ -21,7 +21,9 @@ export default function MessagesScreen() {
 
   async function GetUsers() {
     try {
-      const val = await axios.get(publicRuntimeConfig.BACKEND_URL + `/${user.user}/friends`);
+      const val = await axios.get(
+        publicRuntimeConfig.BACKEND_URL + `/${user.user}/friends`
+      );
       if (!val || val.data.id <= 0) return;
       setUsers({
         loaded: true,
@@ -33,12 +35,15 @@ export default function MessagesScreen() {
   }
   async function GetUserMessages(e) {
     try {
-      const val = await axios.post(publicRuntimeConfig.BACKEND_URL + "/messages", {
-        data: {
-          username: user.user,
-          user_msg: e,
-        },
-      });
+      const val = await axios.post(
+        publicRuntimeConfig.BACKEND_URL + "/messages",
+        {
+          data: {
+            username: user.user,
+            user_msg: e,
+          },
+        }
+      );
       if (!val || val.data.id < 0) return;
       setMessages(val.data);
     } catch (error) {
@@ -49,6 +54,9 @@ export default function MessagesScreen() {
 
   return (
     <div>
+      <Head>
+        <title>Messages</title>
+      </Head>
       <div class="container text-black pt-5">
         <div class="page-title">
           <div class="row gutters">
@@ -97,5 +105,5 @@ export default function MessagesScreen() {
         </div>
       </div>
     </div>
-  )
+  );
 }

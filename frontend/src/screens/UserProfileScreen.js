@@ -9,6 +9,7 @@ import UserNotLogged from "../elements/UserNotLogged";
 import FactorScreen from "./FactorScreen";
 import Router from "next/router";
 import getConfig from "next/config";
+import Head from "next/head";
 const { publicRuntimeConfig } = getConfig();
 
 function UserProfileScreen(param) {
@@ -179,6 +180,9 @@ function UserProfileScreen(param) {
       ) : null}
       {userdata.id > 0 && userprofile ? (
         <div class="container bootstrap snippets bootdey">
+          <Head>
+            <title>Profile {userdata.data.username} </title>
+          </Head>
           <div class="row">
             <div class="profile-nav col-md-3">
               <div class="card">

@@ -6,6 +6,7 @@ import { auth } from "../functions/auth";
 import { userContext } from "../context/AuthProvider";
 import Router from "next/router";
 import getConfig from "next/config";
+import Head from "next/head";
 const { publicRuntimeConfig } = getConfig();
 
 function RedirectScreen(params) {
@@ -54,10 +55,15 @@ function RedirectScreen(params) {
           SetUser(true);
         }
       }
-    }, 5000);
+    }, 3000);
   }, []);
   return (
     <Container>
+      <Head>
+        <title>
+          Redirect Page
+        </title>
+      </Head>
       <Row>
         <Col></Col>
         <Col className="Register">

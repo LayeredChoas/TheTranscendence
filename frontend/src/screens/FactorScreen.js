@@ -4,6 +4,7 @@ import { Container, Form } from "react-bootstrap";
 import LoginBar from "../elements/LoginBar";
 import {userContext} from '../context/AuthProvider';
 import getConfig from "next/config";
+import Head from "next/head";
 const { publicRuntimeConfig } = getConfig();
 
 
@@ -85,6 +86,11 @@ export default function FactorScreen() {
   }
   return (
     <div>
+      <Head>
+        <title>
+        Factor Authentication
+        </title>
+      </Head>
       <div className="text-center p-2">
         {er.id ? (
           <LoginBar type={er.type} message={er.message}></LoginBar>

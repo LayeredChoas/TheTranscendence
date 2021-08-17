@@ -27,6 +27,7 @@ import FactorScreen from "./FactorScreen";
 import Router from "next/router";
 import getConfig from "next/config";
 import LoginBar from "../elements/LoginBar";
+import Head from "next/head";
 const { publicRuntimeConfig } = getConfig();
 
 const useStyles = makeStyles((theme) => ({
@@ -177,6 +178,11 @@ export default function ChannelsScreen() {
   if (channels.length === 0 && !g_channel) get_channels();
   return (
     <Container>
+      <Head>
+        <title>
+          Channels
+        </title>
+      </Head>
       {s_inside ? (
         <LoginBar
           type="alert-success"

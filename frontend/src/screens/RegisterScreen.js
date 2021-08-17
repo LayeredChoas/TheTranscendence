@@ -4,6 +4,7 @@ import { useHistory } from "react-router";
 import Router from "next/router";
 import { useEffect } from "react";
 import getConfig from "next/config";
+import Head from "next/head";
 
 
 export default function RegisterScreen() {
@@ -26,6 +27,11 @@ export default function RegisterScreen() {
   }, []);
   return (
     <div className="container">
+      <Head>
+        <title>
+          Register
+        </title>
+      </Head>
       <div className="row Register">
         <div className="col align-self-start">{/* One of three columns */}</div>
         <div className="col">
