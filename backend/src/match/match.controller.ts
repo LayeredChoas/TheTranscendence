@@ -17,15 +17,15 @@ export default class MatchController {
   @Post('/create_match')
   create_match(@Body() b) {
     const { player1, player2 } = b.data;
-
+    console.log(b)
     if (
-      player1 == player2 ||
       !this.inputvalidation.usernameValidation(player1) ||
       !this.inputvalidation.usernameValidation(player2)
     )
       return {
         id: -1,
       };
+    console.log("done")
     return this.matchservice.create_match(b);
   }
 

@@ -63,6 +63,11 @@ export default class MatchService {
   async create_match(b) {
     try {
       console.log(b);
+      if (b.data.player1 == b.data.player2)
+        return {
+          id: -1,
+          message:"same"
+        }
       const p1 = await user.findUnique({
         where: {
           username: b.data.player1,
@@ -74,7 +79,7 @@ export default class MatchService {
         },
       });
       const gameId = uuidv4();
-      if (p1.id < 0 || p2.id < 0)
+      if (!p1 || !p2 || p1.id < 0 || p2.id < 0)
         return {
           id: -1,
           message: 'user',

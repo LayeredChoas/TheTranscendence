@@ -32,6 +32,7 @@ export default function FriendsRequestScreen() {
   }
 
   if (!friends) GetFriendsRequest();
+  console.log(friends)
   return (
     <div className="container py-4">
       <Head>
@@ -40,8 +41,8 @@ export default function FriendsRequestScreen() {
         </title>
       </Head>
       <div className="row my-2">
-        {!friends
-          ? null
+        {!friends || friends.length == 0
+          ? <div className="text-center"> No friend requests at the moment (try to go out more)</div>
           : friends.map((f) => {
               return (
                 <FriendRequestElement

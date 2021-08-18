@@ -16,11 +16,6 @@ export default function FactorAuth() {
     message: "",
   });
   const pass = useRef();
-  function validateEmail(email) {
-    const re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-  }
 
   async function AddAuth(e) {
     const email = em.current.value;
@@ -31,7 +26,7 @@ export default function FactorAuth() {
       type: "",
       message: "",
     });
-    if (!email || !validateEmail(email))
+    if (!email)
       return setErr({
         id: true,
         type: "alert-danger",

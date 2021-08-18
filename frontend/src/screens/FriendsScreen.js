@@ -32,7 +32,7 @@ export default function FriendsScreen() {
       </Head>
       <div className="row my-2">
         {!friends
-          ? null
+          ? <div className="text-center"> You have no friends <b></b>(sad noises playing in the background)</div>
           : friends.friends.map((f) => {
               return <FriendElement user={f}></FriendElement>;
             })}

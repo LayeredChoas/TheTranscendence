@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Router from "next/router";
 import { useContext, useEffect } from "react";
 import { Redirect, useHistory } from "react-router";

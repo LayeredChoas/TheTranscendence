@@ -1,0 +1,30 @@
+
+version: "3.8"  # optional since v1.27.0
+services:
+  node:
+    container_name: "nodejspost"
+    build: .
+    depends_on:
+      - postgresqls
+    ports:
+      - "3000:3000"
+      - "5000:5000"
+    networks:
+      - default  
+    command: "npm run dev"
+  postgresqls:
+    container_name: "postgresqlpostgis"
+    image: "postgis/postgis"
+    ports: 
+      - "5432:5432"
+    volumes:
+       - db_persdata:/var/lib/postgrespers
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ayoub
+    networks:
+      - default
+networks:
+  default:
+volumes:
+  db_persdata : {}

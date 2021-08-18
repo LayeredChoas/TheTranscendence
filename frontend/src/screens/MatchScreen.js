@@ -70,8 +70,7 @@ export default function MatchScreen() {
       !username_var ||
       !username_var.current.value ||
       (username_var.current.value.length < 5 &&
-        username_var.current.value != "Rand") ||
-      username_var.current.value === user.user
+        username_var.current.value != "Rand")
     )
       return setMsg({
         error: true,
@@ -132,6 +131,11 @@ export default function MatchScreen() {
           return setMsg({
             error: true,
             message: "Enter A Valid Player Username",
+          });
+          if (val.data.message && val.data.message === "same")
+          return setMsg({
+            error: true,
+            message: "Hmmm so you want to play with yourself, I believe you got the wrong website",
           });
           if (val.data.message && val.data.message === "match")
           return setMsg({
