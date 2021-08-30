@@ -47,7 +47,6 @@ function MyApp({ Component, pageProps }) {
   useEffect(async () => {
     setUser(await auth());
   }, []);
-  console.log("socket", socket, " ==> passed url: ", publicRuntimeConfig.BACKEND_URL)
   return (
     <>
       <Head>
