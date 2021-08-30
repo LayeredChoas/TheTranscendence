@@ -31,7 +31,7 @@
     "react-pong": "^1.1.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "react-search-autocomplete": "^5.2.2",
+    "react-search-autocomplete": "^5.4.2",
     "redux": "^4.1.0",
     "socket.io": "^1.7",
     "socket.io-client": "^2.0",

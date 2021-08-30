@@ -13,6 +13,7 @@ export default function RegisterScreen() {
   useEffect(async () => {
     try {
       const { publicRuntimeConfig } = getConfig();
+      console.log(publicRuntimeConfig.BACKEND_URL + "/auth_link")
       const val = await axios.get(publicRuntimeConfig.BACKEND_URL + "/auth_link");
       const authlink = val.data;
       console.log(authlink);
