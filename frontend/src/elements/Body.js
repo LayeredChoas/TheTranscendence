@@ -1,4 +1,3 @@
-// import "../../pages/Main.css"
 import Footer from "./Footer";
 
 import styles from "./../css_files/main.module.css";
@@ -23,8 +22,8 @@ function Body() {
             }
           >
             <div className="container">
-              <h1>ft_transcendence.</h1>
-              <p className="lead">
+              <h1 style={{color:"#f4f4f4"}} className={styles.over}>ft_transcendence.</h1>
+              <p className="lead" style={{color:"#f4f4f4"}}>
                 {" "}
                 In this subject you will need to build a website for the mighty
                 pong contest. Your website will help user run pong tournament
@@ -43,7 +42,7 @@ function Body() {
             </div>
           </main>
 
-          <div>
+          <div style={{backgroundColor:"#b4b4b4"}}>
             <header id="main-header">
               <div className={styles.contwrap}>
                 <h1>
@@ -63,12 +62,9 @@ function Body() {
                         <div className={styles.timelineicon}>
                           <i className="fa fa-globe"></i>
                         </div>
-                        <h3 className="title">Web Designing</h3>
+                        <h3 className="title" style={{wordWrap: "break-word"}}>Client Side</h3>
                         <p className="description">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit. Integer males uada tellus lorem, et condimentum
-                          neque commodo Integer males uada tellus lorem, et
-                          condimentum neque commodo
+                          The frontend was coded using NextJS, Next.js is an open-source development framework built on top of Node.js enabling React based web applications functionalities such as server-side rendering and generating static websites. React documentation mentions Next.js among "Recommended Toolchains" advising it to developers as a solution when "building a server-rendered website with Node.js".[4] Traditional React apps render all their content in the client-side browser, Next.js is used to extend this functionality to include applications rendered on the server side.
                         </p>
                       </a>
                     </div>
@@ -77,12 +73,11 @@ function Body() {
                         <div className={styles.timelineicon}>
                           <i className="fa fa-rocket"></i>
                         </div>
-                        <h3 className="title">Web Development</h3>
+                        <h3 className="title" style={{wordWrap: "break-word"}}>Server Side</h3>
                         <p className="description">
-                          Lorem ipsum dolor sit amet, consectetur adipiscing
-                          elit. Integer males uada tellus lorem, et condimentum
-                          neque commodo Integer males uada tellus lorem, et
-                          condimentum neque commodo
+                        The backend was coded using NestJS, Nest (NestJS) is a framework for building efficient, scalable Node.js server-side applications. It uses progressive JavaScript, is built with and fully supports TypeScript (yet still enables developers to code in pure JavaScript) and combines elements of OOP (Object Oriented Programming), FP (Functional Programming), and FRP (Functional Reactive Programming).
+
+Under the hood, Nest makes use of robust HTTP Server frameworks like Express (the default) and optionally can be configured to use Fastify as well!
                         </p>
                       </a>
                     </div>

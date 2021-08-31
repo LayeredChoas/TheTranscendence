@@ -7,7 +7,8 @@ services:
             context: ./frontend/
         image: app/frontend
         volumes:
-            - ./frontend:/frontend
+            - ./frontend/:/app
+            - /app/node_modules
         ports:
             - 3000:3000
         env_file:
@@ -21,7 +22,8 @@ services:
             context: ./backend/
         image: app/backend
         volumes:
-            - ./backend:/backend
+            - ./backend/:/app
+            - /app/node_modules
         ports:
             - 5000:5000
             - 5555:5555

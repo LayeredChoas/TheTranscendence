@@ -39,7 +39,6 @@ function UserProfileScreen(param) {
           me: user.user,
         },
       });
-      console.log("Deep", val);
       if (!val || val.data.id === -1)
         return setUserdata({
           id: -1,
