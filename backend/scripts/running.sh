@@ -8,12 +8,7 @@ npm run build
 pm2 start npm --name "backend" -- run start:prod
 
 # Viewing The Database
-# npx prisma studio &
+npx prisma studio &
 
 # Backend Logs
 pm2 logs
-
-while :
-do
-	echo "" > /dev/null
-done
