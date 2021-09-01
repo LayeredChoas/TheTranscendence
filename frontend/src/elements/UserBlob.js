@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { socket } from "../../pages/_app";
 import Router from "next/router";
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
 
 export default function UserBlob(params) {
   const [avatar, setAvatar] = useState(false);
@@ -25,7 +27,9 @@ export default function UserBlob(params) {
             setAvatar(imgObjectURL);
           }
         });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error.message);
+    }
   }
   const v = window.location?.hash.substring(1);
 

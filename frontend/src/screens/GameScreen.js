@@ -93,7 +93,6 @@ class Pong {
     this._players = [new Player(), new Player()];
     this.reset();
     this.socketOn();
-    let v_time = 0;
     let lasttime, lasttimev1;
     this.socket = socket;
     let callback = (millis) => {
@@ -113,8 +112,12 @@ class Pong {
       this._ball.left <= player.right
     ) {
       this._ball.vel.x = -ball.vel.x;
-      this._ball.vel.x *= player._hit_power;
-      this._ball.vel.y *= player._hit_power;
+      if (this._ball.vel.x >= -1800 && this._ball.vel.x <= 1800 )
+        this._ball.vel.x *= player._hit_power;
+      if (this._ball.vel.y >= -1800 && this._ball.vel.y <= 1800 )
+        this._ball.vel.y *= player._hit_power;
+      console.log(this._ball.vel.x)
+      console.log(this._ball.vel.y)
     }
   }
   collide_p2(player, ball) {
@@ -124,8 +127,12 @@ class Pong {
       this._ball.right >= player.left
     ) {
       this._ball.vel.x = -ball.vel.x;
-      this._ball.vel.x *= player._hit_power;
-      this._ball.vel.y *= player._hit_power;
+      if (this._ball.vel.x >= -1800 && this._ball.vel.x <= 1800 )
+        this._ball.vel.x *= player._hit_power;
+      if (this._ball.vel.y >= -1800 && this._ball.vel.y <= 1800 )
+        this._ball.vel.y *= player._hit_power;
+      console.log(this._ball.vel.x)
+      console.log(this._ball.vel.y)
     }
   }
   drawScore() {
@@ -230,27 +237,6 @@ class Pong {
           gameId: this._gameId,
         },
       });
-    // if (this._user === 0 || this._user === 1) {
-    //   socket.emit("rest_game", {
-    //     data: {
-    //       ball: this._ball,
-    //       players: this._players,
-    //       user: username_val,
-    //       gamesnum: this._gamesnum,
-    //       gameId: this._gameId,
-    //     },
-    //   });
-
-    // }
-    // socket.on("rest_game_vals", (data) => {
-    //   if (data.data.gameId === this._gameId) {
-    //     this._players[0]._score = data.data.players[0]._score;
-    //     this._players[1]._score = data.data.players[1]._score;
-    //     this._gamesnum = data.data.gamesnum;
-
-    //     gamesnum = data.data.gamesnum;
-    //   }
-    // });
     socket.on("update_powers", (data) => {
       if (data.data.gameId === this._gameId) {
         if (this._players[0].size.y < 200)
@@ -282,14 +268,7 @@ class Pong {
     }
     this.collide_p1(this._players[0], this._ball);
     this.collide_p2(this._players[1], this._ball);
-
     this.v_time += dt;
-    // if (this.v_time >= 1 && (this._user == 0 || this._user == 1)) {
-    //   socket.emit("update_ball", {
-    //     data: { ball: this._ball, gameId: this._gameId },
-    //   });
-    //   v_time = 0;
-    // }
     this.draw();
   }
 }

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Router from "next/router";
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
 
 export default function FriendElement(props) {
   const [avatar, setAvatar] = useState(false);
@@ -8,10 +10,10 @@ export default function FriendElement(props) {
       const p = s.split("/uploads/")[1];
       if (!p) {
         setAvatar(s);
-        return s;
+        return "";
       }
       const path = publicRuntimeConfig.BACKEND_URL + "/uploads/" + p;
-      const val = fetch(path)
+      fetch(path)
         .then(function (response) {
           return response.blob();
         })
@@ -19,10 +21,8 @@ export default function FriendElement(props) {
           let imgObjectURL = URL.createObjectURL(res);
           if (imgObjectURL) {
             setAvatar(imgObjectURL);
-            return imgObjectURL;
           }
         });
-      return val;
     } catch (error) {
       console.log(error.message);
     }

@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
 
 export default function RightMessage(m) {
   const [avatar, setAvatar] = useState(false);
@@ -20,10 +22,12 @@ export default function RightMessage(m) {
             setAvatar(imgObjectURL);
           }
         });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error.message);
+    }
   }
-  useEffect(() => {
-    get_av(m.avatar);
+  useEffect(async () => {
+    await get_av(m.avatar);
   }, [m.user]);
   const d = new Date(m.msg.createdAt);
   return (
@@ -47,7 +51,7 @@ export default function RightMessage(m) {
           fontWeight: "300",
           lineHeight: "150%",
           position: "relative",
-          wordWrap:"break-word"
+          wordWrap: "break-word",
         }}
       >
         {m.msg.message}
