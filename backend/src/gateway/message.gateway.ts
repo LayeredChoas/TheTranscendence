@@ -368,7 +368,6 @@ export class MessageGateway
         connectd_users[index].socket.rooms[payload.data.gameId]
       )
       {
-        console.log(connectd_users[index].name, " Score")
         connectd_users[index].socket.emit('PlayersScored', { data: ret.data });
       }
     }

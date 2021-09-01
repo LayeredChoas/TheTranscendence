@@ -17,7 +17,6 @@ export default function RightMessage(m) {
         .then(function (res) {
           let imgObjectURL = URL.createObjectURL(res);
           if (imgObjectURL) {
-            console.log(imgObjectURL);
             setAvatar(imgObjectURL);
           }
         });

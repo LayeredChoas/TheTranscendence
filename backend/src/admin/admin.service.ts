@@ -7,7 +7,6 @@ const { user, friendship, channel } = new PrismaClient();
 export default class AdminService {
   constructor(private readonly userservice: UsersService) {}
   async send_message(b) {
-    console.log(b);
     try {
       const u = await user.findUnique({
         where: {
@@ -103,7 +102,6 @@ export default class AdminService {
 
   async change_xp(b) {
     try {
-      console.log(b);
       const u = await user.findUnique({
         where: {
           username: b.username,

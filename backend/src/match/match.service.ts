@@ -62,7 +62,6 @@ export default class MatchService {
 
   async create_match(b) {
     try {
-      console.log(b);
       if (b.data.player1 == b.data.player2)
         return {
           id: -1,

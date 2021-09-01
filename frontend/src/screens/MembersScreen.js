@@ -104,7 +104,6 @@ export default function MembersScreen() {
                     <div
                       className="btn"
                       onClick={() => {
-                        console.log(g);
                         setCurrentGame(`/game/${g.gameId}`);
                       }}
                     >

@@ -470,7 +470,6 @@ export default function GameScreen(params) {
           });
           socket.off("FullCurrentGame");
           socket.on("FullCurrentGame", (data) => {
-            console.log("Got The Game");
             /* Reseting The Ball */
             pong._ball.pos.x = data.data.BallPosX;
             pong._ball.pos.y = data.data.BallPosY;
@@ -504,21 +503,11 @@ export default function GameScreen(params) {
               u: pong._user,
             });
           });
-          console.log("want the game");
           socket.emit("GetCurrentGame", {
             data: {
               gameId: params.gameId,
             },
           });
-
-          /* Getting Current Game Viewers */
-          // setTimeout(()=>{
-          //   socket.emit("GetCurrentGame", {
-          //     data: {
-          //       gameId: params.gameId,
-          //     },
-          //   });
-          // },[1000])
         }, [1000]);
       }
   }, [user.user]);

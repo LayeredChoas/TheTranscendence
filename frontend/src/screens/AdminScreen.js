@@ -32,7 +32,6 @@ export default function AdminScreen() {
           username: user.user,
         },
       });
-      console.log(val.data)
       if (!val || val.data.id <= 0) {
         Router.push("/member");
         return setAdmin({ loading: false, admin: false });

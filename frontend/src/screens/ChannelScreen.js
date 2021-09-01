@@ -266,7 +266,6 @@ export default function ChannelScreen(params) {
           ) : messages.id > 0 ? (
             <div>
               {messages.messages.map((m) => {
-                console.log(ret);
                 if (m.sender === user.user)
                   return (
                     <RightMessage

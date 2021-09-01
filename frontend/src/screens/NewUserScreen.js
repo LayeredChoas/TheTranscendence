@@ -33,7 +33,6 @@ export default function NewUserScreen() {
           password: pass.current.value,
         }
       );
-      console.log(val);
       if (!val.data || val.data.id < 0)
         return setError("An Error Occured Try Again Later");
       else Router.push("/member");

@@ -15,7 +15,6 @@ function RedirectScreen(params) {
   const { setUser } = useContext(userContext);
 
   useEffect(() => {
-    console.log();
     const p = Router.asPath;
     const code = p.split("?code=")[1];
 
@@ -31,13 +30,11 @@ function RedirectScreen(params) {
               },
             }
           );
-          console.log(val.data);
           if (val.data.id <= 0) return SetUser(true);
           else {
             const { id, message, token } = val.data;
             if (token) localStorage.setItem("auth_key", token);
             const ret = await auth("red");
-            console.log("ret val:", ret);
             setUser({
               isLoading: ret.isLoading,
               isLoggedIn: ret.isLoggedIn,

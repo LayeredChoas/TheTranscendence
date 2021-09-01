@@ -10,10 +10,8 @@ const { publicRuntimeConfig } = getConfig();
 export default function UserBar(params) {
   const { user } = useContext(userContext);
   const [avatar, setAvatar] = useState(false);
-  console.log("in");
   function get_av(s) {
     try {
-      console.log(s);
       const p = s.split("/uploads/")[1];
       if (!p) {
         setAvatar(s);
@@ -59,7 +57,6 @@ export default function UserBar(params) {
       console.log(error.mesasge);
     }
   }
-  console.log(avatar);
   return (
     <li className="person" data-chat="person1">
       <Row>

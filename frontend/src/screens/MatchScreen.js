@@ -42,7 +42,6 @@ export default function MatchScreen() {
     setInputName(username_f);
   }, []);
   function HandleChange(e) {
-    if (rounds_var.current) console.log(rounds_var.current.value);
     if (e.target.value === "Title") {
       setTitle(true);
       setRounds(true);

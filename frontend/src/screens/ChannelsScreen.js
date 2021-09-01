@@ -16,14 +16,11 @@ import {
 import React, { useContext, useRef, useState } from "react";
 import MuiAlert from "@material-ui/lab/Alert";
 import { Button, Container, FormControl, PageItem, Row } from "react-bootstrap";
-// import "./../css_files/ChannlesScreen.css";
 import AddIcon from "@material-ui/icons/Add";
 import Switch from "@material-ui/core/Switch";
 import axios from "axios";
 import { userContext } from "../context/AuthProvider";
 import { useHistory } from "react-router";
-import UserNotLogged from "../elements/UserNotLogged";
-import FactorScreen from "./FactorScreen";
 import Router from "next/router";
 import getConfig from "next/config";
 import LoginBar from "../elements/LoginBar";
@@ -118,7 +115,7 @@ export default function ChannelsScreen() {
         get_channels();
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       setE_inside(true);
     }
   }
@@ -144,7 +141,6 @@ export default function ChannelsScreen() {
     }
   }
   function FormRow(params) {
-    console.log(params);
     return (
       <React.Fragment>
         {params.channel.map((c) => {

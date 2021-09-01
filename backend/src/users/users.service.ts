@@ -1,6 +1,7 @@
 import { Injectable, Param } from '@nestjs/common';
 import { PrismaClient } from '.prisma/client';
 import { randomInt } from 'crypto';
+import inputValidation from 'src/inputValidation/inputValidation.service';
 
 const JWT = require('jsonwebtoken');
 const { user } = new PrismaClient();
@@ -32,6 +33,7 @@ const titles = [
 
 @Injectable()
 export class UsersService {
+  constructor(private readonly inputvalidation: inputValidation) {}
   async user_exist(username) {
     try {
       const val = await user.findUnique({
@@ -129,7 +131,6 @@ export class UsersService {
   /* Read User */
   async user_login(b) {
     const { username, password } = b;
-    console.log(b);
     if (!username || !password)
       return {
         id: -1,
@@ -200,7 +201,7 @@ export class UsersService {
           username,
         },
         data: {
-          avatar: 'http://0.0.0.0:5000/uploads/' + filename,
+          avatar: 'http://0.0.0.0:5000/uploads/' + filename, /// FIX
         },
       });
       if (!val)
@@ -457,6 +458,10 @@ export class UsersService {
 
   async change_title_game(userId, title) {
     try {
+      if (!this.inputvalidation.titleValidation(title))
+        return {
+          id: -1,
+        };
       const u = await user.update({
         where: {
           id: userId,

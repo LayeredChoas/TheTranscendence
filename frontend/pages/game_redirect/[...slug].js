@@ -20,7 +20,6 @@ export default function Com() {
   if (slug?.length > 1 && user.user) Router.push(`/member`);
 
   useEffect(() => {
-    console.log("gameId", gameId)
     if (gameId) Router.push(`/game/${gameId}`);
   }, [gameId]);
   return <div></div>;

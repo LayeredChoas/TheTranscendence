@@ -22,7 +22,6 @@ export default function UserBlob(params) {
         .then(function (res) {
           let imgObjectURL = URL.createObjectURL(res);
           if (imgObjectURL) {
-            console.log(imgObjectURL);
             setAvatar(imgObjectURL);
           }
         });
@@ -35,7 +34,6 @@ export default function UserBlob(params) {
   }, [v]);
 
   if (!avatar) get_av(params.user.avatar);
-  console.log(params.user.username, params.user.status);
   return (
     <div>
       {

@@ -36,7 +36,7 @@ export default function ChangePhoto() {
     try {
       const val = await axios.post(
         publicRuntimeConfig.BACKEND_URL + `/upload/${user.user}`,
-        myfile,
+        myfile
         // {
         //   headers: { "Access-Control-Allow-Origin": "*" },
         // }
@@ -74,12 +74,14 @@ export default function ChangePhoto() {
         .then(function (res) {
           let imgObjectURL = URL.createObjectURL(res);
           if (imgObjectURL) {
-            console.log(imgObjectURL);
             setAvatar(imgObjectURL);
           }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
         });
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   }
 
@@ -96,11 +98,13 @@ export default function ChangePhoto() {
       {!user.isLoading && user.isLoggedIn ? (
         <div className="tab-pane fade active show">
           <div className="card-body media align-items-center">
-            <img
-              src={user_avatar.toString()}
-              alt=""
-              className="d-block ui-w-80"
-            />
+            {user_avatar ? (
+              <img
+                src={user_avatar.toString()}
+                alt=""
+                className="d-block ui-w-80"
+              />
+            ) : null}
             <div className="media-body ml-4">
               <label className="btn btn-outline-primary">
                 Upload new photo
@@ -119,7 +123,7 @@ export default function ChangePhoto() {
                 Reset
               </button>
               <div className="text-light small mt-1">
-                Allowed JPG, JEPG, GIF or PNG.
+                Allowed JPG, JEPG, GIF or PNG. (Max Photo Size 2MB)
               </div>
             </div>
           </div>

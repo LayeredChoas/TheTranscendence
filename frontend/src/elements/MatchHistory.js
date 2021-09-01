@@ -17,7 +17,6 @@ function MatchHistory(params) {
       setMts(
         m.data.data.map((m) => {
           if (!m.player1) return;
-          console.log(m)
           const p1 = m.winner == m.p1Id ? "text-winner" : null;
           const p2 = m.winner == m.p2Id ? "text-winner" : null;
           return (

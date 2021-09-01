@@ -18,7 +18,6 @@ export default function LeftMessage(m) {
         .then(function (res) {
           let imgObjectURL = URL.createObjectURL(res);
           if (imgObjectURL) {
-            console.log(imgObjectURL);
             setAvatar(imgObjectURL);
           }
         });

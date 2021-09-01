@@ -9,7 +9,6 @@ export default function get_avatar(params) {
       })
       .then(function (res) {
         let imgObjectURL = URL.createObjectURL(res);
-        console.log(imgObjectURL);
         if (imgObjectURL) {
             return imgObjectURL;
         }

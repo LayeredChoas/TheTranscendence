@@ -58,7 +58,7 @@ export default function LoginScreen() {
         Router.push("/member");
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       SetLoginError(true);
     }
   }

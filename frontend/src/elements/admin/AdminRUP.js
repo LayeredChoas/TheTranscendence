@@ -16,7 +16,6 @@ export default function AdminRUP() {
   useEffect(async () => {
     try {
       const val = await axios.get(publicRuntimeConfig.BACKEND_URL + "/search");
-      console.log(val.data);
       setUsers(val.data);
     } catch (error) {
       console.log(error.message);

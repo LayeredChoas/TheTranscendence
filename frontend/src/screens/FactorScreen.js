@@ -18,7 +18,6 @@ export default function FactorScreen() {
   });
 
   useEffect(async () => {
-      console.log(user)
     if (user.user && !user.auth && !user.set) {
       try {
         const val = await axios.post(publicRuntimeConfig.BACKEND_URL + "/send/auth", {

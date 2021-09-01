@@ -29,7 +29,6 @@ export default function Com() {
           setLoad(true);
           setInfo(val.data);
           if (val.data.winner.length > 0) setEndGame(true);
-          console.log(val.data);
         }
       } catch (error) {
         console.log(error.message);

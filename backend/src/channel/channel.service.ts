@@ -89,7 +89,6 @@ export default class ChannelService {
           type: c.status,
         });
       });
-      console.log(ret);
       return ret;
     } catch (error) {
       return ret;
@@ -200,7 +199,6 @@ export default class ChannelService {
           }
         }
       }
-      console.log(ret);
       return {
         id: 1,
         messages,
@@ -556,7 +554,6 @@ export default class ChannelService {
       let ty;
       let ret = [];
       let pass = null;
-      console.log(b);
       const val = await channel.findUnique({
         where: {
           name: b.name,
@@ -577,7 +574,6 @@ export default class ChannelService {
           };
         pass = h_pass;
       }
-      console.log(ret, ty, pass);
       const u = await channel.update({
         where: {
           name: b.name,

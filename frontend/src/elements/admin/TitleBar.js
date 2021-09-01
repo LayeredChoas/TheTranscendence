@@ -13,7 +13,6 @@ export default function TitleBar(params) {
 
   function get_av(s) {
     try {
-      console.log(s);
       const p = s.split("/uploads/")[1];
       if (!p) {
         setAvatar(s);

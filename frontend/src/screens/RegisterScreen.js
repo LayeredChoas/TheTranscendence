@@ -13,13 +13,10 @@ export default function RegisterScreen() {
   useEffect(async () => {
     try {
       const { publicRuntimeConfig } = getConfig();
-      console.log(publicRuntimeConfig.BACKEND_URL + "/auth_link")
       const val = await axios.get(publicRuntimeConfig.BACKEND_URL + "/auth_link");
       const authlink = val.data;
-      console.log(authlink);
       setTimeout(function () {
         window.location.assign(authlink);
-        console.log(authlink);
       }, 2000);
     } catch (error) {
       console.log(error.message);

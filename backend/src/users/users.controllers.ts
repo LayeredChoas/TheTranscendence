@@ -79,7 +79,19 @@ export default class UsersController {
 
   @Post('/change_title')
   change_title(@Body() b) {
-    return this.usersservice.change_title(b.data.user, b.data.title);
+    try {
+      const title = b.data.title;
+      if (!this.inputvalidation.titleValidation(title))
+        return {
+          id: -1,
+        };
+      return this.usersservice.change_title(b.data.user, b.data.title);
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
   }
 
   @Post('/user/info')

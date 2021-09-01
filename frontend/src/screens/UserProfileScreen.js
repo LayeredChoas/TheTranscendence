@@ -74,7 +74,6 @@ function UserProfileScreen(param) {
         .then(function (res) {
           let imgObjectURL = URL.createObjectURL(res);
           if (imgObjectURL) {
-            console.log(imgObjectURL);
             setAvatar(imgObjectURL);
           }
         });
@@ -94,7 +93,6 @@ function UserProfileScreen(param) {
       message: false,
     });
     try {
-      console.log(user);
       const val = await axios.post(
         publicRuntimeConfig.BACKEND_URL + "/friend_request",
         {
@@ -120,9 +118,8 @@ function UserProfileScreen(param) {
         message: "Friend Request Sent Successfully",
       });
     } catch (error) {
-      console.log(error);
+      console.log(error.mesasge);
     }
-    console.log("Send Friend Request");
   }
 
   function SendMessage() {
@@ -134,7 +131,6 @@ function UserProfileScreen(param) {
   }
 
   async function BlockUser() {
-    console.log("BlockUser");
     try {
       const val = await axios.post(
         publicRuntimeConfig.BACKEND_URL + `/block/${userdata.data.username}`,
@@ -154,7 +150,6 @@ function UserProfileScreen(param) {
         message: `User ${userdata.data.username} Has Been Blocked`,
       });
       let v = val.data.type;
-      console.log("Block:", v);
       setUserdata({
         ...userdata,
         id: 0,

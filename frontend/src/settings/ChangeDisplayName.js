@@ -42,7 +42,6 @@ export default function ChangeDisplayName() {
         },
       });
       if (res.data.id <= 0) {
-          console.log(res.data)
         if (res.data.error === "User Exist")
           return setError({
             type: "alert-danger",

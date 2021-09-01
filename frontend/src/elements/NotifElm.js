@@ -45,7 +45,6 @@ export default function NotifElm(params) {
         break;
       }
     }
-    console.log(ret)
     params.action({
       num:ret.length,
       req: ret,

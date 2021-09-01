@@ -21,7 +21,6 @@ export default function FriendsRequestScreen() {
       if (!val || val.data.id <= 0) return;
       if (!val.data) return;
       setFriends(val.data);
-      console.log(val.data);
     } catch (error) {
       console.log(error.message);
     }
@@ -32,7 +31,6 @@ export default function FriendsRequestScreen() {
   }
 
   if (!friends) GetFriendsRequest();
-  console.log(friends)
   return (
     <div className="container py-4">
       <Head>

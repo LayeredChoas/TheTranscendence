@@ -34,7 +34,7 @@ export default function ChangePassword() {
         setSec(true);
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       setError("An Error Occured Try Again Later");
     }
   }

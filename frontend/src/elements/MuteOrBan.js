@@ -7,7 +7,6 @@ const { publicRuntimeConfig } = getConfig();
 export default function MuteOrBan(params) {
   const [mute, setMute] = useState(false);
   async function BanUser() {
-    console.log("ban", params.user);
     try {
       const val = await axios.post(publicRuntimeConfig.BACKEND_URL + "/channel/ban", {
         data: {
@@ -31,7 +30,6 @@ export default function MuteOrBan(params) {
 
   async function MuteUser(value) {
     var ts = Math.round(new Date().getTime() / 1000) + value * 60;
-    console.log("mute", params.user, value, ts);
     try {
       const val = await axios.post(publicRuntimeConfig.BACKEND_URL + "/channel/mute", {
         data: {

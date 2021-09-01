@@ -43,7 +43,6 @@ export default function UserLadder(params) {
   useEffect(() => {
     setAvatar(params.user.avatar);
   }, []);
-  console.log(params.v)
   return (
     <tr className="candidates-list" style={{background:colors[level]}}>
         <td>#{params.v}</td>
