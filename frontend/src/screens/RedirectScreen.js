@@ -17,7 +17,6 @@ function RedirectScreen(params) {
   useEffect(() => {
     const p = Router.asPath;
     const code = p.split("?code=")[1];
-
     setTimeout(async function () {
       if (!code) SetUser(true);
       else {
@@ -52,7 +51,7 @@ function RedirectScreen(params) {
           SetUser(true);
         }
       }
-    }, 3000);
+    }, 1000);
   }, []);
   return (
     <Container>

@@ -20,7 +20,6 @@ export class AuthService {
   /* New Or Old User */
   async verify_user(b) {
     const intra_code = b.data.intra_code;
-
     try {
       const val = await axios({
         method: 'post',
@@ -34,7 +33,6 @@ export class AuthService {
         },
       });
       var { access_token, error } = val.data;
-
       if (error) return { id: -1, error: error.error_description };
       const newval = await axios.get('https://api.intra.42.fr/v2/me', {
         headers: {
@@ -43,10 +41,10 @@ export class AuthService {
       });
       const newerror = newval.data.error;
       const errormessage = newval.data.message;
-
       if (!newerror) return this.usersservice.create_user(newval.data);
       else return { id: 1, error: errormessage };
     } catch (error) {
+      console.log(error.message)
       return { id: -1, error: error };
     }
   }

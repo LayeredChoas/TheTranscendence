@@ -23,6 +23,7 @@ export default function ChatBox(params) {
     });
     let fullmessage = msg.current.value;
     document.getElementById("message").value = "";
+    socket.off('recived')
     socket.on('recived', ()=>{
       params.rerender(params.msg.user);
     })

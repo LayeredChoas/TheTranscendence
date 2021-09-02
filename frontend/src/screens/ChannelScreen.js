@@ -201,6 +201,7 @@ export default function ChannelScreen(params) {
   useEffect(() => {
     setTimeout(function () {
       scrollToBottom();
+      socket.off("recived_channel");
       socket.on("recived_channel", () => {
         if (!update) setUpdate(true);
         else setUpdate(false);

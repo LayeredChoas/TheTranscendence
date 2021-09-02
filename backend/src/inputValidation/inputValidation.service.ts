@@ -36,7 +36,11 @@ export default class inputValidation {
 
   channelNameValidation(channelname) {
     try {
-      if (!channelname || channelname.length < 5 || channelname.search('*'))
+      console.log(channelname)
+      if (
+        !channelname ||
+        channelname.length < 5
+      )
         return false;
       return true;
     } catch (error) {

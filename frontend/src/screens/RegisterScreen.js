@@ -20,7 +20,6 @@ export default function RegisterScreen() {
       }, 2000);
     } catch (error) {
       console.log(error.message);
-      // Router.push('/error');
     }
   }, []);
   return (
