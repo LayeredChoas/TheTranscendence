@@ -72,28 +72,28 @@ export default function ChangeTitle() {
     <Container>
       <form className="ChangeName">
         {er.error ? (
-          <div class="alert alert-danger" role="alert">
+          <div className="alert alert-danger" role="alert">
             {er.message}
           </div>
         ) : null}
         {su.success ? (
-          <div class="alert alert-success" role="alert">
+          <div className="alert alert-success" role="alert">
             {su.message}
           </div>
         ) : null}
-        <div class="form-group">
+        <div className="form-group">
           <label for="exampleInputEmail1"></label>
-          <small id="emailHelp" class="form-text text-muted DisplayNameText">
+          <small id="emailHelp" className="form-text text-muted DisplayNameText">
             It will cost you 50XP to change your current title
           </small>
           <input
             type="text"
-            class="form-control DisplayNameInput"
+            className="form-control DisplayNameInput"
             placeholder="Enter You New Title"
             ref={title}
           />
         </div>
-        <button onClick={ChangeMyTitle} type="submit" class="btn btn-primary">
+        <button onClick={ChangeMyTitle} type="submit" className="btn btn-primary">
           Change
         </button>
       </form>

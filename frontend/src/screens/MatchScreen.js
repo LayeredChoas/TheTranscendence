@@ -13,6 +13,7 @@ const { publicRuntimeConfig } = getConfig();
 import { socket } from "./../../pages/_app";
 import { useRouter } from "next/router";
 import LoginBar from "../elements/LoginBar";
+import Head from "next/head";
 
 export default function MatchScreen() {
   const [title, setTitle] = useState(false);
@@ -41,7 +42,6 @@ export default function MatchScreen() {
     setInputName(username_f);
   }, []);
   function HandleChange(e) {
-    if (rounds_var.current) console.log(rounds_var.current.value);
     if (e.target.value === "Title") {
       setTitle(true);
       setRounds(true);
@@ -51,6 +51,9 @@ export default function MatchScreen() {
     } else if (e.target.value === "Shot") {
       setTitle(false);
       setRounds(false);
+    } else if (e.target.value === "Casual") {
+      setTitle(false);
+      setRounds(true);
     }
   }
 
@@ -65,8 +68,8 @@ export default function MatchScreen() {
     if (
       !username_var ||
       !username_var.current.value ||
-      (username_var.current.value.length < 5 && username_var.current.value != "Rand") ||
-      username_var.current.value === user.user
+      (username_var.current.value.length < 5 &&
+        username_var.current.value != "Rand")
     )
       return setMsg({
         error: true,
@@ -88,25 +91,25 @@ export default function MatchScreen() {
       let ti = "";
       if (rounds_var.current) rd = rounds_var.current.value;
       if (gametype_var.current.value === "Shot") rw = 20;
+      if (gametype_var.current.value === "Casual") rw = 0;
       if (title_var.current) ti = title_var.current.value;
       let val;
       if (username_var.current.value != "Rand")
-       val = await axios.post(
-        publicRuntimeConfig.BACKEND_URL + "/create_match",
-        {
-          data: {
-            player1: user.user,
-            player2: username_var.current.value,
-            type: gametype_var.current.value,
-            arena: arena_var.current.value,
-            reward: rw,
-            rounds: rd,
-            title: ti,
-          },
-        }
-      );
-      else
-      {
+        val = await axios.post(
+          publicRuntimeConfig.BACKEND_URL + "/create_match",
+          {
+            data: {
+              player1: user.user,
+              player2: username_var.current.value,
+              type: gametype_var.current.value,
+              arena: arena_var.current.value,
+              reward: rw,
+              rounds: rd,
+              title: ti,
+            },
+          }
+        );
+      else {
         val = await axios.post(
           publicRuntimeConfig.BACKEND_URL + "/match/random",
           {
@@ -128,6 +131,21 @@ export default function MatchScreen() {
             error: true,
             message: "Enter A Valid Player Username",
           });
+          if (val.data.message && val.data.message === "same")
+          return setMsg({
+            error: true,
+            message: "Hmmm so you want to play with yourself, I believe you got the wrong website",
+          });
+          if (val.data.message && val.data.message === "match")
+          return setMsg({
+            error: true,
+            message: "You Already Have A Pending Match, Chill...",
+          });
+          if (val.data.message && val.data.message === "xp")
+          return setMsg({
+            error: true,
+            message: "On Of The Players Doen't Have Enough XP..",
+          });
         return setMsg({
           error: true,
           message: "An Error Happen Try Again Later",
@@ -137,8 +155,7 @@ export default function MatchScreen() {
         id: true,
         username: username_var.current.value,
       });
-      if (val.data.on)
-        return Router.push(`/game/${val.data.gameId}`);
+      if (val.data.on) return Router.push(`/game_redirect/${val.data.gameId}`);
       socket.emit("challenge", {
         data: {
           gameId: val.data.gameId,
@@ -148,11 +165,10 @@ export default function MatchScreen() {
         },
       });
       socket.on("accept_game", (data) => {
-        Router.push(`/game/${data.data.gameId}`);
+        Router.push(`/game_redirect/${data.data.gameId}`);
       });
       socket.on("declined_game", (data) => {
         if (val.data.gameId === data.data.gameId) {
-          console.log(data.data)
           setEr({
             type: "alert-danger",
             message: `${data.data.player2} Declined The Game`,
@@ -173,34 +189,47 @@ export default function MatchScreen() {
   }
 
   return loadingmatch.id ? (
-    <LoadingMatch user={loadingmatch.username}></LoadingMatch>
+    <LoadingMatch user={loadingmatch.username}>
+      <Head>
+        <title>
+          Loading Match
+        </title>
+      </Head>
+    </LoadingMatch>
   ) : (
     <div className="text-black text-center MatchScreenitems">
+      <Head>
+        <title>
+          New Game
+        </title>
+      </Head>
       {err.type && err.message ? (
         <LoginBar type={err.type} message={err.message}></LoginBar>
       ) : null}
 
       <h3 className="py-5">Create A New Match</h3>
       {msg.error ? (
-        <div class="alert alert-danger" role="alert">
+        <div className="alert alert-danger" role="alert">
           {msg.message}
         </div>
       ) : null}
       <Card className="text-black">
-        <div class="form-group MatchScreenelem">
+        <div className="form-group MatchScreenelem">
           <label className="form-label">Player Username</label>
-          <div style={{fontSize:"0.7rem"}}>(For Random Pairing, Put "Rand" As A Player)</div>
+          <div style={{ fontSize: "0.7rem" }}>
+            (For Random Pairing, Put "Rand" As A Player)
+          </div>
           <input
             ref={username_var}
             value={input_name}
             type="text"
-            class="form-control"
+            className="form-control"
           />
         </div>
 
-        <div class="form-group MatchScreenelem">
+        <div className="form-group MatchScreenelem">
           <label className="form-label">Arena</label>
-          <select ref={arena_var} class="custom-select">
+          <select ref={arena_var} className="custom-select">
             <option value="sb" selected>
               Simple Black
             </option>
@@ -209,23 +238,24 @@ export default function MatchScreen() {
           </select>
         </div>
 
-        <div class="form-group MatchScreenelem">
+        <div className="form-group MatchScreenelem">
           <label className="form-label">Game Type</label>
           <select
             ref={gametype_var}
-            class="custom-select"
+            className="custom-select"
             onChange={HandleChange}
           >
             <option value="Rounds">Rounds (±10XP)</option>
             <option value="Title">Title (±10XP)</option>
             <option value="Shot">One Shot (±20XP)</option>
+            <option value="Casual">Casual (0XP)</option>
           </select>
         </div>
 
         {rounds ? (
-          <div class="form-group MatchScreenelem">
+          <div className="form-group MatchScreenelem">
             <label className="form-label">Rounds</label>
-            <select ref={rounds_var} class="custom-select">
+            <select ref={rounds_var} className="custom-select">
               <option value="3" selected>
                 3
               </option>
@@ -237,9 +267,9 @@ export default function MatchScreen() {
 
         {title ? (
           <div>
-            <div class="form-group MatchScreenelem">
+            <div className="form-group MatchScreenelem">
               <label className="form-label">The Loser Title </label>
-              <input ref={title_var} type="text" class="form-control" />
+              <input ref={title_var} type="text" className="form-control" />
             </div>
           </div>
         ) : null}

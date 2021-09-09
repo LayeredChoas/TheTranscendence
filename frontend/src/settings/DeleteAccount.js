@@ -48,7 +48,7 @@ export default function DeleteAccount(props) {
   return (
     <div className="text-black">
       <form onSubmit={ClickHandle}>
-        <div class="card-body pb-2">
+        <div className="card-body pb-2">
           {error ? (
             <div className="text-center">
               <LoginBar
@@ -57,21 +57,21 @@ export default function DeleteAccount(props) {
               ></LoginBar>
             </div>
           ) : null}
-          <div class="form-group">
-            <label class="form-label">
+          <div className="form-group">
+            <label className="form-label">
               Are you sure you want to delete your account ?
             </label>
             <input
               ref={pass}
               type="password"
-              class="form-control"
+              className="form-control"
               placeholder="Enter Your Password"
             />
           </div>
         </div>
 
-        <div class="text-center mt-3">
-          <button type="submit" class="btn btn-primary m-2">
+        <div className="text-center mt-3">
+          <button type="submit" className="btn btn-primary m-2">
             Delete
           </button>
           &nbsp;
@@ -79,7 +79,7 @@ export default function DeleteAccount(props) {
             onClick={RestError}
             type="reset"
             value="Reset"
-            class="btn btn-default m-3 "
+            className="btn btn-default m-3 "
           />
         </div>
       </form>

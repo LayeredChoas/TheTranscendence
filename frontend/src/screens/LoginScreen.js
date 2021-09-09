@@ -7,6 +7,7 @@ import { userContext } from "../context/AuthProvider";
 import LoginBar from "../elements/LoginBar";
 import Router from "next/router";
 import getConfig from "next/config";
+import Head from 'next/head'
 const { publicRuntimeConfig } = getConfig();
 
 export default function LoginScreen() {
@@ -57,7 +58,7 @@ export default function LoginScreen() {
         Router.push("/member");
       }
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
       SetLoginError(true);
     }
   }
@@ -77,6 +78,11 @@ export default function LoginScreen() {
 
   return (
     <Container fluid className="Color_Div">
+      <Head>
+        <title>
+          Login
+        </title>
+      </Head>
       <div className="LoginBox">
         {LoginError ? (
           <LoginBar type="alert-danger" message="Bad Login Info" />

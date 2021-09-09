@@ -5,8 +5,6 @@ import Router from "next/router";
 export function VerificationScreen(props)
 {
     const history = useHistory();
-
-    console.log(props);
     if (props.location.state.data.message)
         Router.push("/member");
     else

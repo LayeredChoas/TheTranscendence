@@ -1,6 +1,7 @@
 import { Injectable, Param } from '@nestjs/common';
 import { PrismaClient } from '.prisma/client';
 import { randomInt } from 'crypto';
+import inputValidation from 'src/inputValidation/inputValidation.service';
 
 const JWT = require('jsonwebtoken');
 const { user } = new PrismaClient();
@@ -32,6 +33,7 @@ const titles = [
 
 @Injectable()
 export class UsersService {
+  constructor(private readonly inputvalidation: inputValidation) {}
   async user_exist(username) {
     try {
       const val = await user.findUnique({
@@ -47,75 +49,82 @@ export class UsersService {
   }
   /* Create User */
   async create_user(b) {
-    const val = await this.user_exist(b.login);
-    if (val.id === -1 && val.error === 'No User') {
-      try {
-        let admin = false;
-        const username = b.login;
-        const password = await bcrypt.hash(username, 10);
-        const email = b.email;
-        let title = titles[randomInt(0, titles.length)];
-        if (username == 'ayennoui') admin = true;
-        const ret = await user.create({
-          data: {
-            username,
-            password,
-            email,
-            intra_username: username,
-            num_wins: 0,
-            num_loss: 0,
-            ladder_level: 0,
-            num_won_tournaments: 0,
-            avatar: b.image_url,
-            status: 'online',
-            rating: 100,
-            title: title,
-            admin_op: admin,
-            owner: admin,
-            campus: b.campus[0].name,
-            country: b.campus[0].country,
-            time_zone: b.campus[0].time_zone,
-            last_name: b.last_name,
-            first_name: b.first_name,
+    try {
+      const val = await this.user_exist(b.login);
+      if (val.id === -1 && val.error === 'No User') {
+        try {
+          let admin = false;
+          const username = b.login;
+          const password = await bcrypt.hash(username, 10);
+          const email = b.email;
+          let title = titles[randomInt(0, titles.length)];
+          if (username == 'ayennoui') admin = true;
+          const ret = await user.create({
+            data: {
+              username,
+              password,
+              email,
+              intra_username: username,
+              num_wins: 0,
+              num_loss: 0,
+              ladder_level: 0,
+              num_won_tournaments: 0,
+              avatar: b.image_url,
+              status: 'online',
+              rating: 100,
+              title: title,
+              admin_op: admin,
+              owner: admin,
+              campus: b.campus[0].name,
+              country: b.campus[0].country,
+              time_zone: b.campus[0].time_zone,
+              last_name: b.last_name,
+              first_name: b.first_name,
+            },
+          });
+          if (!ret) {
+            return { id: -1, error: 'An Error Occcured Try Again Later' };
+          } else {
+            const token = await JWT.sign({ username }, process.env.JWT_SECRET, {
+              expiresIn: 30000,
+            });
+            return {
+              id: ret.id,
+              token,
+            };
+          }
+        } catch (error) {
+          console.log(error.message);
+          return { id: -1, error: error.message };
+        }
+      } else {
+        const u = val.username;
+        const user_if = await user.findUnique({
+          where: {
+            intra_username: u,
           },
         });
-        if (!ret) {
-          return { id: -1, error: 'An Error Occcured Try Again Later' };
-        } else {
-          const token = await JWT.sign({ username }, process.env.JWT_SECRET, {
-            expiresIn: 30000,
-          });
+        if (!user_if)
           return {
-            id: ret.id,
-            token,
+            id: -1,
           };
+        const token = await JWT.sign(
+          { username: user_if.username },
+          process.env.JWT_SECRET,
+          {
+            expiresIn: 30000,
+          },
+        );
+        if (!token) {
+          return { id: -1 };
         }
-      } catch (error) {
-        // console.log(error);
-        return { id: -1, error: error.message };
+        return { id: val.id, message: 'User Login', token };
       }
-    } else {
-      const u = val.username;
-      const user_if = await user.findUnique({
-        where: {
-          intra_username: u,
-        },
-      });
-      if (!user_if)
-        return {
-          id: -1,
-        };
-      const token = await JWT.sign(
-        { username: user_if.username },
-        process.env.JWT_SECRET,
-        {
-          expiresIn: 30000,
-        },
-      );
-      if (!token) {
-        return { id: -1 };
-      }
-      return { id: val.id, message: 'User Login', token };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
     }
   }
 
@@ -192,7 +201,7 @@ export class UsersService {
           username,
         },
         data: {
-          avatar: 'http://0.0.0.0:5000/uploads/' + filename,
+          avatar: 'http://0.0.0.0:5000/uploads/' + filename, /// FIX
         },
       });
       if (!val)
@@ -316,7 +325,6 @@ export class UsersService {
         b_users.push(u.id);
         bl = true;
       }
-      console.log(b_users);
       const ret = await user.update({
         where: {
           username,
@@ -371,7 +379,6 @@ export class UsersService {
   }
 
   async change_title(username, title) {
-    console.log(username, title);
     try {
       const r = await user.findUnique({
         where: {
@@ -451,6 +458,10 @@ export class UsersService {
 
   async change_title_game(userId, title) {
     try {
+      if (!this.inputvalidation.titleValidation(title))
+        return {
+          id: -1,
+        };
       const u = await user.update({
         where: {
           id: userId,
@@ -533,6 +544,89 @@ export class UsersService {
       return {
         id: u.id,
         u,
+      };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  async add_win(p) {
+    try {
+      let num_wins = 0;
+      const d_u = await user.findUnique({
+        where: {
+          id: p,
+        },
+      });
+      if (!d_u)
+        return {
+          id: -1,
+        };
+      num_wins = d_u.num_wins + 1;
+      const u = await user.update({
+        where: {
+          id: p,
+        },
+        data: {
+          num_wins: num_wins,
+        },
+      });
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  async add_loss(p) {
+    try {
+      let num_losses = 0;
+      const d_u = await user.findUnique({
+        where: {
+          id: p,
+        },
+      });
+      if (!d_u)
+        return {
+          id: -1,
+        };
+      num_losses = d_u.num_loss + 1;
+      const u = await user.update({
+        where: {
+          id: p,
+        },
+        data: {
+          num_loss: num_losses,
+        },
+      });
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
+  }
+
+  async add_gameId(username, gameId) {
+    try {
+      const u = await user.update({
+        where: {
+          username: username,
+        },
+        data: {
+          inGame: gameId,
+        },
+      });
+      if (!u)
+        return {
+          id: -1,
+        };
+      return {
+        id: u.id,
       };
     } catch (error) {
       console.log(error.message);

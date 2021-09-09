@@ -10,10 +10,8 @@ const { publicRuntimeConfig } = getConfig();
 export default function UserBar(params) {
   const { user } = useContext(userContext);
   const [avatar, setAvatar] = useState(false);
-  console.log("in");
   function get_av(s) {
     try {
-      console.log(s);
       const p = s.split("/uploads/")[1];
       if (!p) {
         setAvatar(s);
@@ -37,7 +35,6 @@ export default function UserBar(params) {
   if (!avatar) get_av(params.user.avatar);
   async function RemoveChannel() {
     try {
-        console.log(params.user)
       const val = await axios.post(
         publicRuntimeConfig.BACKEND_URL + "/admin/access_channel",
         {
@@ -60,24 +57,17 @@ export default function UserBar(params) {
       console.log(error.mesasge);
     }
   }
-  console.log(avatar);
   return (
     <li className="person" data-chat="person1">
       <Row>
         <Col>
           <div
-            class="user text-center"
+            className="user text-center"
             id={params.user.username}
             style={{ position: "relative", left: "1rem", top: "0rem" }}
-          >
-            {/* <img
-              src="https://icon-library.com/images/omni-channel-icon/omni-channel-icon-25.jpg"
-              style={{ width: "1.5rem", height: "1.5rem" }}
-              alt={params.user.username}
-            /> */}
-          </div>
-          <p class="name-time text-center" style={{ marginLeft: "-8rem" }}>
-            <span class="name">{params.user.username}</span>
+          ></div>
+          <p className="name-time text-center" style={{ marginLeft: "-8rem" }}>
+            <span className="name">{params.user.username}</span>
           </p>
           <div
             style={{
@@ -87,7 +77,7 @@ export default function UserBar(params) {
               right: "1rem",
             }}
           >
-            <i class="fas fa-columns" onClick={RemoveChannel}></i>
+            <i className="fas fa-columns" onClick={RemoveChannel}></i>
           </div>
         </Col>
       </Row>

@@ -4,6 +4,7 @@ import { Container, Form } from "react-bootstrap";
 import LoginBar from "../elements/LoginBar";
 import {userContext} from '../context/AuthProvider';
 import getConfig from "next/config";
+import Head from "next/head";
 const { publicRuntimeConfig } = getConfig();
 
 
@@ -17,7 +18,6 @@ export default function FactorScreen() {
   });
 
   useEffect(async () => {
-      console.log(user)
     if (user.user && !user.auth && !user.set) {
       try {
         const val = await axios.post(publicRuntimeConfig.BACKEND_URL + "/send/auth", {
@@ -85,30 +85,35 @@ export default function FactorScreen() {
   }
   return (
     <div>
+      <Head>
+        <title>
+        Factor Authentication
+        </title>
+      </Head>
       <div className="text-center p-2">
         {er.id ? (
           <LoginBar type={er.type} message={er.message}></LoginBar>
         ) : null}
         <label for="exampleInputEmail1 text-center"></label>
-        <small id="emailHelp" class="form-text text-muted DisplayNameText">
+        <small id="emailHelp" className="form-text text-muted DisplayNameText">
           We Sent An Authentication Code To Your Email Address, Enter It Below
           To Continue
         </small>
       </div>
 
       <form className="ChangeName text-center" onSubmit={SubmitCode}>
-        <div class="form-group text-center">
+        <div className="form-group text-center">
           <div className="text-center">
             <input
               type="text"
-              class="form-control DisplayNameInput text-center"
+              className="form-control DisplayNameInput text-center"
               placeholder="Authentication Code"
               style={{ minWidth: "25rem" }}
               ref={code}
             />
           </div>
         </div>
-        <button type="submit" class="btn btn-primary" onClick={SubmitCode}>
+        <button type="submit" className="btn btn-primary" onClick={SubmitCode}>
           Submit
         </button>
       </form>

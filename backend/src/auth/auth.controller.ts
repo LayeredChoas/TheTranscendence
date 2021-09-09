@@ -1,12 +1,16 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { PrismaClient } from '.prisma/client';
+import inputValidation from 'src/inputValidation/inputValidation.service';
 const JWT = require('jsonwebtoken');
 const { user } = new PrismaClient();
 
 @Controller()
 export class AuthController {
-  constructor(private readonly authservice: AuthService) {}
+  constructor(
+    private readonly authservice: AuthService,
+    private readonly inputvalidation: inputValidation,
+  ) {}
 
   @Get('/auth_link')
   get_intra_link() {
@@ -27,10 +31,9 @@ export class AuthController {
       const username = valid.username;
       const ret = await user.findUnique({
         where: {
-          username:username,
+          username: username,
         },
       });
-      console.log(valid)
       let auth = false;
       if (
         (!ret.auth_code || ret.auth_code.length <= 0) &&
@@ -64,14 +67,27 @@ export class AuthController {
   }
 
   @Post('/user/validauth')
-  valid_auth(@Body() b)
-  {
-    return this.authservice.valid_auth(b.data)
+  valid_auth(@Body() b) {
+    return this.authservice.valid_auth(b.data);
   }
 
   @Post('/user/auth')
   auth_user(@Body() b) {
-    return this.authservice.auth_user(b.data);
+    try {
+      if (
+        this.inputvalidation.emailValidation(b.data.email) &&
+        this.inputvalidation.passwordValidation(b.data.password)
+      )
+        return this.authservice.auth_user(b.data);
+      return {
+        id: -1,
+      };
+    } catch (error) {
+      console.log(error.message);
+      return {
+        id: -1,
+      };
+    }
   }
 
   @Post('/user/2-auth')

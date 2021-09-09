@@ -170,7 +170,6 @@ export default function ChannelAdminPannel(params) {
         type: "alert-success",
         message: `${u} Is Now An Admin`,
       });
-      console.log(val);
     } catch (error) {
       console.log(error.message);
       params.action({

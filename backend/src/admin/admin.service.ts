@@ -7,7 +7,6 @@ const { user, friendship, channel } = new PrismaClient();
 export default class AdminService {
   constructor(private readonly userservice: UsersService) {}
   async send_message(b) {
-    console.log(b);
     try {
       const u = await user.findUnique({
         where: {
@@ -177,6 +176,7 @@ export default class AdminService {
       };
     }
   }
+
   async access_channel(b) {
     try {
       const c = await channel.findUnique({
@@ -184,39 +184,13 @@ export default class AdminService {
           name: b.channel,
         },
       });
-      const u = await this.userservice.get_user_id(b.username);
-      if (!c || u <= 0)
-        return {
-          id: -1,
-        };
-      let admins = c.admin;
-      let users = c.users;
-      for (let index = 0; index < admins.length; index++) {
-        if (u == admins[index]) {
-          return {
-            id: u,
-            status: c.status,
-          };
-        }
-      }
-      admins.push(u);
-      users.push(u);
-      const u_c = await channel.update({
-        where: {
-          name: b.channel,
-        },
-        data: {
-          admin: admins,
-          users,
-        },
-      });
-      if (!u)
+      if (!c)
         return {
           id: -1,
         };
       return {
-        id: u_c,
-        status: u_c.status,
+        id: c.id,
+        status: c.status,
       };
     } catch (error) {
       console.log(error.message);

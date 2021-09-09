@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import get_avatar from "./UserAvatar";
+import getConfig from "next/config";
+const { publicRuntimeConfig } = getConfig();
 
 export default function LeftMessage(m) {
   const [avatar, setAvatar] = useState(false);
@@ -18,14 +20,15 @@ export default function LeftMessage(m) {
         .then(function (res) {
           let imgObjectURL = URL.createObjectURL(res);
           if (imgObjectURL) {
-            console.log(imgObjectURL);
             setAvatar(imgObjectURL);
           }
         });
-    } catch (error) {}
+    } catch (error) {
+      console.log(error.message);
+    }
   }
-  useEffect(() => {
-    get_av(m.avatar);
+  useEffect(async () => {
+    await get_av(m.avatar);
   }, [m.user]);
   const d = new Date(m.msg.createdAt);
   return (
@@ -45,13 +48,13 @@ export default function LeftMessage(m) {
         </div>
       ) : null}
 
-      <li class="chat-left">
-        <div class="chat-avatar">
+      <li className="chat-left">
+        <div className="chat-avatar">
           <img src={avatar} alt={m.user} />
-          <div class="chat-name">{m.user}</div>
+          <div className="chat-name">{m.user}</div>
         </div>
         <div
-          class="chat-text"
+          className="chat-text"
           style={{
             maxWidth: "25rem",
             padding: " .4rem 1rem",
@@ -60,12 +63,12 @@ export default function LeftMessage(m) {
             fontWeight: "300",
             lineHeight: "150%",
             position: "relative",
-            wordWrap:"break-word"
+            wordWrap: "break-word",
           }}
         >
           {m.msg.message}
         </div>
-        <div class="chat-hour" style={{ fontSize: "0.6rem" }}>
+        <div className="chat-hour" style={{ fontSize: "0.6rem" }}>
           {d.toLocaleString("en-US", {
             month: "short",
             day: "2-digit",

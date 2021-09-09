@@ -6,6 +6,7 @@ import { auth } from "../functions/auth";
 import { userContext } from "../context/AuthProvider";
 import Router from "next/router";
 import getConfig from "next/config";
+import Head from "next/head";
 const { publicRuntimeConfig } = getConfig();
 
 function RedirectScreen(params) {
@@ -14,10 +15,8 @@ function RedirectScreen(params) {
   const { setUser } = useContext(userContext);
 
   useEffect(() => {
-    console.log();
     const p = Router.asPath;
     const code = p.split("?code=")[1];
-
     setTimeout(async function () {
       if (!code) SetUser(true);
       else {
@@ -30,13 +29,11 @@ function RedirectScreen(params) {
               },
             }
           );
-          console.log(val.data);
           if (val.data.id <= 0) return SetUser(true);
           else {
             const { id, message, token } = val.data;
             if (token) localStorage.setItem("auth_key", token);
             const ret = await auth("red");
-            console.log("ret val:", ret);
             setUser({
               isLoading: ret.isLoading,
               isLoggedIn: ret.isLoggedIn,
@@ -54,10 +51,15 @@ function RedirectScreen(params) {
           SetUser(true);
         }
       }
-    }, 5000);
+    }, 1000);
   }, []);
   return (
     <Container>
+      <Head>
+        <title>
+          Redirect Page
+        </title>
+      </Head>
       <Row>
         <Col></Col>
         <Col className="Register">

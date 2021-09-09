@@ -14,6 +14,8 @@ import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
 import Router from "next/router";
 import { socket } from "../../pages/_app";
+import Head from "next/head";
+
 let p = false;
 
 export default function ChannelScreen(params) {
@@ -27,7 +29,7 @@ export default function ChannelScreen(params) {
   const history = useHistory();
   const [joinroom, setJoinroom] = useState(false);
   const [listenroom, setListenroom] = useState(false);
-  const [channelOwner, setChannelOwner] = useState(false)
+  const [channelOwner, setChannelOwner] = useState(false);
 
   let c_name = document.location.pathname;
   let name = c_name.split("/channel/")[1];
@@ -103,7 +105,7 @@ export default function ChannelScreen(params) {
       }
       setMessages(val.data.messages);
       setRet(val.data.ret);
-      setChannelOwner(val.data.owner)
+      setChannelOwner(val.data.owner);
     } catch (error) {
       console.log(error.message);
     }
@@ -199,6 +201,7 @@ export default function ChannelScreen(params) {
   useEffect(() => {
     setTimeout(function () {
       scrollToBottom();
+      socket.off("recived_channel");
       socket.on("recived_channel", () => {
         if (!update) setUpdate(true);
         else setUpdate(false);
@@ -214,6 +217,11 @@ export default function ChannelScreen(params) {
   }, [name]);
   return (
     <div className="container text-black main-body">
+      <Head>
+        <title>
+          Channel {name}
+        </title>
+      </Head>
       <h1>Channel Screen</h1>
       {banned_u ? (
         <h1>You Can't Access This Channel</h1>
@@ -221,7 +229,7 @@ export default function ChannelScreen(params) {
         <LoginBar type={err.type} message={err.message}></LoginBar>
       ) : null}
       <div
-        class="chat-container"
+        className="chat-container"
         style={{
           height: "40rem",
           overflow: "scroll",
@@ -231,7 +239,7 @@ export default function ChannelScreen(params) {
           background: "#f4f5fb",
         }}
       >
-        <ul class="chat-box chatContainerScroll">
+        <ul className="chat-box chatContainerScroll">
           {ret.id > 0 && !ret.allowed ? (
             <form className="text-center" onSubmit={SubmitPass}>
               <h3></h3>
@@ -259,7 +267,6 @@ export default function ChannelScreen(params) {
           ) : messages.id > 0 ? (
             <div>
               {messages.messages.map((m) => {
-                console.log(messages)
                 if (m.sender === user.user)
                   return (
                     <RightMessage
@@ -286,8 +293,7 @@ export default function ChannelScreen(params) {
                             }}
                           ></LeftMessage>
                         </Col>
-                        {ret.admin && m.sender != channelOwner ? (
-                          
+                        {ret.admin && m.sender != channelOwner && !m.admin ? (
                           <MuteOrBan
                             channel={name}
                             user={m.sender}
@@ -298,13 +304,13 @@ export default function ChannelScreen(params) {
                     </div>
                   );
               })}
-              <div class="form-group mt-3 mb-0">
+              <div className="form-group mt-3 mb-0">
                 <form className="text-center" onSubmit={SendMessage}>
                   <Row>
                     <Col className="text-center" sm={10}>
                       <input
                         type="text"
-                        class="form-control"
+                        className="form-control"
                         ref={msg}
                         id="message"
                       ></input>
@@ -321,7 +327,9 @@ export default function ChannelScreen(params) {
         </ul>
       </div>
       <br></br>
-      {ret.id > 0 && ret.allowed && ret.admin && user.user === channelOwner? (
+      {ret.id > 0 &&
+      ((ret.allowed && ret.admin && user.user === channelOwner) ||
+        ret.siteadmin) ? (
         <ChannelAdminPannel private={p} action={setErr}></ChannelAdminPannel>
       ) : !ret.admin && ret.allowed && p ? (
         <div>

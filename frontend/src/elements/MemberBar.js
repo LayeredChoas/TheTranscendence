@@ -95,7 +95,7 @@ const useStyles = makeStyles((theme) => ({
 
 function MemberBar() {
   const [Draw, setDraw] = useState(false);
-  const [items, SetItems] = useState(false);
+  const [items, SetItems] = useState([]);
   const history = useHistory();
   const { user, setUser } = useContext(userContext);
   const [notif, setNotif] = useState({
@@ -106,7 +106,6 @@ function MemberBar() {
 
   useEffect(() => {
     socket.on("challenge", (r) => {
-      console.log("reciv");
       if (r.data.player2 === user.user) {
         let req = notif.req;
         req.push(r.data);
@@ -120,7 +119,6 @@ function MemberBar() {
   }, []);
 
   function HandleSearch(string) {
-    console.log(string);
   }
 
   function handleOnSelect(item) {

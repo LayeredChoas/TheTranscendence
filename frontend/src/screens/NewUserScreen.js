@@ -8,6 +8,7 @@ import UserNotLogged from "../elements/UserNotLogged";
 import FactorScreen from "./FactorScreen";
 import Router from "next/router";
 import getConfig from "next/config";
+import Head from "next/head";
 const { publicRuntimeConfig } = getConfig();
 
 export default function NewUserScreen() {
@@ -20,11 +21,11 @@ export default function NewUserScreen() {
 
   async function FormSubmit(e) {
     e.preventDefault();
-    if (pass.current.value != passg.current.value)
-      return setError("Password Didn't Match");
-    if (passg.current.value.length < 5)
-      return setError("Password Can't be Less Than 5 Characters");
     try {
+      if (pass.current.value != passg.current.value)
+        return setError("Password Didn't Match");
+      if (passg.current.value.length < 5)
+        return setError("Password Can't be Less Than 5 Characters");
       const val = await axios.post(
         publicRuntimeConfig.BACKEND_URL + "/change_password",
         {
@@ -32,7 +33,6 @@ export default function NewUserScreen() {
           password: pass.current.value,
         }
       );
-      console.log(val);
       if (!val.data || val.data.id < 0)
         return setError("An Error Occured Try Again Later");
       else Router.push("/member");
@@ -43,6 +43,11 @@ export default function NewUserScreen() {
   }
   return (
     <main className="my-form UserForm">
+      <Head>
+        <title>
+          New User
+        </title>
+      </Head>
       <div className="cotainer">
         <div className="row justify-content-center">
           <div className="col-md-8">

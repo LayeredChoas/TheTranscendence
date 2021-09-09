@@ -6,6 +6,7 @@ import { userContext } from "../context/AuthProvider";
 // import "./../css_files/FriendsScreen.css";
 import FactorScreen from "./FactorScreen";
 import getConfig from "next/config";
+import Head from "next/head";
 const { publicRuntimeConfig } = getConfig();
 
 export default function FriendsRequestScreen() {
@@ -20,7 +21,6 @@ export default function FriendsRequestScreen() {
       if (!val || val.data.id <= 0) return;
       if (!val.data) return;
       setFriends(val.data);
-      console.log(val.data);
     } catch (error) {
       console.log(error.message);
     }
@@ -33,9 +33,14 @@ export default function FriendsRequestScreen() {
   if (!friends) GetFriendsRequest();
   return (
     <div className="container py-4">
-      <div class="row my-2">
-        {!friends
-          ? null
+      <Head>
+        <title>
+          Friends Requests
+        </title>
+      </Head>
+      <div className="row my-2">
+        {!friends || friends.length == 0
+          ? <div className="text-center"> No friend requests at the moment (try to go out more)</div>
           : friends.map((f) => {
               return (
                 <FriendRequestElement

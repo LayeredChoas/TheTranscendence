@@ -75,14 +75,14 @@ export default function ModBar(params) {
       <Row>
         <Col>
           <div
-            class="user"
+            className="user"
             id={params.user.username}
             style={{ position: "absolute", left: "1rem", top: "-0.41rem" }}
           >
             <img src={avatar} alt={params.user.username} />
           </div>
-          <p class="name-time">
-            <span class="name">{params.user.username}</span>
+          <p className="name-time">
+            <span className="name">{params.user.username}</span>
           </p>
           <div
             style={{
@@ -92,7 +92,7 @@ export default function ModBar(params) {
               right: "1rem",
             }}
           >
-            <i class="fas fa-user-times p-1 " onClick={RemoveUser}></i>
+            <i className="fas fa-user-times p-1 " onClick={RemoveUser}></i>
           </div>
         </Col>
       </Row>

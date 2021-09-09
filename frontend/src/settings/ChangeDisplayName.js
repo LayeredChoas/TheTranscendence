@@ -34,13 +34,6 @@ export default function ChangeDisplayName() {
         type: "alert-danger",
         message: "WTF, That's Your Display Name Already....",
       });
-      // +(?<![_.])$
-    const re = /^(?=.{5,20}$)(?![_.])(?!.*[_.]{2})([^-\s])$/;
-    if (!re.test(displayname))
-      return setError({
-        type: "alert-danger",
-        message: "Enter A Valid Display Name",
-      });
     try {
       const res = await axios.post(publicRuntimeConfig.BACKEND_URL + "/change_username", {
         data: {
@@ -49,7 +42,6 @@ export default function ChangeDisplayName() {
         },
       });
       if (res.data.id <= 0) {
-          console.log(res.data)
         if (res.data.error === "User Exist")
           return setError({
             type: "alert-danger",
@@ -86,19 +78,19 @@ export default function ChangeDisplayName() {
         {error.type ? (
           <LoginBar type={error.type} message={error.message}></LoginBar>
         ) : null}
-        <div class="form-group">
-          <label for="exampleInputEmail1"></label>
-          <small id="emailHelp" class="form-text text-muted DisplayNameText">
+        <div className="form-group">
+          <label htmlFor="exampleInputEmail1"></label>
+          <small id="emailHelp" className="form-text text-muted DisplayNameText">
             Your Curent Display Name Is : {user.user}
           </small>
           <input
             type="text"
-            class="form-control DisplayNameInput"
+            className="form-control DisplayNameInput"
             placeholder="Enter Display name"
             ref={NewName}
           />
         </div>
-        <button type="submit" class="btn btn-primary">
+        <button type="submit" className="btn btn-primary">
           Change
         </button>
       </form>

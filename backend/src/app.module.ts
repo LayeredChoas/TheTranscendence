@@ -22,6 +22,7 @@ import AdminController from './admin/admin.controller';
 import AdminService from './admin/admin.service';
 import GameController from './game/game.controller';
 import GameService from './game/game.service';
+import inputValidation from './inputValidation/inputValidation.service';
 
 @Module({
   imports: [
@@ -29,7 +30,31 @@ import GameService from './game/game.service';
       rootPath: join(__dirname, '..', 'public'),
     }),
   ],
-  controllers: [AppController, AuthController, UsersController, SearchController, ChannelController, MatchController, FriendsController, MessageController, AdminController, GameController],
-  providers: [AppService, AuthService, UsersService, SearchService, ChannelService, MatchService, FriendsService, MessageService, MessageGateway, AdminService, GameService],
+  controllers: [
+    AppController,
+    AuthController,
+    UsersController,
+    SearchController,
+    ChannelController,
+    MatchController,
+    FriendsController,
+    MessageController,
+    AdminController,
+    GameController,
+  ],
+  providers: [
+    AppService,
+    AuthService,
+    UsersService,
+    SearchService,
+    ChannelService,
+    MatchService,
+    FriendsService,
+    MessageService,
+    MessageGateway,
+    AdminService,
+    GameService,
+    inputValidation,
+  ],
 })
 export class AppModule {}

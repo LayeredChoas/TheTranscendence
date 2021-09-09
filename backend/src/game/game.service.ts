@@ -23,7 +23,6 @@ export default class GameService {
           });
         }
       }
-      console.log(ret);
       return {
         id: 1,
         games: ret,
@@ -97,7 +96,6 @@ export default class GameService {
 
   async game_end(game) {
     try {
-      console.log(game)
       let v = '';
       if (game.player1.score > game.player2.score) v = game.player1.name;
       else v = game.player2.name;
@@ -120,7 +118,9 @@ export default class GameService {
         await this.userservice.change_title_game(p2, val.title);
       } else {
         await this.userservice.change_xp(p1, val.reward);
+        if (val.reward == 0) await this.userservice.add_win(p1);
         await this.userservice.change_xp(p2, -1 * val.reward);
+        if (val.reward == 0) await this.userservice.add_loss(p2);
       }
       return {
         id: val.id,

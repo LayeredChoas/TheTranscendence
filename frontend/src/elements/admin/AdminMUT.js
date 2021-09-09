@@ -15,19 +15,18 @@ export default function AdminMUT() {
   useEffect(async () => {
     try {
       const val = await axios.get(publicRuntimeConfig.BACKEND_URL + "/search");
-      console.log(val.data);
       setUsers(val.data);
     } catch (error) {
       console.log(error.message);
     }
   }, []);
   return (
-    <div class="content-wrapper text-center">
+    <div className="content-wrapper text-center">
       {ale.type.length ? (
         <LoginBar type={ale.type} message={ale.message}></LoginBar>
       ) : null}
       <div
-        class="row"
+        className="row"
         style={{
           marginLeft: "-15rem",
           width: "50rem",
@@ -36,13 +35,13 @@ export default function AdminMUT() {
           background: "#f4f5fa !important",
         }}
       >
-        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-          <div class="card m-0" style={{ border: "none" }}>
+        <div className="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+          <div className="card m-0" style={{ border: "none" }}>
             <div
-              class="users-container"
+              className="users-container"
               style={{ border: "none", background: "#f4f5fa !important" }}
             >
-              <ul class="users">
+              <ul className="users">
                 {users
                   ? users.map((u) => {
                       if (u.name.search("User") >= 0)

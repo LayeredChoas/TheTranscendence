@@ -1,3 +1,4 @@
+import Head from "next/head";
 import Router from "next/router";
 import { useContext, useEffect } from "react";
 import { Redirect, useHistory } from "react-router";
@@ -16,5 +17,11 @@ export default function LogoutScreen() {
     });
     Router.push("/");
   }, []);
-  return <div />;
+  return <div>
+    <Head>
+      <title>
+        Logout
+      </title>
+    </Head>
+  </div>;
 }

@@ -14,7 +14,6 @@ export default class FriendsController{
     @Post('/friend_request')
     create_friend_request(@Body() b)
     {
-        // console.log(b)
         const { username, friend} = b.data;
         return this.friendsservice.create_friend_request(username, friend);
     }

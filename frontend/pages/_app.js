@@ -47,7 +47,6 @@ function MyApp({ Component, pageProps }) {
   useEffect(async () => {
     setUser(await auth());
   }, []);
-
   return (
     <>
       <Head>

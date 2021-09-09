@@ -35,7 +35,7 @@ export default function NotifElm(params) {
       console.log(error.message);
       params.action(false);
     }
-    Router.push(`/game/${params.elm.gameId}`);
+    Router.push(`/game_redirect/${params.elm.gameId}`);
   }
   async function DeclineGame() {
     let ret = params.notif.req;
@@ -45,7 +45,6 @@ export default function NotifElm(params) {
         break;
       }
     }
-    console.log(ret)
     params.action({
       num:ret.length,
       req: ret,

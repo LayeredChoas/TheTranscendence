@@ -13,7 +13,6 @@ export default function TitleBar(params) {
 
   function get_av(s) {
     try {
-      console.log(s);
       const p = s.split("/uploads/")[1];
       if (!p) {
         setAvatar(s);
@@ -75,7 +74,7 @@ export default function TitleBar(params) {
       <Row>
         <Col>
           <div
-            class="user"
+            className="user"
             id={params.user.username}
             style={{ position: "absolute", left: "1rem", top: "-0.41rem" }}
           >
@@ -88,8 +87,8 @@ export default function TitleBar(params) {
             />
           </div>
 
-          <p class="name-time" style={{ marginLeft: "-30rem" }}>
-            <span class="name">{params.user.username}</span>
+          <p className="name-time" style={{ marginLeft: "-30rem" }}>
+            <span className="name">{params.user.username}</span>
           </p>
           <div
             style={{
@@ -108,7 +107,7 @@ export default function TitleBar(params) {
               }}
             ></input>
             <i
-              class="fas fa-exchange-alt p-1"
+              className="fas fa-exchange-alt p-1"
               onClick={() => {
                 ChangeTitle();
               }}

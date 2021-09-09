@@ -23,6 +23,7 @@ export default function ChatBox(params) {
     });
     let fullmessage = msg.current.value;
     document.getElementById("message").value = "";
+    socket.off('recived')
     socket.on('recived', ()=>{
       params.rerender(params.msg.user);
     })
@@ -51,11 +52,6 @@ export default function ChatBox(params) {
     }
   }
   function StartAMatch() {
-    // setEr({
-    //   value: true,
-    //   type: "alert-success",
-    //   message: "Match Request Sent",
-    // });
     Router.push(`/match#${params.msg.user}`)
   }
   const messagesEndRef = useRef(null);
@@ -77,22 +73,22 @@ export default function ChatBox(params) {
             <LoginBar type={er.type} message={er.message}></LoginBar>
           ) : null}
 
-          <div class="selected-user">
+          <div className="selected-user">
             <span>
-              To: <span class="name">{params.msg.user}</span>
+              To: <span className="name">{params.msg.user}</span>
             </span>
 
             <i
               onClick={StartAMatch}
-              class="m-2 fas fa-table-tennis fa-2x"
+              className="m-2 fas fa-table-tennis fa-2x"
               style={{ float: "right" }}
             ></i>
           </div>
           <div
-            class="chat-container"
+            className="chat-container"
             style={{ height: "40rem", overflow: "scroll", overflowX:"hidden", overflowY: "scroll" }}
           >
-            <ul class="chat-box chatContainerScroll">
+            <ul className="chat-box chatContainerScroll">
               {messages.map((m) => {
                 let c = 0;
                 if (params.msg.myId === m.sender)
@@ -121,13 +117,13 @@ export default function ChatBox(params) {
                 }
               })}
             </ul>
-            <div class="form-group mt-3 mb-0">
+            <div className="form-group mt-3 mb-0">
               <form className="text-center" onSubmit={SendMessage}>
                 <Row>
                   <Col className="text-center" sm={10}>
                     <input
                       type="text"
-                      class="form-control"
+                      className="form-control"
                       ref={msg}
                       id="message"
                     ></input>

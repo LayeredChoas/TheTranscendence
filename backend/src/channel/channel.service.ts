@@ -89,7 +89,6 @@ export default class ChannelService {
           type: c.status,
         });
       });
-      console.log(ret);
       return ret;
     } catch (error) {
       return ret;
@@ -117,6 +116,7 @@ export default class ChannelService {
           date: m.createdAt,
           sender: u.username,
           sender_avatar: u.avatar,
+          admin: u.admin_op,
         });
       }
       return {
@@ -132,9 +132,18 @@ export default class ChannelService {
   }
   async get_channel(p) {
     let allowed = 'public';
-    let ret = { id: -1, admin: false, allowed: false };
+    let ret = { id: -1, admin: false, allowed: false, siteadmin: false };
     if (p.pv) allowed = 'private';
     try {
+      const u_ad = await user.findUnique({
+        where: {
+          username: p.username,
+        },
+      });
+      if (!u_ad)
+        return {
+          id: -1,
+        };
       const val = await channel.findMany({
         where: {
           name: p.channel,
@@ -166,6 +175,7 @@ export default class ChannelService {
           }
         }
       } else ret.allowed = true;
+      if (u_ad.admin_op) ret.allowed = true;
       const messages = await this.get_channel_messages(val[0].messages);
       if (messages.id < 0)
         return {
@@ -177,6 +187,7 @@ export default class ChannelService {
           id: u,
         },
       });
+      if (u_ban.admin_op) ret.siteadmin = true;
       for (let index = 0; index < u_ban.blocked.length; index++) {
         const b_u = await this.userservice.get_user_username(
           u_ban.blocked[index],
@@ -543,7 +554,6 @@ export default class ChannelService {
       let ty;
       let ret = [];
       let pass = null;
-      console.log(b);
       const val = await channel.findUnique({
         where: {
           name: b.name,
@@ -564,7 +574,6 @@ export default class ChannelService {
           };
         pass = h_pass;
       }
-      console.log(ret, ty, pass);
       const u = await channel.update({
         where: {
           name: b.name,
